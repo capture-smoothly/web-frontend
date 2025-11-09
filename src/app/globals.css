@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme {
+  /* Custom Colors */
+  --color-primary: #ff6b6b;
+  --color-primary-light: #ff8e8e;
+  --color-primary-dark: #e85555;
+
+  --color-secondary: #4ecdc4;
+  --color-secondary-light: #6fe0d8;
+  --color-secondary-dark: #3db8af;
+
+  --color-accent: #ffd93d;
+  --color-accent-light: #ffe366;
+  --color-accent-dark: #f5c832;
+
+  --color-coral: #ff6b6b;
+  --color-coral-light: #ffa5a5;
+  --color-coral-dark: #ff4040;
+
+  --color-teal: #4ecdc4;
+  --color-teal-light: #7fe0d8;
+  --color-teal-dark: #2db8af;
+
+  --color-peach: #ffb88c;
+  --color-peach-light: #ffd1b3;
+  --color-peach-dark: #ff9f66;
+
+  --color-mint: #6fcf97;
+  --color-mint-light: #8dddb0;
+  --color-mint-dark: #55b97d;
+
+  --color-dark: #2d3142;
+  --color-dark-light: #4f5d75;
+  --color-dark-lighter: #6b7a99;
+
+  --color-light: #fff5f7;
+  --color-light-gray: #fff0f3;
+  --color-light-cream: #fffbf0;
+
+  /* Custom Shadows */
+  --shadow-glass: 0 8px 32px 0 rgba(255, 107, 107, 0.15);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 20px 25px -5px rgba(255, 107, 107, 0.2), 0 10px 10px -5px rgba(78, 205, 196, 0.1);
+  --shadow-colorful: 0 10px 40px -10px rgba(255, 107, 107, 0.3), 0 0 20px -5px rgba(78, 205, 196, 0.2);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Custom Gradient Utilities */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 50%, #ffb88c 100%);
+}
+
+.bg-gradient-secondary {
+  background: linear-gradient(135deg, #4ecdc4 0%, #6fe0d8 100%);
+}
+
+.bg-gradient-hero {
+  background: linear-gradient(135deg, #fff5f7 0%, #fffbf0 50%, #f0f8ff 100%);
+}
+
+.bg-gradient-cta {
+  background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 50%, #ffd93d 100%);
+}
+
+.bg-gradient-sunset {
+  background: linear-gradient(135deg, #ff9a76 0%, #ff6b9d 50%, #c06c84 100%);
+}
+
+.bg-gradient-ocean {
+  background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 50%, #093637 100%);
+}
+
+.bg-gradient-warm {
+  background: linear-gradient(135deg, #ffd93d 0%, #ffb88c 50%, #ff8e8e 100%);
+}

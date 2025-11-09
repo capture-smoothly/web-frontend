@@ -1,0 +1,14 @@
+export { SnapshotNavbar } from "./SnapshotNavbar";
+export { HeroSection } from "./HeroSection";
+export { ProblemSection } from "./ProblemSection";
+export { SolutionSection } from "./SolutionSection";
+export { HowItWorksSection } from "./HowItWorksSection";
+export { FeatureShowcaseSection } from "./FeatureShowcaseSection";
+export { ComparisonSection } from "./ComparisonSection";
+export { UseCasesSection } from "./UseCasesSection";
+export { PricingSection } from "./PricingSection";
+export { TestimonialsSection } from "./TestimonialsSection";
+export { RoadmapSection } from "./RoadmapSection";
+export { FAQSection } from "./FAQSection";
+export { FinalCTASection } from "./FinalCTASection";
+export { SnapshotFooter } from "./SnapshotFooter";
