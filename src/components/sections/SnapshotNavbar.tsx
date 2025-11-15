@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { motion, AnimatePresence } from "motion/react";
-import { Camera, Menu, X } from "lucide-react";
+import { Camera, Menu, X, LogOut } from "lucide-react";
 import { Button } from "../ui/Button";
+import SignupModal from "../auth/SignupModal";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navLinks = [
   { label: "Features", href: "#features" },
@@ -16,6 +18,8 @@ const navLinks = [
 export const SnapshotNavbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,10 +75,33 @@ export const SnapshotNavbar: React.FC = () => {
 
           {/* Desktop CTAs */}
           <div className="hidden md:flex items-center gap-4">
-            <button className="text-dark-lighter hover:text-primary font-medium transition-colors">
-              Sign In
-            </button>
-            <Button size="md">Install Now</Button>
+            {user ? (
+              <>
+                <span className="text-sm text-dark-lighter">
+                  {user.email}
+                </span>
+                <Button
+                  size="md"
+                  variant="outline"
+                  onClick={signOut}
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => setIsSignupModalOpen(true)}
+                  className="text-dark-lighter hover:text-primary font-medium transition-colors"
+                >
+                  Sign In
+                </button>
+                <Button size="md" onClick={() => setIsSignupModalOpen(true)}>
+                  Start Free Trial
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -112,17 +139,52 @@ export const SnapshotNavbar: React.FC = () => {
                 </button>
               ))}
               <div className="pt-4 border-t border-gray-200 space-y-3">
-                <button className="block w-full text-left py-2 text-dark-lighter hover:text-primary font-medium transition-colors">
-                  Sign In
-                </button>
-                <Button size="md" className="w-full">
-                  Install Now
-                </Button>
+                {user ? (
+                  <>
+                    <div className="text-sm text-dark-lighter py-2">
+                      {user.email}
+                    </div>
+                    <Button
+                      size="md"
+                      variant="outline"
+                      className="w-full"
+                      onClick={signOut}
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        setIsSignupModalOpen(true);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="block w-full text-left py-2 text-dark-lighter hover:text-primary font-medium transition-colors"
+                    >
+                      Sign In
+                    </button>
+                    <Button
+                      size="md"
+                      className="w-full"
+                      onClick={() => {
+                        setIsSignupModalOpen(true);
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      Start Free Trial
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Signup Modal */}
+      <SignupModal isOpen={isSignupModalOpen} onClose={() => setIsSignupModalOpen(false)} />
     </motion.nav>
   );
 };

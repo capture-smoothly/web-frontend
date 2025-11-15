@@ -1,10 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "motion/react";
 import { Sparkles, Zap, Edit3, ChevronDown, Play } from "lucide-react";
 import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
+import SignupModal from "../auth/SignupModal";
+import { useAuth } from "@/contexts/AuthContext";
 
 const stats = [
   { label: "10,000+ Active Users", value: "10k+" },
@@ -13,6 +15,9 @@ const stats = [
 ];
 
 export const HeroSection: React.FC = () => {
+  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const { user } = useAuth();
+
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center bg-gradient-hero pt-20 overflow-hidden">
       {/* Background decoration - Colorful blobs */}
@@ -102,8 +107,12 @@ export const HeroSection: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
           >
-            <Button size="lg" className="text-lg px-10 py-5">
-              Start 14-Day Free Trial
+            <Button
+              size="lg"
+              className="text-lg px-10 py-5"
+              onClick={() => setIsSignupModalOpen(true)}
+            >
+              {user ? "Go to Dashboard" : "Start 14-Day Free Trial"}
             </Button>
             <Button size="lg" variant="outline" className="text-lg px-10 py-5">
               <Play className="w-5 h-5 mr-2" />
@@ -198,6 +207,9 @@ export const HeroSection: React.FC = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* Signup Modal */}
+      <SignupModal isOpen={isSignupModalOpen} onClose={() => setIsSignupModalOpen(false)} />
     </section>
   );
 };
