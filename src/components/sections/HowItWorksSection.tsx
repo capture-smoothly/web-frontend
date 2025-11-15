@@ -2,12 +2,29 @@
 
 import React from "react";
 import { motion } from "motion/react";
-import { Target, PenTool, Share2 } from "lucide-react";
+import { Camera, MousePointerClick, PenTool, Share2 } from "lucide-react";
+
+const mainTools = [
+  {
+    icon: Camera,
+    title: "Screenshot Tool",
+    description: "Capture any part of your screen instantly with keyboard shortcuts. Full page, visible area, or custom selection - you're in control.",
+    gradient: "from-coral/20 to-peach/20",
+    iconColor: "text-coral",
+  },
+  {
+    icon: MousePointerClick,
+    title: "Smart Text Selection",
+    description: "Select long paragraphs or text blocks with ease using two-point selection. Copy instantly or open in our editor to customize before saving.",
+    gradient: "from-teal/20 to-mint/20",
+    iconColor: "text-teal",
+  },
+];
 
 const steps = [
   {
     number: 1,
-    icon: Target,
+    icon: Camera,
     title: "Capture",
     description: "Press Ctrl+Shift+Y for quick screenshot, or use Copy Capture mode to grab text from any webpage. Our two-point selection makes long content a breeze.",
   },
@@ -43,8 +60,44 @@ export const HowItWorksSection: React.FC = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            From Capture to Share in 3 Simple Steps
+            How It Works
           </h2>
+          <p className="text-xl text-white/80 max-w-3xl mx-auto">
+            Two powerful tools, infinite possibilities
+          </p>
+        </motion.div>
+
+        {/* Main Tools Section */}
+        <div className="grid md:grid-cols-2 gap-8 mb-20">
+          {mainTools.map((tool, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: index * 0.2 }}
+              className={`relative bg-gradient-to-br ${tool.gradient} backdrop-blur-sm border border-white/20 rounded-2xl p-8 hover:scale-105 transition-transform duration-300`}
+            >
+              <div className={`w-16 h-16 rounded-xl bg-white/10 flex items-center justify-center mb-6 ${tool.iconColor}`}>
+                <tool.icon className="w-8 h-8" />
+              </div>
+              <h3 className="text-2xl font-bold mb-4">{tool.title}</h3>
+              <p className="text-white/90 text-lg leading-relaxed">{tool.description}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Divider */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <h3 className="text-3xl md:text-4xl font-bold mb-4">
+            From Capture to Share in 3 Simple Steps
+          </h3>
         </motion.div>
 
         {/* Desktop - Horizontal Timeline */}

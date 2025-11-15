@@ -21,8 +21,8 @@ export default function Home() {
       <main>
         <HeroSection />
         <ProblemSection />
-        <SolutionSection />
         <HowItWorksSection />
+        <SolutionSection />
         <FeatureShowcaseSection />
         <ComparisonSection />
         <UseCasesSection />
