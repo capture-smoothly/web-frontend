@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { Sparkles, Zap, Edit3, ChevronDown, Play } from "lucide-react";
 import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
-import SignupModal from "../auth/SignupModal";
 import { useAuth } from "@/contexts/AuthContext";
 
 const stats = [
@@ -15,7 +15,7 @@ const stats = [
 ];
 
 export const HeroSection: React.FC = () => {
-  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const router = useRouter();
   const { user } = useAuth();
 
   return (
@@ -110,7 +110,7 @@ export const HeroSection: React.FC = () => {
             <Button
               size="lg"
               className="text-lg px-10 py-5"
-              onClick={() => setIsSignupModalOpen(true)}
+              onClick={() => router.push(user ? "/dashboard" : "/auth/login")}
             >
               {user ? "Go to Dashboard" : "Start 14-Day Free Trial"}
             </Button>
@@ -207,9 +207,6 @@ export const HeroSection: React.FC = () => {
           </div>
         </motion.div>
       </div>
-
-      {/* Signup Modal */}
-      <SignupModal isOpen={isSignupModalOpen} onClose={() => setIsSignupModalOpen(false)} />
     </section>
   );
 };
