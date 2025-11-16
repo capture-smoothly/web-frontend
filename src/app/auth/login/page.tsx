@@ -37,6 +37,46 @@ export default function LoginPage() {
     }
   }, [user, authLoading, router]);
 
+  // Listen for auth state changes and send tokens to Chrome extension
+  useEffect(() => {
+    if (!supabase) return;
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('🔐 Auth state changed:', event);
+
+      // Only send message when user successfully signs in
+      if (event === 'SIGNED_IN' && session) {
+        console.log('✅ User signed in, sending auth data to Chrome extension...');
+
+        // Send auth data to Chrome extension
+        window.postMessage(
+          {
+            type: 'SUPABASE_AUTH_TOKEN',
+            token: session.access_token,
+            refreshToken: session.refresh_token,
+            user: session.user,
+          },
+          '*'
+        );
+
+        console.log('📤 Auth data sent to Chrome extension:', {
+          type: 'SUPABASE_AUTH_TOKEN',
+          token: session.access_token.substring(0, 20) + '...',
+          refreshToken: session.refresh_token?.substring(0, 20) + '...',
+          userId: session.user.id,
+          userEmail: session.user.email,
+        });
+      }
+    });
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!supabase) return;
