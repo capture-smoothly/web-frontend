@@ -7,9 +7,9 @@ import { Badge } from "../ui/Badge";
 import { Chrome, Star, Users, Shield } from "lucide-react";
 
 const trustBadges = [
-  { icon: Chrome, label: "Featured Extension" },
-  { icon: Users, label: "10,000+ Active Users" },
-  { icon: Star, label: "4.9★ Rating" },
+  { icon: Chrome, label: "Launching This Week" },
+  { icon: Users, label: "Early Bird Pricing Available" },
+  { icon: Star, label: "Lifetime Deals (Limited)" },
   { icon: Shield, label: "100% Secure" },
 ];
 
@@ -44,7 +44,7 @@ export const FinalCTASection: React.FC = () => {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            Ready to Transform Your Screenshot Game?
+            Be Among the First to Transform Your Content Creation
           </h2>
         </motion.div>
 
@@ -55,7 +55,7 @@ export const FinalCTASection: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-xl md:text-2xl text-white/90 mb-10"
         >
-          Join thousands of users who&apos;ve already upgraded their workflow. Start free, upgrade when you&apos;re ready.
+          We&apos;re launching this week. Join our early adopters and get exclusive lifetime discounts. 14-day free trial, no credit card required.
         </motion.p>
 
         <motion.div

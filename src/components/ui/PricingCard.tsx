@@ -13,7 +13,9 @@ interface PricingCardProps {
   subtitle: string;
   yearlyPrice?: string;
   badge?: string;
+  lifetimeOffer?: string;
   features: string[];
+  notIncluded?: string[];
   comingSoon?: string[];
   cta: string;
   ctaVariant?: "primary" | "secondary" | "outline";
@@ -28,7 +30,9 @@ export const PricingCard: React.FC<PricingCardProps> = ({
   subtitle,
   yearlyPrice,
   badge,
+  lifetimeOffer,
   features,
+  notIncluded,
   comingSoon,
   cta,
   ctaVariant = "primary",
@@ -81,6 +85,14 @@ export const PricingCard: React.FC<PricingCardProps> = ({
             </Badge>
           </div>
         )}
+
+        {lifetimeOffer && (
+          <div className="mt-3">
+            <Badge variant="success" className="text-xs">
+              {lifetimeOffer}
+            </Badge>
+          </div>
+        )}
       </div>
 
       <Button
@@ -99,6 +111,16 @@ export const PricingCard: React.FC<PricingCardProps> = ({
           </div>
         ))}
       </div>
+
+      {notIncluded && notIncluded.length > 0 && (
+        <div className="mt-4 space-y-2">
+          {notIncluded.map((feature, index) => (
+            <div key={index} className="flex items-start gap-3">
+              <span className="text-sm text-gray-400">{feature}</span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {comingSoon && comingSoon.length > 0 && (
         <div className="mt-6 pt-6 border-t border-gray-200">

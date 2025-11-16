@@ -9,8 +9,8 @@ import { Badge } from "../ui/Badge";
 import { useAuth } from "@/contexts/AuthContext";
 
 const stats = [
-  { label: "10,000+ Active Users", value: "10k+" },
-  { label: "4.9 ★ Rating", value: "4.9★" },
+  { label: "Pre-Launch", value: "NEW" },
+  { label: "Launching This Week", value: "SOON" },
   { label: "14-Day Free Trial", value: "FREE" },
 ];
 
@@ -57,15 +57,14 @@ export const HeroSection: React.FC = () => {
             transition={{ duration: 0.6 }}
             className="text-5xl md:text-6xl lg:text-7xl font-bold text-dark mb-6 leading-tight"
           >
-            Create{" "}
+            Turn Text Into{" "}
             <span className="bg-gradient-to-r from-coral via-peach to-accent bg-clip-text text-transparent">
-              Stunning Screenshots
+              Beautiful Images
             </span>{" "}
             &{" "}
             <span className="bg-gradient-to-r from-teal via-secondary to-mint bg-clip-text text-transparent">
-              Text Snapshots
-            </span>{" "}
-            in Seconds
+              Capture Perfect Screenshots
+            </span>
           </motion.h1>
 
           {/* Subheadline */}
@@ -75,8 +74,7 @@ export const HeroSection: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-xl md:text-2xl text-dark-lighter mb-8 leading-relaxed"
           >
-            The only Chrome extension that turns your copied text into beautiful, shareable images.
-            Plus revolutionary two-point selection that never loses your place.
+            Convert any webpage text into stunning social media graphics with 35+ themes. Plus full-page screenshots and professional annotation tools—all in one extension.
           </motion.p>
 
           {/* Feature Badges */}
@@ -96,7 +94,7 @@ export const HeroSection: React.FC = () => {
             </Badge>
             <Badge className="text-sm px-4 py-2 bg-gradient-to-r from-accent/10 to-peach/10 border-accent/30 text-accent-dark backdrop-blur-sm">
               <Edit3 className="w-4 h-4" />
-              Professional Editing
+              8+ Annotation Tools
             </Badge>
           </motion.div>
 
