@@ -2,7 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Mail, Lock, User, Loader2, CheckCircle, AlertCircle, Camera } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  User,
+  Loader2,
+  CheckCircle,
+  AlertCircle,
+  Camera,
+} from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "motion/react";
@@ -19,7 +27,9 @@ export default function LoginPage() {
     type: "success" | "error";
     text: string;
   } | null>(null);
-  const [supabase, setSupabase] = useState<ReturnType<typeof createClient> | null>(null);
+  const [supabase, setSupabase] = useState<ReturnType<
+    typeof createClient
+  > | null>(null);
 
   // Initialize Supabase client
   useEffect(() => {
@@ -44,27 +54,30 @@ export default function LoginPage() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('🔐 Auth state changed:', event);
+      console.log("🔐 Auth state changed:", event);
 
       // Only send message when user successfully signs in
-      if (event === 'SIGNED_IN' && session) {
-        console.log('✅ User signed in, sending auth data to Chrome extension...');
+      if (event === "SIGNED_IN" && session) {
+        console.log(
+          "✅ User signed in, sending auth data to Chrome extension..."
+        );
 
         // Send auth data to Chrome extension
+        // Rebuiild
         window.postMessage(
           {
-            type: 'SUPABASE_AUTH_TOKEN',
+            type: "SUPABASE_AUTH_TOKEN",
             token: session.access_token,
             refreshToken: session.refresh_token,
             user: session.user,
           },
-          '*'
+          "*"
         );
 
-        console.log('📤 Auth data sent to Chrome extension:', {
-          type: 'SUPABASE_AUTH_TOKEN',
-          token: session.access_token.substring(0, 20) + '...',
-          refreshToken: session.refresh_token?.substring(0, 20) + '...',
+        console.log("📤 Auth data sent to Chrome extension:", {
+          type: "SUPABASE_AUTH_TOKEN",
+          token: session.access_token.substring(0, 20) + "...",
+          refreshToken: session.refresh_token?.substring(0, 20) + "...",
           userId: session.user.id,
           userEmail: session.user.email,
         });
@@ -279,10 +292,16 @@ export default function LoginPage() {
               </div>
             )}
 
-            <form onSubmit={isSignIn ? handleSignIn : handleSignUp} className="space-y-4">
+            <form
+              onSubmit={isSignIn ? handleSignIn : handleSignUp}
+              className="space-y-4"
+            >
               {!isSignIn && (
                 <div>
-                  <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="fullName"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Full Name
                   </label>
                   <div className="relative">
@@ -301,7 +320,10 @@ export default function LoginPage() {
               )}
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Email
                 </label>
                 <div className="relative">
@@ -319,7 +341,10 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Password
                 </label>
                 <div className="relative">
