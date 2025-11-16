@@ -14,8 +14,8 @@ const mainTools = [
   },
   {
     icon: MousePointerClick,
-    title: "Smart Text Selection",
-    description: "Select long paragraphs or text blocks with ease using two-point selection. Copy instantly or open in our editor to customize before saving.",
+    title: "Text-to-Image Creator",
+    description: "Select any text on a webpage and transform it into beautiful, shareable images in seconds. Choose from 35+ professional gradient themes. Perfect for social media posts, quotes, and visual content that gets engagement.",
     gradient: "from-teal/20 to-mint/20",
     iconColor: "text-teal",
   },

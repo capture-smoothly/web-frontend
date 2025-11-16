@@ -15,8 +15,8 @@ const problems = [
   },
   {
     icon: ImageOff,
-    title: "Ugly Screenshots",
-    description: "Basic screenshot tools give you pixelated, unprofessional images that need hours of editing.",
+    title: "Boring Text Posts",
+    description: "Plain text screenshots look unprofessional on social media. You need styled, branded graphics that stand out in the feed.",
     iconColor: "text-peach-dark",
     bgColor: "bg-gradient-to-br from-peach/10 to-accent/10",
     borderColor: "border-peach/30",

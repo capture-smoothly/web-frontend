@@ -5,11 +5,10 @@ import { motion } from "motion/react";
 import { Check, X } from "lucide-react";
 
 const comparisonData = [
-  { feature: "Text-to-Image", snapshot: true, awesome: false, snagit: false, gofull: false },
+  { feature: "Text-to-Image with 35+ Themes", snapshot: true, awesome: false, snagit: false, gofull: false },
   { feature: "Two-Point Selection", snapshot: true, awesome: false, snagit: false, gofull: false },
   { feature: "Full-Page Capture", snapshot: true, awesome: true, snagit: true, gofull: true },
   { feature: "Advanced Annotation", snapshot: true, awesome: true, snagit: true, gofull: false },
-  { feature: "35+ Premium Themes", snapshot: true, awesome: false, snagit: false, gofull: false },
   { feature: "Keyboard Shortcuts", snapshot: "Every Feature", awesome: "Limited", snagit: "Some", gofull: "Basic" },
   { feature: "14-Day Free Trial", snapshot: true, awesome: false, snagit: false, gofull: false },
   { feature: "Cloud Storage", snapshot: "Coming Soon", awesome: true, snagit: true, gofull: false },

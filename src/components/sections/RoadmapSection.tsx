@@ -2,11 +2,20 @@
 
 import React from "react";
 import { motion } from "motion/react";
-import { Cloud, Video, BarChart3, Link2, Users, Smartphone, Search, Bot, Image, Repeat } from "lucide-react";
+import { Cloud, Video, BarChart3, Link2, Users, Smartphone, Search, Bot, Image, Repeat, Chrome, CreditCard, Mail, Globe, FileText } from "lucide-react";
 
 const roadmapPhases = [
   {
-    phase: "Phase 1: Q1 2025",
+    phase: "Phase 1: Launch (December 2024)",
+    features: [
+      { icon: Chrome, label: "Chrome Store publication" },
+      { icon: CreditCard, label: "Payment integration with Paddle" },
+      { icon: Mail, label: "Email support system" },
+      { icon: Globe, label: "Landing page with documentation" },
+    ],
+  },
+  {
+    phase: "Phase 2: Q1 2025",
     features: [
       { icon: Cloud, label: "Cloud storage with shareable links" },
       { icon: Video, label: "Video & GIF screen recording" },
@@ -14,20 +23,11 @@ const roadmapPhases = [
     ],
   },
   {
-    phase: "Phase 2: Q2 2025",
+    phase: "Phase 3: Q2 2025",
     features: [
       { icon: Link2, label: "Slack & Microsoft Teams integration" },
       { icon: Users, label: "Real-time team collaboration" },
       { icon: Smartphone, label: "Mobile companion app (iOS & Android)" },
-    ],
-  },
-  {
-    phase: "Phase 3: Q3 2025",
-    features: [
-      { icon: Search, label: "OCR & text extraction from images" },
-      { icon: Bot, label: "AI-powered auto-annotation" },
-      { icon: Image, label: "Custom watermarks & branding" },
-      { icon: Repeat, label: "Batch processing tools" },
     ],
   },
 ];

@@ -16,9 +16,11 @@ const showcaseTabs = [
             {[
               "Visible Area Screenshot (Ctrl+Shift+Y)",
               "Full Page Screenshot with progress (Ctrl+Shift+U)",
-              "Smart compression & optimization",
-              "High-DPI/Retina display support",
-              "Auto-pauses videos during capture",
+              "Progress tracker with \"mountain climbing\" visual",
+              "Handles pages up to 32,767px height",
+              "Auto PNG→JPEG conversion if >5MB",
+              "Smart stitching algorithm for long pages",
+              "Works on ALL websites",
             ].map((feature, i) => (
               <li key={i} className="flex items-start gap-3">
                 <span className="text-accent text-xl">✓</span>
@@ -77,10 +79,10 @@ const showcaseTabs = [
           <ul className="space-y-3">
             {[
               "35+ premium themes across 5 categories",
-              "Live preview grid",
+              "Real-time preview with 5x7 theme grid",
               "Customizable card width (600-1400px)",
-              "Adjustable padding (40-200px)",
-              "Window chrome toggle (Light/Dark)",
+              "Window chrome toggle (macOS-style browser frame)",
+              "Export as PNG/JPEG with smart compression",
               "Transparent backgrounds option",
             ].map((feature, i) => (
               <li key={i} className="flex items-start gap-3">
@@ -109,12 +111,13 @@ const showcaseTabs = [
           <h3 className="text-2xl font-bold text-dark mb-4">Professional Editing Suite</h3>
           <ul className="space-y-3">
             {[
-              "Drawing: Rectangle, Circle, Arrow, Lines, Freehand",
-              "Annotation: Highlight, Blur/Pixelate",
-              "Color picker with history",
-              "Line weight & opacity controls",
-              "Crop tools (freeform & border)",
-              "Pan & zoom with smooth animations",
+              "Rectangle & Circle (filled/outline)",
+              "Arrow with directional endpoints",
+              "Straight lines & freehand drawing",
+              "Highlight tool for emphasis",
+              "Blur/Pixelate for redacting sensitive info",
+              "Freeform & border crop tools",
+              "Pan & zoom with mouse wheel",
             ].map((feature, i) => (
               <li key={i} className="flex items-start gap-3">
                 <span className="text-accent text-xl">✓</span>

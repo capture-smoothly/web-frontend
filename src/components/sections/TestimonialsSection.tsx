@@ -7,31 +7,31 @@ import { TestimonialCard } from "../ui/TestimonialCard";
 const testimonials = [
   {
     rating: 5,
-    quote: "This extension is a game-changer! The text-to-image feature alone is worth it. I create social media content 10x faster now.",
-    author: "Sarah M.",
-    role: "Content Creator",
+    quote: "I tested 10+ screenshot tools. This is the only one with text-to-image creation. Game changer for content creators.",
+    author: "Alex",
+    role: "Beta Tester",
+    avatar: "AX",
+  },
+  {
+    rating: 5,
+    quote: "The two-point selection actually works. I can finally capture long articles without losing my place.",
+    author: "Jordan",
+    role: "QA Engineer (Beta)",
+    avatar: "JD",
+  },
+  {
+    rating: 5,
+    quote: "35 themes is insane. I use a different one for each client project.",
+    author: "Sam",
+    role: "Designer (Beta Program)",
     avatar: "SM",
-  },
-  {
-    rating: 5,
-    quote: "Finally, a screenshot tool that actually understands how we work. The two-point selection is brilliant - no more lost selections!",
-    author: "David K.",
-    role: "Software Engineer",
-    avatar: "DK",
-  },
-  {
-    rating: 5,
-    quote: "As a student, I'm always capturing notes and research. Snapshot makes my study materials look professional without any effort.",
-    author: "Emily R.",
-    role: "University Student",
-    avatar: "ER",
   },
 ];
 
 const stats = [
-  { label: "Join 10,000+ happy users", value: "10,000+" },
-  { label: "4.9★ average rating", value: "4.9★" },
-  { label: "500+ 5-star reviews", value: "500+" },
+  { label: "Be among the first users", value: "NEW" },
+  { label: "Launching This Week", value: "SOON" },
+  { label: "Early Bird Pricing", value: "SAVE" },
 ];
 
 export const TestimonialsSection: React.FC = () => {
@@ -46,7 +46,7 @@ export const TestimonialsSection: React.FC = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-dark mb-4">
-            Loved by Thousands of Users Worldwide
+            What Beta Testers Say
           </h2>
         </motion.div>
 
