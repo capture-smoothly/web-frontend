@@ -332,24 +332,42 @@ export default function DashboardPage() {
               <h3 className="text-lg font-semibold text-dark">Resources</h3>
               <ul className="space-y-2">
                 <li>
-                  <button className="text-primary hover:underline text-left">
+                  <a
+                    href="https://www.youtube.com/@IloveSnapshots"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline text-left"
+                  >
                     → View documentation
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button className="text-primary hover:underline text-left">
+                  <a
+                    href="https://www.youtube.com/@IloveSnapshots"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline text-left"
+                  >
                     → Watch tutorial videos
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button className="text-primary hover:underline text-left">
+                  <a
+                    href="https://x.com/THEBOSS036"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline text-left"
+                  >
                     → Join our community
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button className="text-primary hover:underline text-left">
+                  <a
+                    href="/support"
+                    className="text-primary hover:underline text-left"
+                  >
                     → Contact support
-                  </button>
+                  </a>
                 </li>
               </ul>
             </div>
