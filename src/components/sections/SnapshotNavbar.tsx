@@ -4,15 +4,15 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { motion, AnimatePresence } from "motion/react";
-import { Camera, Menu, X, LogOut } from "lucide-react";
+import { Camera, Menu, X, LogOut, Download } from "lucide-react";
 import { Button } from "../ui/Button";
 import { useAuth } from "@/contexts/AuthContext";
 
 const navLinks = [
-  { label: "Features", href: "#features" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Docs", href: "#docs" },
-  { label: "About", href: "#about" },
+  { label: "Features", href: "#features", isExternal: false },
+  { label: "Pricing", href: "#pricing", isExternal: false },
+  { label: "Docs", href: "https://www.youtube.com/@IloveSnapshots", isExternal: true },
+  { label: "About", href: "#about", isExternal: false },
 ];
 
 export const SnapshotNavbar: React.FC = () => {
@@ -70,13 +70,25 @@ export const SnapshotNavbar: React.FC = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <button
-                key={link.href}
-                onClick={() => scrollToSection(link.href)}
-                className="text-dark-lighter hover:text-primary font-medium transition-colors"
-              >
-                {link.label}
-              </button>
+              link.isExternal ? (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-dark-lighter hover:text-primary font-medium transition-colors"
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <button
+                  key={link.href}
+                  onClick={() => scrollToSection(link.href)}
+                  className="text-dark-lighter hover:text-primary font-medium transition-colors"
+                >
+                  {link.label}
+                </button>
+              )
             ))}
           </div>
 
@@ -107,8 +119,13 @@ export const SnapshotNavbar: React.FC = () => {
                 >
                   Sign In
                 </button>
-                <Button size="md" onClick={() => router.push("/auth/login")}>
-                  Start Free Trial
+                <Button
+                  size="md"
+                  onClick={() => window.open("https://x.com/THEBOSS036", "_blank")}
+                  className="flex items-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Install Extension
                 </Button>
               </>
             )}
@@ -140,13 +157,25 @@ export const SnapshotNavbar: React.FC = () => {
           >
             <div className="px-4 py-6 space-y-4">
               {navLinks.map((link) => (
-                <button
-                  key={link.href}
-                  onClick={() => scrollToSection(link.href)}
-                  className="block w-full text-left py-2 text-dark-lighter hover:text-primary font-medium transition-colors"
-                >
-                  {link.label}
-                </button>
+                link.isExternal ? (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full text-left py-2 text-dark-lighter hover:text-primary font-medium transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <button
+                    key={link.href}
+                    onClick={() => scrollToSection(link.href)}
+                    className="block w-full text-left py-2 text-dark-lighter hover:text-primary font-medium transition-colors"
+                  >
+                    {link.label}
+                  </button>
+                )
               ))}
               <div className="pt-4 border-t border-gray-200 space-y-3">
                 {user ? (
@@ -186,13 +215,14 @@ export const SnapshotNavbar: React.FC = () => {
                     </button>
                     <Button
                       size="md"
-                      className="w-full"
+                      className="w-full flex items-center justify-center gap-2"
                       onClick={() => {
-                        router.push("/auth/login");
+                        window.open("https://x.com/THEBOSS036", "_blank");
                         setIsMobileMenuOpen(false);
                       }}
                     >
-                      Start Free Trial
+                      <Download className="w-4 h-4" />
+                      Install Extension
                     </Button>
                   </>
                 )}

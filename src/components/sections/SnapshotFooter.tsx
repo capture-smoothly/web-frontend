@@ -15,14 +15,14 @@ const footerLinks = {
     { label: "Documentation", href: "/#docs" },
     { label: "Tutorials", href: "/#tutorials" },
     { label: "Blog", href: "/#blog" },
-    { label: "Support", href: "/#support" },
-    { label: "Contact Us", href: "/#contact" },
+    { label: "Support", href: "/support" },
+    { label: "Contact Us", href: "/support" },
   ],
   legal: [
     { label: "Privacy Policy", href: "/privacy" },
-    { label: "Terms of Service", href: "/#terms" },
-    { label: "Cookie Policy", href: "/#cookies" },
-    { label: "Refund Policy", href: "/#refund" },
+    { label: "Terms of Service", href: "/terms" },
+    { label: "Cookie Policy", href: "/cookies" },
+    { label: "Refund Policy", href: "/terms#refund-policy" },
   ],
 };
 

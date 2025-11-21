@@ -12,7 +12,6 @@ import { RoadmapSection } from "@/components/sections/RoadmapSection";
 import { FAQSection } from "@/components/sections/FAQSection";
 import { FinalCTASection } from "@/components/sections/FinalCTASection";
 import { SnapshotFooter } from "@/components/sections/SnapshotFooter";
-import { FloatingInstallButton } from "@/components/ui/FloatingInstallButton";
 
 export default function Home() {
   return (
@@ -33,7 +32,6 @@ export default function Home() {
         <FinalCTASection />
       </main>
       <SnapshotFooter />
-      <FloatingInstallButton />
     </>
   );
 }
