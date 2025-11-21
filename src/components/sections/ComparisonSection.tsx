@@ -28,7 +28,7 @@ export const ComparisonSection: React.FC = () => {
           className="text-center mb-12"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-dark mb-4">
-            Why Choose Snapshot Over the Competition?
+            Why Choose ILoveSnapshots Over the Competition?
           </h2>
         </motion.div>
 
@@ -44,7 +44,7 @@ export const ComparisonSection: React.FC = () => {
               <tr className="border-b border-gray-200">
                 <th className="px-6 py-4 text-left font-semibold text-dark">Features</th>
                 <th className="px-6 py-4 text-center font-bold text-white bg-gradient-primary">
-                  Snapshot<br /><span className="text-sm font-normal">(You)</span>
+                  ILoveSnapshots<br /><span className="text-sm font-normal">(You)</span>
                 </th>
                 <th className="px-6 py-4 text-center font-semibold text-dark bg-light">
                   Awesome<br />Screenshot

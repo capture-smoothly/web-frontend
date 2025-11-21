@@ -1,35 +1,33 @@
 "use client";
 
 import React from "react";
-import { Camera, Twitter, Github, MessageCircle } from "lucide-react";
+import { Camera, Twitter } from "lucide-react";
 
 const footerLinks = {
   product: [
-    { label: "Features", href: "#features" },
-    { label: "Pricing", href: "#pricing" },
-    { label: "Roadmap", href: "#roadmap" },
-    { label: "Changelog", href: "#changelog" },
-    { label: "Install Extension", href: "#install" },
+    { label: "Features", href: "/#features" },
+    { label: "Pricing", href: "/#pricing" },
+    { label: "Roadmap", href: "/#roadmap" },
+    { label: "Changelog", href: "/#changelog" },
+    { label: "Install Extension", href: "/#install" },
   ],
   resources: [
-    { label: "Documentation", href: "#docs" },
-    { label: "Tutorials", href: "#tutorials" },
-    { label: "Blog", href: "#blog" },
-    { label: "Support", href: "#support" },
-    { label: "Contact Us", href: "#contact" },
+    { label: "Documentation", href: "https://www.youtube.com/@IloveSnapshots" },
+    { label: "Tutorials", href: "https://www.youtube.com/@IloveSnapshots" },
+    { label: "Blog", href: "/#blog" },
+    { label: "Support", href: "/support" },
+    { label: "Contact Us", href: "/support" },
   ],
   legal: [
-    { label: "Privacy Policy", href: "#privacy" },
-    { label: "Terms of Service", href: "#terms" },
-    { label: "Cookie Policy", href: "#cookies" },
-    { label: "Refund Policy", href: "#refund" },
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms of Service", href: "/terms" },
+    { label: "Cookie Policy", href: "/cookies" },
+    // { label: "Refund Policy", href: "/terms#refund-policy" },
   ],
 };
 
 const socialLinks = [
-  { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-  { icon: Github, href: "https://github.com", label: "GitHub" },
-  { icon: MessageCircle, href: "https://discord.com", label: "Discord" },
+  { icon: Twitter, href: "https://x.com/THEBOSS036", label: "Twitter" },
 ];
 
 export const SnapshotFooter: React.FC = () => {
@@ -43,7 +41,7 @@ export const SnapshotFooter: React.FC = () => {
               <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center">
                 <Camera className="w-6 h-6 text-white" />
               </div>
-              <span className="text-2xl font-bold">Snapshot</span>
+              <span className="text-2xl font-bold">ILoveSnapshots</span>
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
               The ultimate screenshot and content capture tool for Chrome
@@ -120,10 +118,10 @@ export const SnapshotFooter: React.FC = () => {
         <div className="pt-8 border-t border-gray-700">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-gray-400 text-sm text-center md:text-left">
-              &copy; 2025 Snapshot. All rights reserved.
+              &copy; 2025 ILoveSnapshots. All rights reserved.
             </p>
             <p className="text-gray-400 text-sm text-center md:text-right">
-              Made with love for content creators
+              Made with love for Everyone ❤️
             </p>
           </div>
         </div>
