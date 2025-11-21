@@ -31,6 +31,13 @@ export const SnapshotNavbar: React.FC = () => {
   }, []);
 
   const scrollToSection = (href: string) => {
+    // If we're not on the home page, navigate there first
+    if (window.location.pathname !== '/') {
+      router.push('/' + href);
+      setIsMobileMenuOpen(false);
+      return;
+    }
+
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
@@ -53,11 +60,11 @@ export const SnapshotNavbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => scrollToSection("#hero")}>
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/')}>
             <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center">
               <Camera className="w-6 h-6 text-white" />
             </div>
-            <span className="text-2xl font-bold text-dark">Snapshot</span>
+            <span className="text-2xl font-bold text-dark">ILoveSnapshots</span>
           </div>
 
           {/* Desktop Navigation */}
