@@ -269,7 +269,7 @@ export default function LoginPage() {
             <p className="text-white/90">
               {isSignIn
                 ? "Sign in to access your dashboard"
-                : "Create your account and start your free trial"}
+                : "Create your account and start using the Extension!"}
             </p>
           </div>
 
@@ -378,14 +378,14 @@ export default function LoginPage() {
             </form>
 
             {/* Divider */}
-            <div className="flex items-center gap-4 my-6">
+            {/* <div className="flex items-center gap-4 my-6">
               <div className="flex-1 h-px bg-gray-200"></div>
               <span className="text-sm text-gray-500">or</span>
               <div className="flex-1 h-px bg-gray-200"></div>
-            </div>
+            </div> */}
 
             {/* Google Sign In */}
-            <button
+            {/* <button
               onClick={handleGoogleSignIn}
               disabled={isLoading}
               className="w-full border-2 border-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
@@ -409,7 +409,7 @@ export default function LoginPage() {
                 />
               </svg>
               Continue with Google
-            </button>
+            </button> */}
 
             {/* Toggle Sign In/Sign Up */}
             <p className="text-center text-sm text-gray-600 mt-6">

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Camera, Twitter, Github, MessageCircle } from "lucide-react";
+import { Camera, Twitter } from "lucide-react";
 
 const footerLinks = {
   product: [
@@ -12,8 +12,8 @@ const footerLinks = {
     { label: "Install Extension", href: "/#install" },
   ],
   resources: [
-    { label: "Documentation", href: "/#docs" },
-    { label: "Tutorials", href: "/#tutorials" },
+    { label: "Documentation", href: "https://www.youtube.com/@IloveSnapshots" },
+    { label: "Tutorials", href: "https://www.youtube.com/@IloveSnapshots" },
     { label: "Blog", href: "/#blog" },
     { label: "Support", href: "/support" },
     { label: "Contact Us", href: "/support" },
@@ -22,14 +22,12 @@ const footerLinks = {
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Terms of Service", href: "/terms" },
     { label: "Cookie Policy", href: "/cookies" },
-    { label: "Refund Policy", href: "/terms#refund-policy" },
+    // { label: "Refund Policy", href: "/terms#refund-policy" },
   ],
 };
 
 const socialLinks = [
-  { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-  { icon: Github, href: "https://github.com", label: "GitHub" },
-  { icon: MessageCircle, href: "https://discord.com", label: "Discord" },
+  { icon: Twitter, href: "https://x.com/THEBOSS036", label: "Twitter" },
 ];
 
 export const SnapshotFooter: React.FC = () => {
@@ -123,7 +121,7 @@ export const SnapshotFooter: React.FC = () => {
               &copy; 2025 ILoveSnapshots. All rights reserved.
             </p>
             <p className="text-gray-400 text-sm text-center md:text-right">
-              Made with love for content creators
+              Made with love for Everyone ❤️
             </p>
           </div>
         </div>
