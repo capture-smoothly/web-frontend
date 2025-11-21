@@ -141,7 +141,7 @@ export default function DashboardPage() {
               <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center">
                 <Camera className="w-6 h-6 text-white" />
               </div>
-              <span className="text-2xl font-bold text-dark">Snapshot</span>
+              <span className="text-2xl font-bold text-dark">ILoveSnapshots</span>
             </button>
 
             {/* Actions */}

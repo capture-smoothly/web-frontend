@@ -250,7 +250,7 @@ export default function LoginPage() {
             <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center">
               <Camera className="w-7 h-7 text-white" />
             </div>
-            <span className="text-3xl font-bold text-dark">Snapshot</span>
+            <span className="text-3xl font-bold text-dark">ILoveSnapshots</span>
           </button>
         </motion.div>
 

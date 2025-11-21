@@ -6,7 +6,7 @@ import { PricingCard } from "../ui/PricingCard";
 
 const pricingPlans = [
   {
-    name: "Snapshot Free",
+    name: "ILoveSnapshots Free",
     price: 0,
     subtitle: "Get started with the basics",
     yearlyPrice: "Free forever",
@@ -15,7 +15,7 @@ const pricingPlans = [
       "✓ 3 basic themes",
       "✓ Unlimited visible area screenshots",
       "✓ Basic annotations",
-      "✓ Watermark on text-to-images: \"Made with Snapshot\"",
+      "✓ Watermark on text-to-images: \"Made with ILoveSnapshots\"",
     ],
     notIncluded: [
       "✗ Full-page screenshots (Premium only)",
@@ -26,7 +26,7 @@ const pricingPlans = [
     ctaVariant: "secondary" as const,
   },
   {
-    name: "Snapshot Pro",
+    name: "ILoveSnapshots Pro",
     price: 9.99,
     subtitle: "Everything you need to capture & create",
     yearlyPrice: "$9.99/month or $79/year",

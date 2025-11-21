@@ -6,7 +6,7 @@ import { Accordion } from "../ui/Accordion";
 
 const faqItems = [
   {
-    question: "Is Snapshot really free?",
+    question: "Is ILoveSnapshots really free?",
     answer: "Yes! Our free tier gives you:\n• 10 text-to-image snapshots per month (with watermark)\n• Unlimited visible area screenshots\n• 3 basic gradient themes\n• Basic annotation tools\n\nUpgrade to Pro ($9.99/month) for:\n• Unlimited text-to-images (no watermark)\n• All 35+ premium themes\n• Full-page screenshot capture\n• Advanced editing tools (blur, pixelate, advanced shapes)\n• Priority support",
   },
   {
@@ -19,7 +19,7 @@ const faqItems = [
   },
   {
     question: "Does this work on any website?",
-    answer: "Yes! Snapshot works on all websites, including social media, news sites, documentation, and web apps.",
+    answer: "Yes! ILoveSnapshots works on all websites, including social media, news sites, documentation, and web apps.",
   },
   {
     question: "What are the keyboard shortcuts?",
