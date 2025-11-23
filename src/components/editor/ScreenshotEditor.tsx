@@ -84,6 +84,71 @@ const THEMES = {
   walnut: "linear-gradient(145deg, #3e2723 0%, #5d4037 50%, #795548 100%)",
   jade: "linear-gradient(135deg, #004d40 0%, #00695c 50%, #00897b 100%)",
   ruby: "linear-gradient(160deg, #6b0f1a 0%, #9b1b30 50%, #c41e3a 100%)",
+
+  // === NEW PREMIUM THEMES (40 more) ===
+
+  // Deep Ocean & Sea - Rich blues and teals
+  mariana: "linear-gradient(180deg, #0a1628 0%, #0d2137 30%, #0f2847 60%, #1a3a5c 100%)",
+  pacific: "linear-gradient(135deg, #003973 0%, #005c97 50%, #0077b6 100%)",
+  arctic: "linear-gradient(160deg, #1b4965 0%, #2d6a8a 40%, #5fa8d3 80%, #bee9e8 100%)",
+  depths: "linear-gradient(180deg, #000814 0%, #001d3d 40%, #003566 70%, #004080 100%)",
+  tidal: "linear-gradient(145deg, #023e8a 0%, #0077b6 30%, #00b4d8 60%, #90e0ef 100%)",
+
+  // Warm Earth & Desert - Sandy, terracotta, warm browns
+  sahara: "linear-gradient(135deg, #8b7355 0%, #a08060 40%, #c4a77d 70%, #d4b896 100%)",
+  terracotta: "linear-gradient(160deg, #8b4513 0%, #a0522d 40%, #cd853f 70%, #deb887 100%)",
+  clay: "linear-gradient(145deg, #5c4033 0%, #7d5a4a 50%, #a07d65 100%)",
+  sandstone: "linear-gradient(135deg, #c2956e 0%, #d4a574 30%, #e8c4a0 60%, #f5e6d3 100%)",
+  dune: "linear-gradient(180deg, #3d2914 0%, #5c3d1e 30%, #8b6914 60%, #c4a35a 100%)",
+
+  // Deep Forest & Nature - Rich greens
+  evergreen: "linear-gradient(160deg, #1a2f1a 0%, #2d4a2d 40%, #3d6b3d 70%, #4a8c4a 100%)",
+  moss: "linear-gradient(135deg, #2d3b2d 0%, #4a5d4a 40%, #6b8e6b 70%, #8fb88f 100%)",
+  fern: "linear-gradient(145deg, #1e3a1e 0%, #2e5a2e 30%, #4a7c4a 60%, #6b9e6b 100%)",
+  pine: "linear-gradient(180deg, #0d260d 0%, #1a4d1a 40%, #2e7d32 70%, #43a047 100%)",
+  sage: "linear-gradient(135deg, #6b7b5b 0%, #8b9b7b 40%, #a8b89b 70%, #c8d8bb 100%)",
+
+  // Rich Metallics - Gold, copper, silver
+  goldbar: "linear-gradient(145deg, #85640a 0%, #a67c00 30%, #d4a700 60%, #ffd700 100%)",
+  copper: "linear-gradient(160deg, #6b3d2e 0%, #8b4513 30%, #b87333 60%, #da8a67 100%)",
+  brass: "linear-gradient(135deg, #6b5a2e 0%, #8b7340 50%, #b5a642 100%)",
+  steel: "linear-gradient(145deg, #434b4d 0%, #626d71 40%, #8a9a9d 70%, #b0c4c8 100%)",
+  pewter: "linear-gradient(160deg, #5a5a5a 0%, #737373 40%, #919191 70%, #a9a9a9 100%)",
+
+  // Cosmic & Space - Deep space without purple
+  void: "linear-gradient(180deg, #000000 0%, #050510 30%, #0a0a1a 60%, #0f0f24 100%)",
+  stellar: "linear-gradient(160deg, #0a0a0a 0%, #1a1a2e 30%, #232340 60%, #2d2d52 100%)",
+  darkstar: "linear-gradient(145deg, #0d0d0d 0%, #1a1a1a 20%, #0f1419 50%, #161d24 100%)",
+  blackhole: "linear-gradient(180deg, #000000 0%, #050505 30%, #0a0a0a 60%, #111111 100%)",
+  supernova: "linear-gradient(135deg, #1a0a0a 0%, #2d1414 30%, #401f1f 60%, #5c2a2a 100%)",
+
+  // Jewel Tones - Deep, rich gemstones
+  garnet: "linear-gradient(160deg, #4a0e0e 0%, #6b1414 40%, #8b1c1c 70%, #ab2424 100%)",
+  topaz: "linear-gradient(145deg, #7a4a00 0%, #996600 40%, #b87800 70%, #d89000 100%)",
+  citrine: "linear-gradient(135deg, #8b7500 0%, #ab9200 40%, #cbae00 70%, #e8c800 100%)",
+  peridot: "linear-gradient(160deg, #4a6b00 0%, #5c8500 40%, #6e9f00 70%, #85b900 100%)",
+  tourmaline: "linear-gradient(145deg, #004040 0%, #005858 30%, #007070 60%, #008888 100%)",
+
+  // Smoke & Mist - Sophisticated grays
+  smoke: "linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 30%, #404040 60%, #555555 100%)",
+  ash: "linear-gradient(145deg, #2a2a2a 0%, #3d3d3d 40%, #505050 70%, #666666 100%)",
+  storm: "linear-gradient(160deg, #1e2a3a 0%, #2d3e50 40%, #3d5266 70%, #4d667c 100%)",
+  thunder: "linear-gradient(135deg, #1a1a2e 0%, #2a2a3e 30%, #3a3a4e 60%, #4a4a5e 100%)",
+  haze: "linear-gradient(145deg, #4a5568 0%, #5a6578 40%, #6b7588 70%, #7c8598 100%)",
+
+  // Luxury Fabric - Velvet, silk textures
+  velvet: "linear-gradient(160deg, #2d0a1e 0%, #4a1030 40%, #6b1848 70%, #8b2060 100%)",
+  burgundy: "linear-gradient(145deg, #3d0c1e 0%, #5a1428 40%, #801e3d 70%, #a62852 100%)",
+  wine: "linear-gradient(135deg, #2e1114 0%, #4a1a1f 40%, #722f37 70%, #954048 100%)",
+  plum: "linear-gradient(160deg, #2e1a2e 0%, #4a2a4a 40%, #663366 70%, #804080 100%)",
+  mulberry: "linear-gradient(145deg, #3d1c3d 0%, #5a2e5a 40%, #7a4a7a 70%, #9a6a9a 100%)",
+
+  // Industrial & Urban - Concrete, metal
+  concrete: "linear-gradient(180deg, #404040 0%, #555555 30%, #6a6a6a 60%, #808080 100%)",
+  iron: "linear-gradient(145deg, #2a2a2a 0%, #3d3d3d 30%, #4a4a4a 60%, #5c5c5c 100%)",
+  zinc: "linear-gradient(160deg, #4a5568 0%, #5c6b7a 40%, #6e7f8c 70%, #80939e 100%)",
+  lead: "linear-gradient(135deg, #3a3a3a 0%, #4d4d4d 40%, #606060 70%, #737373 100%)",
+  gunmetal: "linear-gradient(145deg, #2a3439 0%, #3d4a50 40%, #536872 70%, #6b8693 100%)",
 } as const;
 
 type ThemeType = keyof typeof THEMES;
@@ -257,6 +322,24 @@ function ThemeSelector({
     cosmos: "Cosmos", nebula: "Nebula", prism: "Prism", hologram: "Hologram",
     // Earth Premium
     mahogany: "Mahogany", walnut: "Walnut", jade: "Jade", ruby: "Ruby",
+    // Deep Ocean & Sea
+    mariana: "Mariana", pacific: "Pacific", arctic: "Arctic", depths: "Depths", tidal: "Tidal",
+    // Warm Earth & Desert
+    sahara: "Sahara", terracotta: "Terracotta", clay: "Clay", sandstone: "Sandstone", dune: "Dune",
+    // Deep Forest & Nature
+    evergreen: "Evergreen", moss: "Moss", fern: "Fern", pine: "Pine", sage: "Sage",
+    // Rich Metallics
+    goldbar: "Gold Bar", copper: "Copper", brass: "Brass", steel: "Steel", pewter: "Pewter",
+    // Cosmic & Space
+    void: "Void", stellar: "Stellar", darkstar: "Dark Star", blackhole: "Black Hole", supernova: "Supernova",
+    // Jewel Tones
+    garnet: "Garnet", topaz: "Topaz", citrine: "Citrine", peridot: "Peridot", tourmaline: "Tourmaline",
+    // Smoke & Mist
+    smoke: "Smoke", ash: "Ash", storm: "Storm", thunder: "Thunder", haze: "Haze",
+    // Luxury Fabric
+    velvet: "Velvet", burgundy: "Burgundy", wine: "Wine", plum: "Plum", mulberry: "Mulberry",
+    // Industrial & Urban
+    concrete: "Concrete", iron: "Iron", zinc: "Zinc", lead: "Lead", gunmetal: "Gunmetal",
   };
 
   return (
