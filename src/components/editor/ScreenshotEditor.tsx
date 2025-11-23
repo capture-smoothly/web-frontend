@@ -333,10 +333,10 @@ export default function ScreenshotEditor() {
   const [annotations, setAnnotations] = useState<Annotation[]>([]);
   const [currentAnnotation, setCurrentAnnotation] = useState<Annotation | null>(null);
   const [isDrawingAnnotation, setIsDrawingAnnotation] = useState(false);
-  const [annotationColor] = useState("#FF0000");
-  const [annotationOpacity] = useState(0.5);
-  const [annotationStrokeWidth] = useState(3);
-  const [annotationFilled] = useState(false);
+  const [annotationColor, setAnnotationColor] = useState("#FF0000");
+  const [annotationOpacity, setAnnotationOpacity] = useState(0.5);
+  const [annotationStrokeWidth, setAnnotationStrokeWidth] = useState(3);
+  const [annotationFilled, setAnnotationFilled] = useState(false);
 
   // Drag and drop
   const [isDragOver, setIsDragOver] = useState(false);
@@ -1647,6 +1647,7 @@ export default function ScreenshotEditor() {
                   borderRadius: "12px",
                   overflow: "hidden",
                   zIndex: 10,
+                  width: "100%",
                 }}
               >
                 {/* macOS Title Bar */}
@@ -1672,7 +1673,7 @@ export default function ScreenshotEditor() {
                 )}
 
                 {/* Canvas Container */}
-                <div style={{ position: "relative" }}>
+                <div style={{ position: "relative", width: "100%" }}>
                   <canvas
                     ref={canvasRef}
                     onMouseDown={handleMouseDown}
@@ -1681,7 +1682,8 @@ export default function ScreenshotEditor() {
                     onWheel={handleWheel}
                     style={{
                       display: "block",
-                      maxWidth: "100%",
+                      width: "100%",
+                      height: "auto",
                       cursor: getCursor(),
                     }}
                   />
@@ -1692,7 +1694,8 @@ export default function ScreenshotEditor() {
                       top: 0,
                       left: 0,
                       pointerEvents: "none",
-                      maxWidth: "100%",
+                      width: "100%",
+                      height: "100%",
                     }}
                   />
                   <canvas
@@ -1702,7 +1705,8 @@ export default function ScreenshotEditor() {
                       top: 0,
                       left: 0,
                       pointerEvents: "none",
-                      maxWidth: "100%",
+                      width: "100%",
+                      height: "100%",
                     }}
                   />
                 </div>
@@ -1775,6 +1779,691 @@ export default function ScreenshotEditor() {
                   pointerEvents: "none",
                 }}
               />
+            </div>
+          </div>
+        )}
+
+        {/* Drawing Tools Sidebar - Right side */}
+        {imageUrl && (
+          <div
+            style={{
+              position: "absolute",
+              top: "20px",
+              right: "20px",
+              background: colors.toolbar,
+              borderRadius: "8px",
+              padding: "8px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "8px",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+              border: `1px solid ${colors.border}`,
+            }}
+          >
+            {/* Row 1: Line, Freehand, Arrow */}
+            <div style={{ display: "flex", gap: "4px" }}>
+              <TooltipButton
+                onClick={() => { setActiveTool("line"); setPanModeEnabled(false); }}
+                tooltip="Line (L)"
+                tooltipBg={colors.tooltipBg}
+                tooltipText={colors.textSecondary}
+                tooltipBorder={colors.border}
+                style={{
+                  padding: "8px",
+                  cursor: "pointer",
+                  backgroundColor: activeTool === "line" ? "#3B82F6" : colors.buttonBg,
+                  color: activeTool === "line" ? "white" : colors.textSecondary,
+                  border: "none",
+                  borderRadius: "4px",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <line x1="2" y1="14" x2="14" y2="2" />
+                </svg>
+              </TooltipButton>
+
+              <TooltipButton
+                onClick={() => { setActiveTool("freehand"); setPanModeEnabled(false); }}
+                tooltip="Freehand (F)"
+                tooltipBg={colors.tooltipBg}
+                tooltipText={colors.textSecondary}
+                tooltipBorder={colors.border}
+                style={{
+                  padding: "8px",
+                  cursor: "pointer",
+                  backgroundColor: activeTool === "freehand" ? "#3B82F6" : colors.buttonBg,
+                  color: activeTool === "freehand" ? "white" : colors.textSecondary,
+                  border: "none",
+                  borderRadius: "4px",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M2 14 Q4 10, 6 8 T10 4 L14 2" />
+                </svg>
+              </TooltipButton>
+
+              <TooltipButton
+                onClick={() => { setActiveTool("arrow"); setPanModeEnabled(false); }}
+                tooltip="Arrow (A)"
+                tooltipBg={colors.tooltipBg}
+                tooltipText={colors.textSecondary}
+                tooltipBorder={colors.border}
+                style={{
+                  padding: "8px",
+                  cursor: "pointer",
+                  backgroundColor: activeTool === "arrow" ? "#3B82F6" : colors.buttonBg,
+                  color: activeTool === "arrow" ? "white" : colors.textSecondary,
+                  border: "none",
+                  borderRadius: "4px",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M2 14 L14 2 M14 2 L10 2 M14 2 L14 6" />
+                </svg>
+              </TooltipButton>
+            </div>
+
+            {/* Row 2: Circle, Rectangle, Blur */}
+            <div style={{ display: "flex", gap: "4px" }}>
+              <TooltipButton
+                onClick={() => { setActiveTool("circle"); setPanModeEnabled(false); }}
+                tooltip="Circle (C)"
+                tooltipBg={colors.tooltipBg}
+                tooltipText={colors.textSecondary}
+                tooltipBorder={colors.border}
+                style={{
+                  padding: "8px",
+                  cursor: "pointer",
+                  backgroundColor: activeTool === "circle" ? "#3B82F6" : colors.buttonBg,
+                  color: activeTool === "circle" ? "white" : colors.textSecondary,
+                  border: "none",
+                  borderRadius: "4px",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <circle cx="8" cy="8" r="5" />
+                </svg>
+              </TooltipButton>
+
+              <TooltipButton
+                onClick={() => { setActiveTool("rectangle"); setPanModeEnabled(false); }}
+                tooltip="Rectangle (R)"
+                tooltipBg={colors.tooltipBg}
+                tooltipText={colors.textSecondary}
+                tooltipBorder={colors.border}
+                style={{
+                  padding: "8px",
+                  cursor: "pointer",
+                  backgroundColor: activeTool === "rectangle" ? "#3B82F6" : colors.buttonBg,
+                  color: activeTool === "rectangle" ? "white" : colors.textSecondary,
+                  border: "none",
+                  borderRadius: "4px",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <rect x="2" y="3" width="12" height="10" rx="1" />
+                </svg>
+              </TooltipButton>
+
+              <TooltipButton
+                onClick={() => { setActiveTool("blur"); setPanModeEnabled(false); }}
+                tooltip="Blur (B)"
+                tooltipBg={colors.tooltipBg}
+                tooltipText={colors.textSecondary}
+                tooltipBorder={colors.border}
+                style={{
+                  padding: "8px",
+                  cursor: "pointer",
+                  backgroundColor: activeTool === "blur" ? "#3B82F6" : colors.buttonBg,
+                  color: activeTool === "blur" ? "white" : colors.textSecondary,
+                  border: "none",
+                  borderRadius: "4px",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <rect x="2" y="2" width="3" height="3" opacity="0.7" />
+                  <rect x="6" y="2" width="3" height="3" opacity="0.5" />
+                  <rect x="10" y="2" width="3" height="3" opacity="0.8" />
+                  <rect x="2" y="6" width="3" height="3" opacity="0.6" />
+                  <rect x="6" y="6" width="3" height="3" opacity="0.9" />
+                  <rect x="10" y="6" width="3" height="3" opacity="0.4" />
+                  <rect x="2" y="10" width="3" height="3" opacity="0.8" />
+                  <rect x="6" y="10" width="3" height="3" opacity="0.6" />
+                  <rect x="10" y="10" width="3" height="3" opacity="0.7" />
+                </svg>
+              </TooltipButton>
+            </div>
+
+            {/* Row 3: Highlight */}
+            <div style={{ display: "flex", gap: "4px" }}>
+              <TooltipButton
+                onClick={() => { setActiveTool("highlight"); setPanModeEnabled(false); }}
+                tooltip="Highlight (H)"
+                tooltipBg={colors.tooltipBg}
+                tooltipText={colors.textSecondary}
+                tooltipBorder={colors.border}
+                style={{
+                  padding: "8px",
+                  cursor: "pointer",
+                  backgroundColor: activeTool === "highlight" ? "#3B82F6" : colors.buttonBg,
+                  color: activeTool === "highlight" ? "white" : colors.textSecondary,
+                  border: "none",
+                  borderRadius: "4px",
+                  width: "100%",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" opacity="0.5">
+                  <rect x="2" y="5" width="12" height="6" />
+                </svg>
+                <span style={{ fontSize: "11px" }}>Highlight</span>
+              </TooltipButton>
+            </div>
+          </div>
+        )}
+
+        {/* Annotation Options Toolbar - Shows when annotation tool is active */}
+        {imageUrl && ["rectangle", "circle", "arrow", "line", "highlight", "blur", "freehand"].includes(activeTool) && (
+          <div
+            style={{
+              position: "absolute",
+              top: "176px",
+              right: "20px",
+              background: colors.toolbar,
+              borderRadius: "8px",
+              padding: "8px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "8px",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+              border: `1px solid ${colors.border}`,
+            }}
+          >
+            {/* Color Swatches Row 1 */}
+            <div style={{ display: "flex", gap: "4px" }}>
+              {["#FF0000", "#00FF00", "#0000FF"].map((color) => (
+                <button
+                  key={color}
+                  onClick={() => setAnnotationColor(color)}
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                    backgroundColor: color,
+                    border: annotationColor === color ? "2px solid #3B82F6" : `2px solid ${colors.border}`,
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {annotationColor === color && (
+                    <span style={{ color: color === "#00FF00" ? "black" : "white", fontSize: "16px" }}>✓</span>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* Color Swatches Row 2 */}
+            <div style={{ display: "flex", gap: "4px" }}>
+              {["#FFFF00", "#FFA500", "#800080"].map((color) => (
+                <button
+                  key={color}
+                  onClick={() => setAnnotationColor(color)}
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                    backgroundColor: color,
+                    border: annotationColor === color ? "2px solid #3B82F6" : `2px solid ${colors.border}`,
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {annotationColor === color && (
+                    <span style={{ color: color === "#FFFF00" ? "black" : "white", fontSize: "16px" }}>✓</span>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* Color Swatches Row 3 */}
+            <div style={{ display: "flex", gap: "4px" }}>
+              {["#000000", "#FFFFFF", "#FF00FF"].map((color) => (
+                <button
+                  key={color}
+                  onClick={() => setAnnotationColor(color)}
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                    backgroundColor: color,
+                    border: annotationColor === color ? "2px solid #3B82F6" : `2px solid ${colors.border}`,
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {annotationColor === color && (
+                    <span style={{ color: color === "#FFFFFF" || color === "#FFFF00" ? "black" : "white", fontSize: "16px" }}>✓</span>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            <div style={{ height: "1px", background: colors.border }} />
+
+            {/* Fill/Stroke Toggle - for Rectangle & Circle */}
+            {["rectangle", "circle"].includes(activeTool) && (
+              <>
+                <div style={{ display: "flex", gap: "4px" }}>
+                  <button
+                    onClick={() => setAnnotationFilled(false)}
+                    style={{
+                      flex: 1,
+                      padding: "8px",
+                      cursor: "pointer",
+                      backgroundColor: !annotationFilled ? "#3B82F6" : colors.buttonBg,
+                      color: !annotationFilled ? "white" : colors.textSecondary,
+                      border: "none",
+                      borderRadius: "4px",
+                      height: "36px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="3" width="10" height="10" rx="1" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => setAnnotationFilled(true)}
+                    style={{
+                      flex: 1,
+                      padding: "8px",
+                      cursor: "pointer",
+                      backgroundColor: annotationFilled ? "#3B82F6" : colors.buttonBg,
+                      color: annotationFilled ? "white" : colors.textSecondary,
+                      border: "none",
+                      borderRadius: "4px",
+                      height: "36px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                      <rect x="3" y="3" width="10" height="10" rx="1" />
+                    </svg>
+                  </button>
+                </div>
+                <div style={{ height: "1px", background: colors.border }} />
+              </>
+            )}
+
+            {/* Stroke Width - for all except highlight and blur */}
+            {!["highlight", "blur"].includes(activeTool) && (
+              <div style={{ padding: "0 4px" }}>
+                <div style={{ fontSize: "10px", color: colors.textMuted, marginBottom: "4px", textAlign: "center" }}>
+                  Width: {annotationStrokeWidth}px
+                </div>
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  value={annotationStrokeWidth}
+                  onChange={(e) => setAnnotationStrokeWidth(Number(e.target.value))}
+                  style={{ width: "100%", cursor: "pointer" }}
+                />
+              </div>
+            )}
+
+            {/* Opacity - for all except blur */}
+            {activeTool !== "blur" && (
+              <>
+                <div style={{ height: "1px", background: colors.border }} />
+                <div style={{ padding: "0 4px" }}>
+                  <div style={{ fontSize: "10px", color: colors.textMuted, marginBottom: "4px", textAlign: "center" }}>
+                    Opacity: {Math.round(annotationOpacity * 100)}%
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.1"
+                    value={annotationOpacity}
+                    onChange={(e) => setAnnotationOpacity(Number(e.target.value))}
+                    style={{ width: "100%", cursor: "pointer" }}
+                  />
+                </div>
+              </>
+            )}
+
+            <div style={{ height: "1px", background: colors.border }} />
+
+            {/* Undo Last & Clear All */}
+            <div style={{ display: "flex", gap: "4px" }}>
+              <TooltipButton
+                onClick={() => {
+                  if (annotations.length > 0) {
+                    setAnnotations(annotations.slice(0, -1));
+                  }
+                }}
+                disabled={annotations.length === 0}
+                tooltip={`Undo Last (${annotations.length})`}
+                tooltipBg={colors.tooltipBg}
+                tooltipText={colors.textSecondary}
+                tooltipBorder={colors.border}
+                style={{
+                  flex: 1,
+                  padding: "8px",
+                  cursor: annotations.length > 0 ? "pointer" : "not-allowed",
+                  backgroundColor: colors.buttonBg,
+                  color: annotations.length > 0 ? colors.textSecondary : colors.textMuted,
+                  border: "none",
+                  borderRadius: "4px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  opacity: annotations.length > 0 ? 1 : 0.5,
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M3 8h10M3 8l4-4M3 8l4 4" />
+                </svg>
+              </TooltipButton>
+              <TooltipButton
+                onClick={() => setAnnotations([])}
+                disabled={annotations.length === 0}
+                tooltip="Clear All"
+                tooltipBg={colors.tooltipBg}
+                tooltipText={colors.textSecondary}
+                tooltipBorder={colors.border}
+                style={{
+                  flex: 1,
+                  padding: "8px",
+                  cursor: annotations.length > 0 ? "pointer" : "not-allowed",
+                  backgroundColor: annotations.length > 0 ? "#DC2626" : colors.buttonBg,
+                  color: annotations.length > 0 ? "white" : colors.textMuted,
+                  border: "none",
+                  borderRadius: "4px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  opacity: annotations.length > 0 ? 1 : 0.5,
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                  <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                </svg>
+              </TooltipButton>
+            </div>
+          </div>
+        )}
+
+        {/* Zoom Controls - Bottom Right */}
+        {imageUrl && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "20px",
+              right: "20px",
+              background: colors.toolbar,
+              borderRadius: "8px",
+              padding: "8px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "8px",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+              border: `1px solid ${colors.border}`,
+            }}
+          >
+            {/* Row 1: Zoom Out, Percentage, Zoom In */}
+            <div style={{ display: "flex", gap: "4px" }}>
+              <TooltipButton
+                onClick={() => setZoom(Math.max(zoom / 1.2, 0.1))}
+                tooltip="Zoom Out (Ctrl + -)"
+                tooltipBg={colors.tooltipBg}
+                tooltipText={colors.textSecondary}
+                tooltipBorder={colors.border}
+                style={{
+                  padding: "8px",
+                  fontSize: "16px",
+                  cursor: "pointer",
+                  backgroundColor: colors.buttonBg,
+                  color: colors.textSecondary,
+                  border: "none",
+                  borderRadius: "4px",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                −
+              </TooltipButton>
+
+              <TooltipButton
+                onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }}
+                tooltip="Reset Zoom (Ctrl + 0)"
+                tooltipBg={colors.tooltipBg}
+                tooltipText={colors.textSecondary}
+                tooltipBorder={colors.border}
+                style={{
+                  padding: "8px",
+                  fontSize: "11px",
+                  cursor: "pointer",
+                  backgroundColor: colors.buttonBg,
+                  color: colors.textMuted,
+                  border: "none",
+                  borderRadius: "4px",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  userSelect: "none",
+                }}
+              >
+                {Math.round(zoom * 100)}%
+              </TooltipButton>
+
+              <TooltipButton
+                onClick={() => setZoom(Math.min(zoom * 1.2, 10))}
+                tooltip="Zoom In (Ctrl + =)"
+                tooltipBg={colors.tooltipBg}
+                tooltipText={colors.textSecondary}
+                tooltipBorder={colors.border}
+                style={{
+                  padding: "8px",
+                  fontSize: "16px",
+                  cursor: "pointer",
+                  backgroundColor: colors.buttonBg,
+                  color: colors.textSecondary,
+                  border: "none",
+                  borderRadius: "4px",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                +
+              </TooltipButton>
+            </div>
+
+            {/* Divider */}
+            <div style={{ height: "1px", background: colors.border }} />
+
+            {/* Row 2: Fit to Screen */}
+            <div style={{ display: "flex", gap: "4px", justifyContent: "center" }}>
+              <TooltipButton
+                onClick={() => {
+                  const container = containerRef.current;
+                  const image = imageRef.current;
+                  if (container && image) {
+                    const containerWidth = container.clientWidth - 40;
+                    const containerHeight = container.clientHeight - 40;
+                    const scaleX = containerWidth / image.naturalWidth;
+                    const scaleY = containerHeight / image.naturalHeight;
+                    setZoom(Math.min(scaleX, scaleY, 1));
+                    setPan({ x: 0, y: 0 });
+                  }
+                }}
+                tooltip="Fit to Screen"
+                tooltipBg={colors.tooltipBg}
+                tooltipText={colors.textSecondary}
+                tooltipBorder={colors.border}
+                style={{
+                  padding: "8px",
+                  cursor: "pointer",
+                  backgroundColor: colors.buttonBg,
+                  color: colors.textSecondary,
+                  border: "none",
+                  borderRadius: "4px",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5z" />
+                </svg>
+              </TooltipButton>
+            </div>
+          </div>
+        )}
+
+        {/* Minimap Preview - Bottom Left (only when zoomed/panned) */}
+        {imageUrl && (zoom !== 1 || pan.x !== 0 || pan.y !== 0) && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "20px",
+              left: "20px",
+              width: "180px",
+              height: "120px",
+              background: colors.toolbar,
+              borderRadius: "8px",
+              padding: "8px",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+              border: `1px solid ${colors.border}`,
+              overflow: "hidden",
+            }}
+          >
+            {/* Minimap content */}
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                position: "relative",
+                borderRadius: "4px",
+                overflow: "hidden",
+              }}
+            >
+              {/* Scaled down image */}
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  background: showBackground ? THEMES[selectedTheme] : colors.buttonBg,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {canvasRef.current && (
+                  <img
+                    src={canvasRef.current.toDataURL()}
+                    alt="Preview"
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "100%",
+                      objectFit: "contain",
+                      opacity: 0.8,
+                    }}
+                  />
+                )}
+              </div>
+
+              {/* Viewport indicator */}
+              <div
+                style={{
+                  position: "absolute",
+                  border: "2px solid #3B82F6",
+                  borderRadius: "2px",
+                  pointerEvents: "none",
+                  top: `${50 - (pan.y / (zoom * 10)) - (50 / zoom)}%`,
+                  left: `${50 - (pan.x / (zoom * 10)) - (50 / zoom)}%`,
+                  width: `${100 / zoom}%`,
+                  height: `${100 / zoom}%`,
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  background: "rgba(59, 130, 246, 0.1)",
+                }}
+              />
+            </div>
+
+            {/* Zoom level label */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: "12px",
+                right: "12px",
+                background: "rgba(0, 0, 0, 0.6)",
+                color: "white",
+                padding: "2px 6px",
+                borderRadius: "4px",
+                fontSize: "10px",
+                fontWeight: 500,
+              }}
+            >
+              {Math.round(zoom * 100)}%
             </div>
           </div>
         )}
