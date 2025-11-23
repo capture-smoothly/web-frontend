@@ -567,9 +567,11 @@ export default function ScreenshotEditor() {
     // Border crop overlay
     if (borderCrop && activeTool === "crop" && cropMode === "border") {
       const { top, bottom, left, right } = borderCrop;
+      const width = right - left;
+      const height = bottom - top;
 
       // Draw semi-transparent overlay outside crop area
-      ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
       // Top area
       ctx.fillRect(0, 0, overlayCanvas.width, top);
       // Bottom area
@@ -580,25 +582,77 @@ export default function ScreenshotEditor() {
       ctx.fillRect(right, top, overlayCanvas.width - right, bottom - top);
 
       // Draw border around crop area
-      ctx.strokeStyle = "#3B82F6";
+      ctx.strokeStyle = "#ffffff";
       ctx.lineWidth = 2;
-      ctx.strokeRect(left, top, right - left, bottom - top);
+      ctx.strokeRect(left, top, width, height);
 
-      // Draw drag handles
-      const handleSize = 10;
-      ctx.fillStyle = "#3B82F6";
+      // Draw rule of thirds grid lines
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+      ctx.lineWidth = 1;
 
-      // Corner handles
-      ctx.fillRect(left - handleSize/2, top - handleSize/2, handleSize, handleSize);
-      ctx.fillRect(right - handleSize/2, top - handleSize/2, handleSize, handleSize);
-      ctx.fillRect(left - handleSize/2, bottom - handleSize/2, handleSize, handleSize);
-      ctx.fillRect(right - handleSize/2, bottom - handleSize/2, handleSize, handleSize);
+      // Vertical lines (rule of thirds)
+      ctx.beginPath();
+      ctx.moveTo(left + width / 3, top);
+      ctx.lineTo(left + width / 3, bottom);
+      ctx.moveTo(left + (width * 2) / 3, top);
+      ctx.lineTo(left + (width * 2) / 3, bottom);
+      // Horizontal lines (rule of thirds)
+      ctx.moveTo(left, top + height / 3);
+      ctx.lineTo(right, top + height / 3);
+      ctx.moveTo(left, top + (height * 2) / 3);
+      ctx.lineTo(right, top + (height * 2) / 3);
+      ctx.stroke();
 
-      // Edge handles
-      ctx.fillRect((left + right)/2 - handleSize/2, top - handleSize/2, handleSize, handleSize);
-      ctx.fillRect((left + right)/2 - handleSize/2, bottom - handleSize/2, handleSize, handleSize);
-      ctx.fillRect(left - handleSize/2, (top + bottom)/2 - handleSize/2, handleSize, handleSize);
-      ctx.fillRect(right - handleSize/2, (top + bottom)/2 - handleSize/2, handleSize, handleSize);
+      // Draw corner L-shaped handles (more prominent)
+      const cornerLength = 20;
+      const cornerThickness = 4;
+      ctx.fillStyle = "#ffffff";
+      ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+      ctx.shadowBlur = 4;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+
+      // Top-left corner
+      ctx.fillRect(left - cornerThickness/2, top - cornerThickness/2, cornerLength, cornerThickness);
+      ctx.fillRect(left - cornerThickness/2, top - cornerThickness/2, cornerThickness, cornerLength);
+
+      // Top-right corner
+      ctx.fillRect(right - cornerLength + cornerThickness/2, top - cornerThickness/2, cornerLength, cornerThickness);
+      ctx.fillRect(right - cornerThickness/2, top - cornerThickness/2, cornerThickness, cornerLength);
+
+      // Bottom-left corner
+      ctx.fillRect(left - cornerThickness/2, bottom - cornerThickness/2, cornerLength, cornerThickness);
+      ctx.fillRect(left - cornerThickness/2, bottom - cornerLength + cornerThickness/2, cornerThickness, cornerLength);
+
+      // Bottom-right corner
+      ctx.fillRect(right - cornerLength + cornerThickness/2, bottom - cornerThickness/2, cornerLength, cornerThickness);
+      ctx.fillRect(right - cornerThickness/2, bottom - cornerLength + cornerThickness/2, cornerThickness, cornerLength);
+
+      // Draw edge handles (small rectangles at edge midpoints)
+      const edgeHandleWidth = 24;
+      const edgeHandleHeight = 6;
+
+      // Top edge handle
+      ctx.fillRect((left + right) / 2 - edgeHandleWidth / 2, top - edgeHandleHeight / 2, edgeHandleWidth, edgeHandleHeight);
+      // Bottom edge handle
+      ctx.fillRect((left + right) / 2 - edgeHandleWidth / 2, bottom - edgeHandleHeight / 2, edgeHandleWidth, edgeHandleHeight);
+      // Left edge handle
+      ctx.fillRect(left - edgeHandleHeight / 2, (top + bottom) / 2 - edgeHandleWidth / 2, edgeHandleHeight, edgeHandleWidth);
+      // Right edge handle
+      ctx.fillRect(right - edgeHandleHeight / 2, (top + bottom) / 2 - edgeHandleWidth / 2, edgeHandleHeight, edgeHandleWidth);
+
+      // Reset shadow
+      ctx.shadowColor = "transparent";
+      ctx.shadowBlur = 0;
+
+      // Display dimensions
+      ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+      ctx.fillRect(left + width / 2 - 40, bottom + 8, 80, 24);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "12px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(`${Math.round(width)} × ${Math.round(height)}`, left + width / 2, bottom + 20);
     }
   }, [cropArea, activeTool, cropMode, borderCrop]);
 
@@ -917,7 +971,19 @@ export default function ScreenshotEditor() {
             Math.abs(currentAnnotation.endY - currentAnnotation.startY) > 5;
 
       if (hasSize) {
-        setAnnotations([...annotations, currentAnnotation]);
+        const newAnnotations = [...annotations, currentAnnotation];
+        setAnnotations(newAnnotations);
+        // Save to history after annotation is added
+        setTimeout(() => {
+          saveToHistory({
+            imageUrl,
+            annotations: newAnnotations,
+            showBackground,
+            includeWindowChrome,
+            windowChromeTheme,
+            selectedTheme,
+          });
+        }, 0);
       }
       setIsDrawingAnnotation(false);
       setCurrentAnnotation(null);
@@ -937,26 +1003,63 @@ export default function ScreenshotEditor() {
     setZoom(Math.min(Math.max(zoom * delta, 0.1), 10));
   };
 
-  // History management
-  const saveToHistory = useCallback(() => {
-    if (!imageUrl) return;
-    const newState: HistoryState = {
+  // Track if we're restoring from history (to avoid saving during restore)
+  const isRestoringRef = useRef(false);
+
+  // History management - save a new state to history
+  const saveToHistory = useCallback((state: {
+    imageUrl: string;
+    annotations: Annotation[];
+    showBackground: boolean;
+    includeWindowChrome: boolean;
+    windowChromeTheme: "light" | "dark";
+    selectedTheme: ThemeType;
+  }) => {
+    if (!state.imageUrl || isRestoringRef.current) return;
+
+    setHistory(prevHistory => {
+      setHistoryIndex(prevIndex => {
+        const newHistory = prevHistory.slice(0, prevIndex + 1);
+        newHistory.push({
+          imageUrl: state.imageUrl,
+          annotations: [...state.annotations],
+          showBackground: state.showBackground,
+          includeWindowChrome: state.includeWindowChrome,
+          windowChromeTheme: state.windowChromeTheme,
+          selectedTheme: state.selectedTheme,
+        });
+        if (newHistory.length > 50) newHistory.shift();
+        return newHistory.length - 1;
+      });
+      const newHistory = prevHistory.slice(0, historyIndex + 1);
+      newHistory.push({
+        imageUrl: state.imageUrl,
+        annotations: [...state.annotations],
+        showBackground: state.showBackground,
+        includeWindowChrome: state.includeWindowChrome,
+        windowChromeTheme: state.windowChromeTheme,
+        selectedTheme: state.selectedTheme,
+      });
+      if (newHistory.length > 50) newHistory.shift();
+      return newHistory;
+    });
+  }, [historyIndex]);
+
+  // Helper to save current state
+  const saveCurrentState = useCallback(() => {
+    saveToHistory({
       imageUrl,
-      annotations: [...annotations],
+      annotations,
       showBackground,
       includeWindowChrome,
       windowChromeTheme,
       selectedTheme,
-    };
-    const newHistory = history.slice(0, historyIndex + 1);
-    newHistory.push(newState);
-    if (newHistory.length > 50) newHistory.shift();
-    setHistory(newHistory);
-    setHistoryIndex(newHistory.length - 1);
-  }, [imageUrl, annotations, showBackground, includeWindowChrome, windowChromeTheme, selectedTheme, history, historyIndex]);
+    });
+  }, [imageUrl, annotations, showBackground, includeWindowChrome, windowChromeTheme, selectedTheme, saveToHistory]);
 
   const handleUndo = useCallback(() => {
     if (historyIndex <= 0) return;
+    isRestoringRef.current = true;
     const prev = history[historyIndex - 1];
     setImageUrl(prev.imageUrl);
     setAnnotations(prev.annotations);
@@ -965,10 +1068,13 @@ export default function ScreenshotEditor() {
     setWindowChromeTheme(prev.windowChromeTheme);
     setSelectedTheme(prev.selectedTheme);
     setHistoryIndex(historyIndex - 1);
+    // Reset flag after state updates
+    setTimeout(() => { isRestoringRef.current = false; }, 0);
   }, [history, historyIndex]);
 
   const handleRedo = useCallback(() => {
     if (historyIndex >= history.length - 1) return;
+    isRestoringRef.current = true;
     const next = history[historyIndex + 1];
     setImageUrl(next.imageUrl);
     setAnnotations(next.annotations);
@@ -977,6 +1083,8 @@ export default function ScreenshotEditor() {
     setWindowChromeTheme(next.windowChromeTheme);
     setSelectedTheme(next.selectedTheme);
     setHistoryIndex(historyIndex + 1);
+    // Reset flag after state updates
+    setTimeout(() => { isRestoringRef.current = false; }, 0);
   }, [history, historyIndex]);
 
   // Apply crop
@@ -1000,12 +1108,24 @@ export default function ScreenshotEditor() {
     if (!tempCtx) return;
 
     tempCtx.drawImage(canvas, x, y, width, height, 0, 0, width, height);
-    setImageUrl(tempCanvas.toDataURL("image/png"));
+    const newImageUrl = tempCanvas.toDataURL("image/png");
+    setImageUrl(newImageUrl);
     setCropArea(null);
     setBorderCrop(null);
     setActiveTool("select");
     setZoom(1);
     setPan({ x: 0, y: 0 });
+    // Save to history after crop
+    setTimeout(() => {
+      saveToHistory({
+        imageUrl: newImageUrl,
+        annotations,
+        showBackground,
+        includeWindowChrome,
+        windowChromeTheme,
+        selectedTheme,
+      });
+    }, 0);
   };
 
   // Apply border crop
@@ -1027,12 +1147,24 @@ export default function ScreenshotEditor() {
     if (!tempCtx) return;
 
     tempCtx.drawImage(canvas, left, top, width, height, 0, 0, width, height);
-    setImageUrl(tempCanvas.toDataURL("image/png"));
+    const newImageUrl = tempCanvas.toDataURL("image/png");
+    setImageUrl(newImageUrl);
     setCropArea(null);
     setBorderCrop(null);
     setActiveTool("select");
     setZoom(1);
     setPan({ x: 0, y: 0 });
+    // Save to history after crop
+    setTimeout(() => {
+      saveToHistory({
+        imageUrl: newImageUrl,
+        annotations,
+        showBackground,
+        includeWindowChrome,
+        windowChromeTheme,
+        selectedTheme,
+      });
+    }, 0);
   };
 
   // Crop mode handlers
@@ -1180,7 +1312,7 @@ export default function ScreenshotEditor() {
 
   useEffect(() => {
     if (isLoaded && history.length === 0) {
-      saveToHistory();
+      saveCurrentState();
     }
   }, [isLoaded]);
 
@@ -1197,7 +1329,7 @@ export default function ScreenshotEditor() {
       const scaleY = containerHeight / image.naturalHeight;
       setZoom(Math.min(scaleX, scaleY, 1));
     }
-    if (history.length === 0) saveToHistory();
+    if (history.length === 0) saveCurrentState();
   };
 
   const getCursor = () => {
@@ -1376,7 +1508,20 @@ export default function ScreenshotEditor() {
 
             {/* Background Toggle */}
             <TooltipButton
-              onClick={() => setShowBackground(!showBackground)}
+              onClick={() => {
+                const newShowBackground = !showBackground;
+                setShowBackground(newShowBackground);
+                setTimeout(() => {
+                  saveToHistory({
+                    imageUrl,
+                    annotations,
+                    showBackground: newShowBackground,
+                    includeWindowChrome,
+                    windowChromeTheme,
+                    selectedTheme,
+                  });
+                }, 0);
+              }}
               tooltip={showBackground ? "Hide Background" : "Show Background"}
               tooltipBg={colors.tooltipBg}
               tooltipText={colors.textSecondary}
@@ -1626,7 +1771,20 @@ export default function ScreenshotEditor() {
               <div style={{ display: "flex", gap: "8px" }}>
                 {/* Window Chrome Toggle */}
                 <TooltipButton
-                  onClick={() => setIncludeWindowChrome(!includeWindowChrome)}
+                  onClick={() => {
+                    const newIncludeWindowChrome = !includeWindowChrome;
+                    setIncludeWindowChrome(newIncludeWindowChrome);
+                    setTimeout(() => {
+                      saveToHistory({
+                        imageUrl,
+                        annotations,
+                        showBackground,
+                        includeWindowChrome: newIncludeWindowChrome,
+                        windowChromeTheme,
+                        selectedTheme,
+                      });
+                    }, 0);
+                  }}
                   tooltip={includeWindowChrome ? "Hide Window Chrome" : "Show Window Chrome"}
                   tooltipBg={colors.tooltipBg}
                   tooltipText={colors.textSecondary}
@@ -1652,7 +1810,20 @@ export default function ScreenshotEditor() {
                 {/* Theme Toggle */}
                 {includeWindowChrome && (
                   <TooltipButton
-                    onClick={() => setWindowChromeTheme(windowChromeTheme === "light" ? "dark" : "light")}
+                    onClick={() => {
+                      const newWindowChromeTheme = windowChromeTheme === "light" ? "dark" : "light";
+                      setWindowChromeTheme(newWindowChromeTheme);
+                      setTimeout(() => {
+                        saveToHistory({
+                          imageUrl,
+                          annotations,
+                          showBackground,
+                          includeWindowChrome,
+                          windowChromeTheme: newWindowChromeTheme,
+                          selectedTheme,
+                        });
+                      }, 0);
+                    }}
                     tooltip={windowChromeTheme === "light" ? "Dark Chrome" : "Light Chrome"}
                     tooltipBg={colors.tooltipBg}
                     tooltipText={colors.textSecondary}
@@ -1730,7 +1901,19 @@ export default function ScreenshotEditor() {
       {showThemeSelector && (
         <ThemeSelector
           selectedTheme={selectedTheme}
-          onThemeSelect={setSelectedTheme}
+          onThemeSelect={(newTheme) => {
+            setSelectedTheme(newTheme);
+            setTimeout(() => {
+              saveToHistory({
+                imageUrl,
+                annotations,
+                showBackground,
+                includeWindowChrome,
+                windowChromeTheme,
+                selectedTheme: newTheme,
+              });
+            }, 0);
+          }}
           onClose={() => setShowThemeSelector(false)}
           editorTheme={editorTheme}
         />
@@ -2526,7 +2709,18 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => {
                   if (annotations.length > 0) {
-                    setAnnotations(annotations.slice(0, -1));
+                    const newAnnotations = annotations.slice(0, -1);
+                    setAnnotations(newAnnotations);
+                    setTimeout(() => {
+                      saveToHistory({
+                        imageUrl,
+                        annotations: newAnnotations,
+                        showBackground,
+                        includeWindowChrome,
+                        windowChromeTheme,
+                        selectedTheme,
+                      });
+                    }, 0);
                   }
                 }}
                 disabled={annotations.length === 0}
@@ -2555,7 +2749,19 @@ export default function ScreenshotEditor() {
                 </svg>
               </TooltipButton>
               <TooltipButton
-                onClick={() => setAnnotations([])}
+                onClick={() => {
+                  setAnnotations([]);
+                  setTimeout(() => {
+                    saveToHistory({
+                      imageUrl,
+                      annotations: [],
+                      showBackground,
+                      includeWindowChrome,
+                      windowChromeTheme,
+                      selectedTheme,
+                    });
+                  }, 0);
+                }}
                 disabled={annotations.length === 0}
                 tooltip="Clear All"
                 tooltipPosition="left"
