@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Theme gradients
 const THEMES = {
@@ -467,6 +469,9 @@ function ThemeSelector({
 }
 
 export default function ScreenshotEditor() {
+  const router = useRouter();
+  const { user } = useAuth();
+
   const [imageUrl, setImageUrl] = useState<string>("");
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeTool, setActiveTool] = useState<Tool>("select");
@@ -505,6 +510,10 @@ export default function ScreenshotEditor() {
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [isEmailCopied, setIsEmailCopied] = useState(false);
 
+  // Login prompt state
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [loginPromptAction, setLoginPromptAction] = useState<"download" | "copy">("download");
+
   // History
   const [history, setHistory] = useState<HistoryState[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
@@ -542,6 +551,7 @@ export default function ScreenshotEditor() {
       buttonBgHover: "#3D3D3D",
       tooltipBg: "#1E1E1E",
       sliderTrack: "#3D3D3D",
+      cardBg: "#1E1E1E",
     },
     light: {
       background: "#F5F5F5",
@@ -554,6 +564,7 @@ export default function ScreenshotEditor() {
       buttonBgHover: "#E5E7EB",
       tooltipBg: "#FFFFFF",
       sliderTrack: "#E5E7EB",
+      cardBg: "#FFFFFF",
     },
   };
 
@@ -1369,8 +1380,58 @@ export default function ScreenshotEditor() {
     }
   };
 
+  // Save editor state to localStorage for persistence after login
+  const saveEditorStateForLogin = useCallback(() => {
+    if (imageUrl) {
+      const editorState = {
+        imageUrl,
+        selectedTheme,
+        cardWidth,
+        cardPadding,
+        includeWindowChrome,
+        windowChromeTheme,
+        showBackground,
+        annotations,
+        zoom,
+        pan,
+      };
+      localStorage.setItem("editorStateBeforeLogin", JSON.stringify(editorState));
+    }
+  }, [imageUrl, selectedTheme, cardWidth, cardPadding, includeWindowChrome, windowChromeTheme, showBackground, annotations, zoom, pan]);
+
+  // Restore editor state after login
+  useEffect(() => {
+    const savedState = localStorage.getItem("editorStateBeforeLogin");
+    if (savedState && user) {
+      try {
+        const state = JSON.parse(savedState);
+        if (state.imageUrl) setImageUrl(state.imageUrl);
+        if (state.selectedTheme) setSelectedTheme(state.selectedTheme);
+        if (state.cardWidth !== undefined) setCardWidth(state.cardWidth);
+        if (state.cardPadding !== undefined) setCardPadding(state.cardPadding);
+        if (state.includeWindowChrome !== undefined) setIncludeWindowChrome(state.includeWindowChrome);
+        if (state.windowChromeTheme) setWindowChromeTheme(state.windowChromeTheme);
+        if (state.showBackground !== undefined) setShowBackground(state.showBackground);
+        if (state.annotations) setAnnotations(state.annotations);
+        if (state.zoom !== undefined) setZoom(state.zoom);
+        if (state.pan) setPan(state.pan);
+        localStorage.removeItem("editorStateBeforeLogin");
+      } catch (e) {
+        console.error("Failed to restore editor state:", e);
+        localStorage.removeItem("editorStateBeforeLogin");
+      }
+    }
+  }, [user]);
+
   // Download and copy
   const handleDownload = async () => {
+    // Check if user is logged in
+    if (!user) {
+      setLoginPromptAction("download");
+      setShowLoginPrompt(true);
+      return;
+    }
+
     if (showBackground) {
       const backgroundContainer = document.querySelector('[data-screenshot-with-background="true"]') as HTMLElement;
       if (!backgroundContainer) return;
@@ -1430,6 +1491,13 @@ export default function ScreenshotEditor() {
   };
 
   const handleCopy = async () => {
+    // Check if user is logged in
+    if (!user) {
+      setLoginPromptAction("copy");
+      setShowLoginPrompt(true);
+      return;
+    }
+
     try {
       let canvas: HTMLCanvasElement | null = null;
 
@@ -2288,6 +2356,132 @@ export default function ScreenshotEditor() {
                 )}
               </button>
             </div>
+          </div>
+        </>
+      )}
+
+      {/* Login Prompt Popup */}
+      {showLoginPrompt && (
+        <>
+          {/* Backdrop */}
+          <div
+            onClick={() => setShowLoginPrompt(false)}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+              backdropFilter: "blur(4px)",
+              zIndex: 9999,
+            }}
+          />
+          {/* Modal */}
+          <div
+            style={{
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: colors.cardBg,
+              borderRadius: "16px",
+              padding: "32px",
+              border: `1px solid ${colors.border}`,
+              maxWidth: "400px",
+              width: "90%",
+              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.6)",
+              zIndex: 10000,
+              textAlign: "center",
+            }}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setShowLoginPrompt(false)}
+              style={{
+                position: "absolute",
+                top: "16px",
+                right: "16px",
+                background: "transparent",
+                border: "none",
+                color: colors.textMuted,
+                cursor: "pointer",
+                padding: "4px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: "4px",
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+              </svg>
+            </button>
+
+            {/* Icon */}
+            <div
+              style={{
+                width: "64px",
+                height: "64px",
+                borderRadius: "16px",
+                background: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 20px",
+              }}
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1.5">
+                <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+
+            {/* Title */}
+            <h3 style={{ margin: "0 0 12px 0", fontSize: "22px", fontWeight: 600, color: colors.textSecondary }}>
+              Login Required
+            </h3>
+
+            {/* Message */}
+            <p style={{ fontSize: "14px", lineHeight: "1.6", color: colors.textMuted, marginBottom: "24px" }}>
+              {loginPromptAction === "download"
+                ? "Please sign in to download your beautifully edited screenshot. Your work will be preserved!"
+                : "Please sign in to copy your beautifully edited screenshot to clipboard. Your work will be preserved!"}
+            </p>
+
+            {/* Login Button */}
+            <button
+              onClick={() => {
+                saveEditorStateForLogin();
+                router.push("/auth/login?redirect=/editor");
+              }}
+              style={{
+                width: "100%",
+                padding: "14px 24px",
+                fontSize: "15px",
+                cursor: "pointer",
+                backgroundColor: "#8B5CF6",
+                color: "white",
+                border: "none",
+                borderRadius: "10px",
+                fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px",
+                boxShadow: "0 4px 12px rgba(139, 92, 246, 0.4)",
+                transition: "all 0.2s",
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+              </svg>
+              Sign In to {loginPromptAction === "download" ? "Download" : "Copy"}
+            </button>
+
+            {/* Subtle note */}
+            <p style={{ fontSize: "12px", color: colors.textMuted, marginTop: "16px", opacity: 0.7 }}>
+              Your edited image will be waiting for you after login
+            </p>
           </div>
         </>
       )}
