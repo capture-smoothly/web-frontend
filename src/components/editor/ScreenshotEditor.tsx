@@ -1380,10 +1380,21 @@ export default function ScreenshotEditor() {
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       const html2canvas = (await import("html2canvas")).default;
+
+      // Get exact dimensions to avoid sub-pixel issues
+      const rect = backgroundContainer.getBoundingClientRect();
       const capturedCanvas = await html2canvas(backgroundContainer, {
         backgroundColor: null,
         scale: 2,
         useCORS: true,
+        width: Math.ceil(rect.width),
+        height: Math.ceil(rect.height),
+        windowWidth: Math.ceil(rect.width),
+        windowHeight: Math.ceil(rect.height),
+        x: 0,
+        y: 0,
+        scrollX: 0,
+        scrollY: 0,
       });
 
       backgroundContainer.style.transform = currentTransform;
@@ -1431,10 +1442,21 @@ export default function ScreenshotEditor() {
         await new Promise((resolve) => setTimeout(resolve, 150));
 
         const html2canvas = (await import("html2canvas")).default;
+
+        // Get exact dimensions to avoid sub-pixel issues
+        const rect = backgroundContainer.getBoundingClientRect();
         canvas = await html2canvas(backgroundContainer, {
           backgroundColor: null,
           scale: 2,
           useCORS: true,
+          width: Math.ceil(rect.width),
+          height: Math.ceil(rect.height),
+          windowWidth: Math.ceil(rect.width),
+          windowHeight: Math.ceil(rect.height),
+          x: 0,
+          y: 0,
+          scrollX: 0,
+          scrollY: 0,
         });
         backgroundContainer.style.transform = currentTransform;
       } else {
@@ -2442,8 +2464,10 @@ export default function ScreenshotEditor() {
               background: THEMES[selectedTheme],
               padding: `${calculateCardPadding(cardPadding)}px`,
               borderRadius: "0",
-              display: "inline-block",
+              display: "block",
               width: `${calculateCardWidth(cardWidth)}px`,
+              overflow: "hidden",
+              boxSizing: "border-box",
             }}
           >
             {/* Shadow layers */}
