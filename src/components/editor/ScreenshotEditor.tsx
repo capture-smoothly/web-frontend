@@ -1584,22 +1584,16 @@ export default function ScreenshotEditor() {
               cursor: "pointer",
             }}
           >
-            <div
+            <img
+              src="/logo.png"
+              alt="ILoveSnapshots"
               style={{
                 width: "32px",
                 height: "32px",
                 borderRadius: "8px",
-                background: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                objectFit: "contain",
               }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                <circle cx="12" cy="13" r="4" />
-              </svg>
-            </div>
+            />
             <span style={{ fontSize: "16px", fontWeight: 600, color: colors.textSecondary }}>
               ILoveSnapshots
             </span>
