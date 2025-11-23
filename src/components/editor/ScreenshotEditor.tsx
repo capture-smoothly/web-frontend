@@ -342,6 +342,10 @@ export default function ScreenshotEditor() {
   // Copy/feedback state
   const [isCopied, setIsCopied] = useState(false);
 
+  // Contact popup state
+  const [showContactPopup, setShowContactPopup] = useState(false);
+  const [isEmailCopied, setIsEmailCopied] = useState(false);
+
   // History
   const [history, setHistory] = useState<HistoryState[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
@@ -1388,8 +1392,42 @@ export default function ScreenshotEditor() {
       >
         {/* LEFT SECTION: Logo + Title + Editor Theme Toggle */}
         <div style={{ display: "flex", alignItems: "center", gap: "12px", marginRight: "auto" }}>
-          <h2 style={{ margin: 0, fontSize: "14px", fontWeight: 500, color: colors.textSecondary }}>
-            Screenshot Editor
+          {/* Logo - Links to Home */}
+          <a
+            href="/"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              textDecoration: "none",
+              cursor: "pointer",
+            }}
+          >
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                borderRadius: "8px",
+                background: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                <circle cx="12" cy="13" r="4" />
+              </svg>
+            </div>
+            <span style={{ fontSize: "16px", fontWeight: 600, color: colors.textSecondary }}>
+              ILoveSnapshots
+            </span>
+          </a>
+
+          <div style={{ width: "1px", height: "24px", background: colors.border, margin: "0 4px" }} />
+
+          <h2 style={{ margin: 0, fontSize: "14px", fontWeight: 500, color: colors.textMuted }}>
+            Editor
           </h2>
 
           {/* Editor Theme Toggle */}
@@ -1918,6 +1956,238 @@ export default function ScreenshotEditor() {
           editorTheme={editorTheme}
         />
       )}
+
+      {/* Contact Popup */}
+      {showContactPopup && (
+        <>
+          {/* Backdrop */}
+          <div
+            onClick={() => {
+              setShowContactPopup(false);
+              setIsEmailCopied(false);
+            }}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: "rgba(0, 0, 0, 0.7)",
+              backdropFilter: "blur(4px)",
+              zIndex: 9999,
+            }}
+          />
+          {/* Popup Content */}
+          <div
+            style={{
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              background: colors.toolbar,
+              border: `1px solid ${colors.border}`,
+              borderRadius: "12px",
+              padding: "32px",
+              maxWidth: "500px",
+              width: "90%",
+              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.6)",
+              zIndex: 10000,
+            }}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => {
+                setShowContactPopup(false);
+                setIsEmailCopied(false);
+              }}
+              style={{
+                position: "absolute",
+                top: "16px",
+                right: "16px",
+                background: "transparent",
+                border: "none",
+                color: colors.textMuted,
+                cursor: "pointer",
+                padding: "4px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: "4px",
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+              </svg>
+            </button>
+
+            {/* Header */}
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
+              <div
+                style={{
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "12px",
+                  background: "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <svg width="24" height="24" viewBox="0 0 16 16" fill="white">
+                  <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383l-4.708 2.825L15 11.105V5.383zm-.034 6.876l-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741zM1 11.105l4.708-2.897L1 5.383v5.722z" />
+                </svg>
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: "20px", fontWeight: 600, color: colors.textSecondary }}>
+                  Get in Touch
+                </h3>
+                <p style={{ margin: "4px 0 0 0", fontSize: "13px", color: colors.textMuted }}>
+                  We&apos;d love to hear from you
+                </p>
+              </div>
+            </div>
+
+            {/* Message */}
+            <p style={{ fontSize: "14px", lineHeight: "1.6", color: colors.textSecondary, marginBottom: "24px" }}>
+              Please contact us for anything like feature requests, doubts, bugs, issues, or any feedback you&apos;d like to share. We&apos;re here to help!
+            </p>
+
+            {/* Email Section */}
+            <div
+              style={{
+                background: colors.buttonBg,
+                border: `1px solid ${colors.border}`,
+                borderRadius: "8px",
+                padding: "16px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "12px",
+              }}
+            >
+              <div style={{ flex: 1, overflow: "hidden" }}>
+                <div style={{ fontSize: "11px", color: colors.textMuted, marginBottom: "4px", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                  Email Address
+                </div>
+                <div style={{ fontSize: "15px", color: "#3B82F6", fontWeight: 500 }}>
+                  hello@ilovesnapshots.online
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText("hello@ilovesnapshots.online");
+                  setIsEmailCopied(true);
+                  setTimeout(() => setIsEmailCopied(false), 2000);
+                }}
+                style={{
+                  padding: "10px 20px",
+                  fontSize: "13px",
+                  cursor: "pointer",
+                  backgroundColor: isEmailCopied ? "#10B981" : "#3B82F6",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "6px",
+                  fontWeight: 500,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  transition: "all 0.2s",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {isEmailCopied ? (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                      <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                    </svg>
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                      <path d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1H2z" />
+                    </svg>
+                    Copy
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Watch Demo and Contact Buttons - Below Toolbar on Left */}
+      <div
+        style={{
+          position: "absolute",
+          top: "68px",
+          left: "20px",
+          zIndex: 1001,
+          display: "flex",
+          flexDirection: "column",
+          gap: "12px",
+        }}
+      >
+        {/* Watch Demo Button */}
+        <TooltipButton
+          onClick={() => window.open("https://youtu.be/MaFE9Il0wC0", "_blank")}
+          tooltip="Watch tutorial video"
+          tooltipBg={colors.tooltipBg}
+          tooltipText={colors.textSecondary}
+          tooltipBorder={colors.border}
+          style={{
+            padding: "10px 20px",
+            fontSize: "13px",
+            cursor: "pointer",
+            backgroundColor: "#8B5CF6",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            fontWeight: 500,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+            boxShadow: "0 4px 12px rgba(139, 92, 246, 0.3)",
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+            <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z" />
+          </svg>
+          Watch Demo
+        </TooltipButton>
+
+        {/* Contact Button */}
+        <TooltipButton
+          onClick={() => setShowContactPopup(true)}
+          tooltip="Contact us for support"
+          tooltipBg={colors.tooltipBg}
+          tooltipText={colors.textSecondary}
+          tooltipBorder={colors.border}
+          style={{
+            padding: "10px 20px",
+            fontSize: "13px",
+            cursor: "pointer",
+            backgroundColor: colors.buttonBg,
+            color: colors.textSecondary,
+            border: `1px solid ${colors.border}`,
+            borderRadius: "8px",
+            fontWeight: 500,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383l-4.708 2.825L15 11.105V5.383zm-.034 6.876l-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741zM1 11.105l4.708-2.897L1 5.383v5.722z" />
+          </svg>
+          Contact
+        </TooltipButton>
+      </div>
 
       {/* Main Canvas Area */}
       <div
