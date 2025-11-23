@@ -94,6 +94,7 @@ function TooltipButton({
   tooltipBg,
   tooltipText,
   tooltipBorder,
+  tooltipPosition = "bottom",
 }: {
   onClick: () => void;
   disabled?: boolean;
@@ -103,8 +104,38 @@ function TooltipButton({
   tooltipBg?: string;
   tooltipText?: string;
   tooltipBorder?: string;
+  tooltipPosition?: "top" | "bottom" | "left" | "right";
 }) {
   const [showTooltip, setShowTooltip] = useState(false);
+
+  const getTooltipStyle = (): React.CSSProperties => {
+    const base: React.CSSProperties = {
+      position: "absolute",
+      background: tooltipBg || "#1E1E1E",
+      color: tooltipText || "#E0E0E0",
+      padding: "6px 10px",
+      borderRadius: "4px",
+      fontSize: "12px",
+      whiteSpace: "nowrap",
+      pointerEvents: "none",
+      zIndex: 2000,
+      border: `1px solid ${tooltipBorder || "#2D2D2D"}`,
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+    };
+
+    switch (tooltipPosition) {
+      case "top":
+        return { ...base, bottom: "calc(100% + 8px)", left: "50%", transform: "translateX(-50%)" };
+      case "bottom":
+        return { ...base, top: "calc(100% + 8px)", left: "50%", transform: "translateX(-50%)" };
+      case "left":
+        return { ...base, right: "calc(100% + 8px)", top: "50%", transform: "translateY(-50%)" };
+      case "right":
+        return { ...base, left: "calc(100% + 8px)", top: "50%", transform: "translateY(-50%)" };
+      default:
+        return { ...base, top: "calc(100% + 8px)", left: "50%", transform: "translateX(-50%)" };
+    }
+  };
 
   return (
     <button
@@ -116,24 +147,7 @@ function TooltipButton({
     >
       {children}
       {showTooltip && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: "calc(100% + 8px)",
-            left: "50%",
-            transform: "translateX(-50%)",
-            background: tooltipBg || "#1E1E1E",
-            color: tooltipText || "#E0E0E0",
-            padding: "6px 10px",
-            borderRadius: "4px",
-            fontSize: "12px",
-            whiteSpace: "nowrap",
-            pointerEvents: "none",
-            zIndex: 2000,
-            border: `1px solid ${tooltipBorder || "#2D2D2D"}`,
-            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
-          }}
-        >
+        <div style={getTooltipStyle()}>
           {tooltip}
         </div>
       )}
@@ -298,6 +312,9 @@ export default function ScreenshotEditor() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeTool, setActiveTool] = useState<Tool>("select");
   const [cropArea, setCropArea] = useState<CropArea | null>(null);
+  const [cropMode, setCropMode] = useState<"freeform" | "border">("freeform");
+  const [borderCrop, setBorderCrop] = useState<{ top: number; bottom: number; left: number; right: number } | null>(null);
+  const [borderCropDragEdge, setBorderCropDragEdge] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
   // Zoom and pan state
@@ -526,7 +543,8 @@ export default function ScreenshotEditor() {
     overlayCanvas.height = canvas.height;
     ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 
-    if (cropArea && activeTool === "crop") {
+    // Freeform crop overlay
+    if (cropArea && activeTool === "crop" && cropMode === "freeform") {
       const { startX, startY, endX, endY } = cropArea;
       ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
       ctx.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
@@ -545,7 +563,44 @@ export default function ScreenshotEditor() {
         Math.abs(endY - startY)
       );
     }
-  }, [cropArea, activeTool]);
+
+    // Border crop overlay
+    if (borderCrop && activeTool === "crop" && cropMode === "border") {
+      const { top, bottom, left, right } = borderCrop;
+
+      // Draw semi-transparent overlay outside crop area
+      ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+      // Top area
+      ctx.fillRect(0, 0, overlayCanvas.width, top);
+      // Bottom area
+      ctx.fillRect(0, bottom, overlayCanvas.width, overlayCanvas.height - bottom);
+      // Left area
+      ctx.fillRect(0, top, left, bottom - top);
+      // Right area
+      ctx.fillRect(right, top, overlayCanvas.width - right, bottom - top);
+
+      // Draw border around crop area
+      ctx.strokeStyle = "#3B82F6";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(left, top, right - left, bottom - top);
+
+      // Draw drag handles
+      const handleSize = 10;
+      ctx.fillStyle = "#3B82F6";
+
+      // Corner handles
+      ctx.fillRect(left - handleSize/2, top - handleSize/2, handleSize, handleSize);
+      ctx.fillRect(right - handleSize/2, top - handleSize/2, handleSize, handleSize);
+      ctx.fillRect(left - handleSize/2, bottom - handleSize/2, handleSize, handleSize);
+      ctx.fillRect(right - handleSize/2, bottom - handleSize/2, handleSize, handleSize);
+
+      // Edge handles
+      ctx.fillRect((left + right)/2 - handleSize/2, top - handleSize/2, handleSize, handleSize);
+      ctx.fillRect((left + right)/2 - handleSize/2, bottom - handleSize/2, handleSize, handleSize);
+      ctx.fillRect(left - handleSize/2, (top + bottom)/2 - handleSize/2, handleSize, handleSize);
+      ctx.fillRect(right - handleSize/2, (top + bottom)/2 - handleSize/2, handleSize, handleSize);
+    }
+  }, [cropArea, activeTool, cropMode, borderCrop]);
 
   const drawAnnotations = useCallback(() => {
     const canvas = annotationCanvasRef.current;
@@ -737,8 +792,51 @@ export default function ScreenshotEditor() {
     }
 
     if (activeTool === "crop") {
-      setCropArea({ startX: x, startY: y, endX: x, endY: y });
-      setIsDragging(true);
+      if (cropMode === "freeform") {
+        setCropArea({ startX: x, startY: y, endX: x, endY: y });
+        setIsDragging(true);
+      } else if (cropMode === "border" && borderCrop) {
+        // Check if clicking on a handle or edge
+        const handleSize = 15;
+        const { top, bottom, left, right } = borderCrop;
+        let edge: string | null = null;
+
+        // Check corners first (they take priority)
+        if (Math.abs(x - left) < handleSize && Math.abs(y - top) < handleSize) {
+          edge = "topLeft";
+        } else if (Math.abs(x - right) < handleSize && Math.abs(y - top) < handleSize) {
+          edge = "topRight";
+        } else if (Math.abs(x - left) < handleSize && Math.abs(y - bottom) < handleSize) {
+          edge = "bottomLeft";
+        } else if (Math.abs(x - right) < handleSize && Math.abs(y - bottom) < handleSize) {
+          edge = "bottomRight";
+        }
+        // Check edge handles
+        else if (Math.abs(x - (left + right) / 2) < handleSize && Math.abs(y - top) < handleSize) {
+          edge = "top";
+        } else if (Math.abs(x - (left + right) / 2) < handleSize && Math.abs(y - bottom) < handleSize) {
+          edge = "bottom";
+        } else if (Math.abs(x - left) < handleSize && Math.abs(y - (top + bottom) / 2) < handleSize) {
+          edge = "left";
+        } else if (Math.abs(x - right) < handleSize && Math.abs(y - (top + bottom) / 2) < handleSize) {
+          edge = "right";
+        }
+        // Check edges
+        else if (Math.abs(y - top) < handleSize && x > left && x < right) {
+          edge = "top";
+        } else if (Math.abs(y - bottom) < handleSize && x > left && x < right) {
+          edge = "bottom";
+        } else if (Math.abs(x - left) < handleSize && y > top && y < bottom) {
+          edge = "left";
+        } else if (Math.abs(x - right) < handleSize && y > top && y < bottom) {
+          edge = "right";
+        }
+
+        if (edge) {
+          setBorderCropDragEdge(edge);
+          setIsDragging(true);
+        }
+      }
     }
   };
 
@@ -764,8 +862,49 @@ export default function ScreenshotEditor() {
       return;
     }
 
-    if (activeTool === "crop" && isDragging && cropArea) {
-      setCropArea({ ...cropArea, endX: x, endY: y });
+    if (activeTool === "crop" && isDragging) {
+      if (cropMode === "freeform" && cropArea) {
+        setCropArea({ ...cropArea, endX: x, endY: y });
+      } else if (cropMode === "border" && borderCrop && borderCropDragEdge) {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const newBorderCrop = { ...borderCrop };
+        const minSize = 20;
+
+        switch (borderCropDragEdge) {
+          case "top":
+            newBorderCrop.top = Math.max(0, Math.min(y, borderCrop.bottom - minSize));
+            break;
+          case "bottom":
+            newBorderCrop.bottom = Math.min(canvas.height, Math.max(y, borderCrop.top + minSize));
+            break;
+          case "left":
+            newBorderCrop.left = Math.max(0, Math.min(x, borderCrop.right - minSize));
+            break;
+          case "right":
+            newBorderCrop.right = Math.min(canvas.width, Math.max(x, borderCrop.left + minSize));
+            break;
+          case "topLeft":
+            newBorderCrop.top = Math.max(0, Math.min(y, borderCrop.bottom - minSize));
+            newBorderCrop.left = Math.max(0, Math.min(x, borderCrop.right - minSize));
+            break;
+          case "topRight":
+            newBorderCrop.top = Math.max(0, Math.min(y, borderCrop.bottom - minSize));
+            newBorderCrop.right = Math.min(canvas.width, Math.max(x, borderCrop.left + minSize));
+            break;
+          case "bottomLeft":
+            newBorderCrop.bottom = Math.min(canvas.height, Math.max(y, borderCrop.top + minSize));
+            newBorderCrop.left = Math.max(0, Math.min(x, borderCrop.right - minSize));
+            break;
+          case "bottomRight":
+            newBorderCrop.bottom = Math.min(canvas.height, Math.max(y, borderCrop.top + minSize));
+            newBorderCrop.right = Math.min(canvas.width, Math.max(x, borderCrop.left + minSize));
+            break;
+        }
+
+        setBorderCrop(newBorderCrop);
+      }
     }
   };
 
@@ -785,6 +924,7 @@ export default function ScreenshotEditor() {
     }
     setIsDragging(false);
     setIsPanning(false);
+    setBorderCropDragEdge(null);
   };
 
   const handleWheel = (e: React.WheelEvent) => {
@@ -862,9 +1002,76 @@ export default function ScreenshotEditor() {
     tempCtx.drawImage(canvas, x, y, width, height, 0, 0, width, height);
     setImageUrl(tempCanvas.toDataURL("image/png"));
     setCropArea(null);
+    setBorderCrop(null);
     setActiveTool("select");
     setZoom(1);
     setPan({ x: 0, y: 0 });
+  };
+
+  // Apply border crop
+  const applyBorderCrop = () => {
+    if (!borderCrop) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const { top, bottom, left, right } = borderCrop;
+    const width = right - left;
+    const height = bottom - top;
+
+    if (width < 1 || height < 1) return;
+
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = width;
+    tempCanvas.height = height;
+    const tempCtx = tempCanvas.getContext("2d");
+    if (!tempCtx) return;
+
+    tempCtx.drawImage(canvas, left, top, width, height, 0, 0, width, height);
+    setImageUrl(tempCanvas.toDataURL("image/png"));
+    setCropArea(null);
+    setBorderCrop(null);
+    setActiveTool("select");
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+  };
+
+  // Crop mode handlers
+  const handleFreeformCrop = () => {
+    setCropMode("freeform");
+    if (activeTool === "crop" && cropMode === "freeform") {
+      // Exit crop mode
+      setActiveTool("select");
+      setCropArea(null);
+      setBorderCrop(null);
+    } else {
+      // Enter freeform crop mode
+      setActiveTool("crop");
+      setBorderCrop(null);
+      setCropArea(null);
+    }
+  };
+
+  const handleBorderCrop = () => {
+    setCropMode("border");
+    if (activeTool === "crop" && cropMode === "border") {
+      // Exit crop mode
+      setActiveTool("select");
+      setCropArea(null);
+      setBorderCrop(null);
+    } else {
+      // Enter border crop mode - initialize border crop
+      const canvas = canvasRef.current;
+      if (canvas) {
+        setBorderCrop({
+          top: 0,
+          bottom: canvas.height,
+          left: 0,
+          right: canvas.width,
+        });
+      }
+      setActiveTool("crop");
+      setCropArea(null);
+    }
   };
 
   // Download and copy
@@ -969,7 +1176,7 @@ export default function ScreenshotEditor() {
       drawCropOverlay();
       drawAnnotations();
     }
-  }, [isLoaded, cropArea, activeTool, annotations, currentAnnotation, drawImage, drawCropOverlay, drawAnnotations]);
+  }, [isLoaded, cropArea, activeTool, annotations, currentAnnotation, drawImage, drawCropOverlay, drawAnnotations, showBackground, borderCrop, cropMode]);
 
   useEffect(() => {
     if (isLoaded && history.length === 0) {
@@ -1371,10 +1578,16 @@ export default function ScreenshotEditor() {
             </div>
 
             {/* Action Buttons */}
-            {activeTool === "crop" && cropArea ? (
+            {activeTool === "crop" && (cropArea || borderCrop) ? (
               <div style={{ display: "flex", gap: "8px" }}>
                 <TooltipButton
-                  onClick={applyCrop}
+                  onClick={() => {
+                    if (borderCrop) {
+                      applyBorderCrop();
+                    } else if (cropArea) {
+                      applyCrop();
+                    }
+                  }}
                   tooltip="Apply Crop"
                   tooltipBg={colors.tooltipBg}
                   tooltipText={colors.textSecondary}
@@ -1392,7 +1605,7 @@ export default function ScreenshotEditor() {
                   Apply Crop
                 </TooltipButton>
                 <TooltipButton
-                  onClick={() => { setCropArea(null); setActiveTool("select"); }}
+                  onClick={() => { setCropArea(null); setBorderCrop(null); setActiveTool("select"); }}
                   tooltip="Cancel"
                   tooltipBg={colors.tooltipBg}
                   tooltipText={colors.textSecondary}
@@ -1805,6 +2018,7 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => { setActiveTool("line"); setPanModeEnabled(false); }}
                 tooltip="Line (L)"
+                tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
@@ -1830,6 +2044,7 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => { setActiveTool("freehand"); setPanModeEnabled(false); }}
                 tooltip="Freehand (F)"
+                tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
@@ -1855,6 +2070,7 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => { setActiveTool("arrow"); setPanModeEnabled(false); }}
                 tooltip="Arrow (A)"
+                tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
@@ -1883,6 +2099,7 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => { setActiveTool("circle"); setPanModeEnabled(false); }}
                 tooltip="Circle (C)"
+                tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
@@ -1908,6 +2125,7 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => { setActiveTool("rectangle"); setPanModeEnabled(false); }}
                 tooltip="Rectangle (R)"
+                tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
@@ -1933,6 +2151,7 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => { setActiveTool("blur"); setPanModeEnabled(false); }}
                 tooltip="Blur (B)"
+                tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
@@ -1969,6 +2188,7 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => { setActiveTool("highlight"); setPanModeEnabled(false); }}
                 tooltip="Highlight (H)"
+                tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
@@ -1991,6 +2211,128 @@ export default function ScreenshotEditor() {
                   <rect x="2" y="5" width="12" height="6" />
                 </svg>
                 <span style={{ fontSize: "11px" }}>Highlight</span>
+              </TooltipButton>
+            </div>
+          </div>
+        )}
+
+        {/* Crop Mode Toolbar - Only show when in crop mode */}
+        {activeTool === "crop" && imageUrl && (
+          <div
+            style={{
+              position: "absolute",
+              top: "176px",
+              right: "20px",
+              background: colors.toolbar,
+              borderRadius: "8px",
+              padding: "8px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "8px",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+              border: `1px solid ${colors.border}`,
+            }}
+          >
+            {/* Crop Mode Label */}
+            <div
+              style={{
+                textAlign: "center",
+                color: colors.textMuted,
+                fontSize: "11px",
+                fontWeight: 500,
+                padding: "4px 0",
+              }}
+            >
+              CROP MODE
+            </div>
+
+            {/* Divider */}
+            <div style={{ height: "1px", background: colors.border }} />
+
+            {/* Row 1: Freeform, Scissor Icon, Border */}
+            <div style={{ display: "flex", gap: "4px" }}>
+              <TooltipButton
+                onClick={handleFreeformCrop}
+                tooltip="Freeform Crop - Drag to select area"
+                tooltipPosition="left"
+                tooltipBg={colors.tooltipBg}
+                tooltipText={colors.textSecondary}
+                tooltipBorder={colors.border}
+                style={{
+                  padding: "8px",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  backgroundColor: cropMode === "freeform" ? "#3B82F6" : colors.buttonBg,
+                  color: cropMode === "freeform" ? "white" : colors.textSecondary,
+                  border: "none",
+                  borderRadius: "4px",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transition: "all 0.2s",
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M11 2v3h3v1h-3v4h-1V6H6v4H5V6H2V5h3V2h1v3h4V2h1z" />
+                </svg>
+              </TooltipButton>
+
+              {/* Scissor icon in the middle - no background */}
+              <div
+                style={{
+                  padding: "8px",
+                  fontSize: "14px",
+                  backgroundColor: "transparent",
+                  color: colors.textMuted,
+                  border: "none",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <circle cx="3" cy="4" r="1.5" />
+                  <circle cx="3" cy="12" r="1.5" />
+                  <line x1="4.5" y1="4.5" x2="13" y2="8" />
+                  <line x1="4.5" y1="11.5" x2="13" y2="8" />
+                  <line x1="13" y1="8" x2="15" y2="8" />
+                </svg>
+              </div>
+
+              <TooltipButton
+                onClick={handleBorderCrop}
+                tooltip="Border Crop - Drag edges to crop"
+                tooltipPosition="left"
+                tooltipBg={colors.tooltipBg}
+                tooltipText={colors.textSecondary}
+                tooltipBorder={colors.border}
+                style={{
+                  padding: "8px",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  backgroundColor: cropMode === "border" ? "#3B82F6" : colors.buttonBg,
+                  color: cropMode === "border" ? "white" : colors.textSecondary,
+                  border: "none",
+                  borderRadius: "4px",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transition: "all 0.2s",
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <rect x="2" y="2" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" />
+                  <line x1="2" y1="5" x2="14" y2="5" stroke="currentColor" strokeWidth="1.5" />
+                  <line x1="2" y1="11" x2="14" y2="11" stroke="currentColor" strokeWidth="1.5" />
+                  <line x1="5" y1="2" x2="5" y2="14" stroke="currentColor" strokeWidth="1.5" />
+                  <line x1="11" y1="2" x2="11" y2="14" stroke="currentColor" strokeWidth="1.5" />
+                </svg>
               </TooltipButton>
             </div>
           </div>
@@ -2189,6 +2531,7 @@ export default function ScreenshotEditor() {
                 }}
                 disabled={annotations.length === 0}
                 tooltip={`Undo Last (${annotations.length})`}
+                tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
@@ -2215,6 +2558,7 @@ export default function ScreenshotEditor() {
                 onClick={() => setAnnotations([])}
                 disabled={annotations.length === 0}
                 tooltip="Clear All"
+                tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
@@ -2264,6 +2608,7 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => setZoom(Math.max(zoom / 1.2, 0.1))}
                 tooltip="Zoom Out (Ctrl + -)"
+                tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
@@ -2288,6 +2633,7 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }}
                 tooltip="Reset Zoom (Ctrl + 0)"
+                tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
@@ -2313,6 +2659,7 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => setZoom(Math.min(zoom * 1.2, 10))}
                 tooltip="Zoom In (Ctrl + =)"
+                tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
@@ -2354,6 +2701,7 @@ export default function ScreenshotEditor() {
                   }
                 }}
                 tooltip="Fit to Screen"
+                tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
