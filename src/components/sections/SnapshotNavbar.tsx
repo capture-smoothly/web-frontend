@@ -94,15 +94,6 @@ export const SnapshotNavbar: React.FC = () => {
 
           {/* Desktop CTAs */}
           <div className="hidden md:flex items-center gap-4">
-            {/* Editor Link - Always visible */}
-            <button
-              onClick={() => router.push("/editor")}
-              className="flex items-center gap-1.5 text-dark-lighter hover:text-primary font-medium transition-colors"
-            >
-              <ImageIcon className="w-4 h-4" />
-              Editor
-            </button>
-
             {user ? (
               <>
                 <button
@@ -111,6 +102,15 @@ export const SnapshotNavbar: React.FC = () => {
                 >
                   Dashboard
                 </button>
+                <Button
+                  size="md"
+                  variant="secondary"
+                  onClick={() => router.push("/editor")}
+                  className="flex items-center gap-2"
+                >
+                  <ImageIcon className="w-4 h-4" />
+                  Open Editor
+                </Button>
                 <Button
                   size="md"
                   variant="outline"
@@ -128,6 +128,15 @@ export const SnapshotNavbar: React.FC = () => {
                 >
                   Sign In
                 </button>
+                <Button
+                  size="md"
+                  variant="secondary"
+                  onClick={() => router.push("/editor")}
+                  className="flex items-center gap-2"
+                >
+                  <ImageIcon className="w-4 h-4" />
+                  Open Editor
+                </Button>
                 <Button
                   size="md"
                   onClick={() => window.open("https://x.com/THEBOSS036", "_blank")}
@@ -187,18 +196,6 @@ export const SnapshotNavbar: React.FC = () => {
                 )
               ))}
               <div className="pt-4 border-t border-gray-200 space-y-3">
-                {/* Editor Link - Always visible */}
-                <button
-                  onClick={() => {
-                    router.push("/editor");
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="flex items-center gap-2 w-full text-left py-2 text-dark-lighter hover:text-primary font-medium transition-colors"
-                >
-                  <ImageIcon className="w-4 h-4" />
-                  Editor
-                </button>
-
                 {user ? (
                   <>
                     <button
@@ -210,6 +207,18 @@ export const SnapshotNavbar: React.FC = () => {
                     >
                       Dashboard
                     </button>
+                    <Button
+                      size="md"
+                      variant="secondary"
+                      className="w-full flex items-center justify-center gap-2"
+                      onClick={() => {
+                        router.push("/editor");
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <ImageIcon className="w-4 h-4" />
+                      Open Editor
+                    </Button>
                     <Button
                       size="md"
                       variant="outline"
@@ -234,6 +243,18 @@ export const SnapshotNavbar: React.FC = () => {
                     >
                       Sign In
                     </button>
+                    <Button
+                      size="md"
+                      variant="secondary"
+                      className="w-full flex items-center justify-center gap-2"
+                      onClick={() => {
+                        router.push("/editor");
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <ImageIcon className="w-4 h-4" />
+                      Open Editor
+                    </Button>
                     <Button
                       size="md"
                       className="w-full flex items-center justify-center gap-2"
