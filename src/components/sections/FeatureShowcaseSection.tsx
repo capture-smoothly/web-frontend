@@ -3,6 +3,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { Tabs } from "../ui/Tabs";
+import Image from "next/image";
 
 const showcaseTabs = [
   {
@@ -29,11 +30,14 @@ const showcaseTabs = [
             ))}
           </ul>
         </div>
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 aspect-square flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-6xl mb-4">📸</div>
-            <p className="text-dark-lighter">Screenshot Tools Interface</p>
-          </div>
+        <div className="relative rounded-xl overflow-hidden shadow-lg">
+          <Image
+            src="/demo/Color_Theems.png"
+            alt="Professional Screenshot Capture with Color Themes"
+            width={800}
+            height={600}
+            className="w-full h-auto rounded-xl"
+          />
         </div>
       </div>
     ),
@@ -60,11 +64,14 @@ const showcaseTabs = [
             ))}
           </ul>
         </div>
-        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-8 aspect-square flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-6xl mb-4">📝</div>
-            <p className="text-dark-lighter">Text Selection Interface</p>
-          </div>
+        <div className="relative rounded-xl overflow-hidden shadow-lg">
+          <Image
+            src="/demo/Convert_Docs.png"
+            alt="Text Capture - Convert Boring Docs to Beautiful Presentable Docs"
+            width={800}
+            height={600}
+            className="w-full h-auto rounded-xl"
+          />
         </div>
       </div>
     ),
@@ -92,12 +99,14 @@ const showcaseTabs = [
             ))}
           </ul>
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          {["Aurora", "Crimson", "Tropical", "Ocean"].map((theme, i) => (
-            <div key={i} className="bg-gradient-to-br from-primary to-secondary rounded-lg p-6 aspect-square flex items-end">
-              <span className="text-white font-semibold text-sm">{theme}</span>
-            </div>
-          ))}
+        <div className="relative rounded-xl overflow-hidden shadow-lg">
+          <Image
+            src="/demo/Text_Editor.png"
+            alt="Text-to-Image Editor"
+            width={800}
+            height={600}
+            className="w-full h-auto rounded-xl"
+          />
         </div>
       </div>
     ),
@@ -126,11 +135,14 @@ const showcaseTabs = [
             ))}
           </ul>
         </div>
-        <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-8 aspect-square flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-6xl mb-4">🎨</div>
-            <p className="text-dark-lighter">Editing Toolbar</p>
-          </div>
+        <div className="relative rounded-xl overflow-hidden shadow-lg">
+          <Image
+            src="/demo/Editor_Image.png"
+            alt="Advanced Editing & Annotation Tools"
+            width={800}
+            height={600}
+            className="w-full h-auto rounded-xl"
+          />
         </div>
       </div>
     ),
