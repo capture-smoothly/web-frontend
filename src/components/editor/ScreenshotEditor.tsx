@@ -2418,23 +2418,18 @@ export default function ScreenshotEditor() {
               </svg>
             </button>
 
-            {/* Icon */}
-            <div
+            {/* Logo */}
+            <img
+              src="/logo.png"
+              alt="ILoveSnapshots"
               style={{
                 width: "64px",
                 height: "64px",
                 borderRadius: "16px",
-                background: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                objectFit: "contain",
                 margin: "0 auto 20px",
               }}
-            >
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1.5">
-                <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-            </div>
+            />
 
             {/* Title */}
             <h3 style={{ margin: "0 0 12px 0", fontSize: "22px", fontWeight: 600, color: colors.textSecondary }}>
