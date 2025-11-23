@@ -988,117 +988,6 @@ export default function ScreenshotEditor() {
     };
   };
 
-  // Document-level mouse event handlers for when cursor leaves canvas boundary
-  useEffect(() => {
-    const isActive = isDragging || isDrawingAnnotation || isPanning;
-    if (!isActive) return;
-
-    const handleDocumentMouseMove = (e: MouseEvent) => {
-      if (isPanning) {
-        setPan({ x: e.clientX - panStart.x, y: e.clientY - panStart.y });
-        return;
-      }
-
-      const { x, y } = getCanvasCoordinates(e);
-
-      if (isDrawingAnnotation && currentAnnotation) {
-        if (currentAnnotation.type === "freehand") {
-          setCurrentAnnotation({
-            ...currentAnnotation,
-            points: [...(currentAnnotation.points || []), { x, y }],
-            endX: x,
-            endY: y,
-          });
-        } else {
-          setCurrentAnnotation({ ...currentAnnotation, endX: x, endY: y });
-        }
-        return;
-      }
-
-      if (activeTool === "crop" && isDragging) {
-        if (cropMode === "freeform" && cropArea) {
-          setCropArea({ ...cropArea, endX: x, endY: y });
-        } else if (cropMode === "border" && borderCrop && borderCropDragEdge) {
-          const canvas = canvasRef.current;
-          if (!canvas) return;
-
-          const newBorderCrop = { ...borderCrop };
-          const minSize = 20;
-
-          switch (borderCropDragEdge) {
-            case "top":
-              newBorderCrop.top = Math.max(0, Math.min(y, borderCrop.bottom - minSize));
-              break;
-            case "bottom":
-              newBorderCrop.bottom = Math.min(canvas.height, Math.max(y, borderCrop.top + minSize));
-              break;
-            case "left":
-              newBorderCrop.left = Math.max(0, Math.min(x, borderCrop.right - minSize));
-              break;
-            case "right":
-              newBorderCrop.right = Math.min(canvas.width, Math.max(x, borderCrop.left + minSize));
-              break;
-            case "topLeft":
-              newBorderCrop.top = Math.max(0, Math.min(y, borderCrop.bottom - minSize));
-              newBorderCrop.left = Math.max(0, Math.min(x, borderCrop.right - minSize));
-              break;
-            case "topRight":
-              newBorderCrop.top = Math.max(0, Math.min(y, borderCrop.bottom - minSize));
-              newBorderCrop.right = Math.min(canvas.width, Math.max(x, borderCrop.left + minSize));
-              break;
-            case "bottomLeft":
-              newBorderCrop.bottom = Math.min(canvas.height, Math.max(y, borderCrop.top + minSize));
-              newBorderCrop.left = Math.max(0, Math.min(x, borderCrop.right - minSize));
-              break;
-            case "bottomRight":
-              newBorderCrop.bottom = Math.min(canvas.height, Math.max(y, borderCrop.top + minSize));
-              newBorderCrop.right = Math.min(canvas.width, Math.max(x, borderCrop.left + minSize));
-              break;
-          }
-
-          setBorderCrop(newBorderCrop);
-        }
-      }
-    };
-
-    const handleDocumentMouseUp = () => {
-      if (isDrawingAnnotation && currentAnnotation) {
-        const hasSize =
-          currentAnnotation.type === "freehand"
-            ? (currentAnnotation.points?.length || 0) > 2
-            : Math.abs(currentAnnotation.endX - currentAnnotation.startX) > 5 ||
-              Math.abs(currentAnnotation.endY - currentAnnotation.startY) > 5;
-
-        if (hasSize) {
-          const newAnnotations = [...annotations, currentAnnotation];
-          setAnnotations(newAnnotations);
-          setTimeout(() => {
-            saveToHistory({
-              imageUrl,
-              annotations: newAnnotations,
-              showBackground,
-              includeWindowChrome,
-              windowChromeTheme,
-              selectedTheme,
-            });
-          }, 0);
-        }
-        setIsDrawingAnnotation(false);
-        setCurrentAnnotation(null);
-      }
-      setIsDragging(false);
-      setIsPanning(false);
-      setBorderCropDragEdge(null);
-    };
-
-    document.addEventListener("mousemove", handleDocumentMouseMove);
-    document.addEventListener("mouseup", handleDocumentMouseUp);
-
-    return () => {
-      document.removeEventListener("mousemove", handleDocumentMouseMove);
-      document.removeEventListener("mouseup", handleDocumentMouseUp);
-    };
-  }, [isDragging, isDrawingAnnotation, isPanning, currentAnnotation, cropArea, cropMode, borderCrop, borderCropDragEdge, activeTool, panStart, annotations, imageUrl, showBackground, includeWindowChrome, windowChromeTheme, selectedTheme]);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (spacePressed || e.button === 1 || panModeEnabled) {
@@ -1342,6 +1231,130 @@ export default function ScreenshotEditor() {
       selectedTheme,
     });
   }, [imageUrl, annotations, showBackground, includeWindowChrome, windowChromeTheme, selectedTheme, saveToHistory]);
+
+  // Document-level mouse event handlers for when cursor leaves canvas boundary
+  useEffect(() => {
+    const isActive = isDragging || isDrawingAnnotation || isPanning;
+    if (!isActive) return;
+
+    const getDocumentCanvasCoordinates = (e: MouseEvent) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return { x: 0, y: 0 };
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY,
+      };
+    };
+
+    const handleDocumentMouseMove = (e: MouseEvent) => {
+      if (isPanning) {
+        setPan({ x: e.clientX - panStart.x, y: e.clientY - panStart.y });
+        return;
+      }
+
+      const { x, y } = getDocumentCanvasCoordinates(e);
+
+      if (isDrawingAnnotation && currentAnnotation) {
+        if (currentAnnotation.type === "freehand") {
+          setCurrentAnnotation({
+            ...currentAnnotation,
+            points: [...(currentAnnotation.points || []), { x, y }],
+            endX: x,
+            endY: y,
+          });
+        } else {
+          setCurrentAnnotation({ ...currentAnnotation, endX: x, endY: y });
+        }
+        return;
+      }
+
+      if (activeTool === "crop" && isDragging) {
+        if (cropMode === "freeform" && cropArea) {
+          setCropArea({ ...cropArea, endX: x, endY: y });
+        } else if (cropMode === "border" && borderCrop && borderCropDragEdge) {
+          const canvas = canvasRef.current;
+          if (!canvas) return;
+
+          const newBorderCrop = { ...borderCrop };
+          const minSize = 20;
+
+          switch (borderCropDragEdge) {
+            case "top":
+              newBorderCrop.top = Math.max(0, Math.min(y, borderCrop.bottom - minSize));
+              break;
+            case "bottom":
+              newBorderCrop.bottom = Math.min(canvas.height, Math.max(y, borderCrop.top + minSize));
+              break;
+            case "left":
+              newBorderCrop.left = Math.max(0, Math.min(x, borderCrop.right - minSize));
+              break;
+            case "right":
+              newBorderCrop.right = Math.min(canvas.width, Math.max(x, borderCrop.left + minSize));
+              break;
+            case "topLeft":
+              newBorderCrop.top = Math.max(0, Math.min(y, borderCrop.bottom - minSize));
+              newBorderCrop.left = Math.max(0, Math.min(x, borderCrop.right - minSize));
+              break;
+            case "topRight":
+              newBorderCrop.top = Math.max(0, Math.min(y, borderCrop.bottom - minSize));
+              newBorderCrop.right = Math.min(canvas.width, Math.max(x, borderCrop.left + minSize));
+              break;
+            case "bottomLeft":
+              newBorderCrop.bottom = Math.min(canvas.height, Math.max(y, borderCrop.top + minSize));
+              newBorderCrop.left = Math.max(0, Math.min(x, borderCrop.right - minSize));
+              break;
+            case "bottomRight":
+              newBorderCrop.bottom = Math.min(canvas.height, Math.max(y, borderCrop.top + minSize));
+              newBorderCrop.right = Math.min(canvas.width, Math.max(x, borderCrop.left + minSize));
+              break;
+          }
+
+          setBorderCrop(newBorderCrop);
+        }
+      }
+    };
+
+    const handleDocumentMouseUp = () => {
+      if (isDrawingAnnotation && currentAnnotation) {
+        const hasSize =
+          currentAnnotation.type === "freehand"
+            ? (currentAnnotation.points?.length || 0) > 2
+            : Math.abs(currentAnnotation.endX - currentAnnotation.startX) > 5 ||
+              Math.abs(currentAnnotation.endY - currentAnnotation.startY) > 5;
+
+        if (hasSize) {
+          const newAnnotations = [...annotations, currentAnnotation];
+          setAnnotations(newAnnotations);
+          setTimeout(() => {
+            saveToHistory({
+              imageUrl,
+              annotations: newAnnotations,
+              showBackground,
+              includeWindowChrome,
+              windowChromeTheme,
+              selectedTheme,
+            });
+          }, 0);
+        }
+        setIsDrawingAnnotation(false);
+        setCurrentAnnotation(null);
+      }
+      setIsDragging(false);
+      setIsPanning(false);
+      setBorderCropDragEdge(null);
+    };
+
+    document.addEventListener("mousemove", handleDocumentMouseMove);
+    document.addEventListener("mouseup", handleDocumentMouseUp);
+
+    return () => {
+      document.removeEventListener("mousemove", handleDocumentMouseMove);
+      document.removeEventListener("mouseup", handleDocumentMouseUp);
+    };
+  }, [isDragging, isDrawingAnnotation, isPanning, currentAnnotation, cropArea, cropMode, borderCrop, borderCropDragEdge, activeTool, panStart, annotations, imageUrl, showBackground, includeWindowChrome, windowChromeTheme, selectedTheme, saveToHistory]);
 
   const handleUndo = useCallback(() => {
     if (historyIndex <= 0) return;

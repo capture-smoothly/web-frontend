@@ -7,6 +7,7 @@ import { Sparkles, Zap, Edit3, ChevronDown, Play } from "lucide-react";
 import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
 import { useAuth } from "@/contexts/AuthContext";
+import Image from "next/image";
 
 const stats = [
   { label: "Pre-Launch", value: "NEW" },
@@ -147,7 +148,7 @@ export const HeroSection: React.FC = () => {
             ))}
           </motion.div>
 
-          {/* Hero Visual Placeholder */}
+          {/* Hero Visual */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -155,15 +156,15 @@ export const HeroSection: React.FC = () => {
             className="mt-16 relative"
           >
             <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl shadow-colorful p-8 border-2 border-gradient-to-r from-coral/30 via-teal/30 to-accent/30">
-              <div className="aspect-video bg-gradient-to-br from-coral/20 via-teal/20 to-accent/20 rounded-2xl flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-peach/30 via-transparent to-mint/30" />
-                <div className="text-center relative z-10">
-                  <Camera className="w-16 h-16 text-coral mx-auto mb-4" />
-                  <p className="text-dark-lighter font-semibold">Extension Demo Preview</p>
-                  <p className="text-sm text-dark-lighter mt-2">
-                    Before/After: Messy text → <span className="text-teal font-semibold">Beautiful themed snapshot</span>
-                  </p>
-                </div>
+              <div className="relative rounded-2xl overflow-hidden">
+                <Image
+                  src="/demo/Beautiful_Screenshots.png"
+                  alt="Beautiful Screenshots Demo"
+                  width={1200}
+                  height={675}
+                  className="w-full h-auto rounded-2xl"
+                  priority
+                />
               </div>
 
               {/* Floating UI elements mockup */}
@@ -218,25 +219,3 @@ export const HeroSection: React.FC = () => {
     </section>
   );
 };
-
-const Camera = ({ className }: { className?: string }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-    />
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-    />
-  </svg>
-);
