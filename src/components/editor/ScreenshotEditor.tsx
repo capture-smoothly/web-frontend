@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 
 // Theme gradients
 const THEMES = {
+  // Original themes
   midnight: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
   sunset: "linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 50%, #c44569 100%)",
   ocean: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
@@ -39,6 +40,50 @@ const THEMES = {
   chocolate: "linear-gradient(135deg, #3d2817 0%, #5c3d2e 50%, #7d5a50 100%)",
   caramel: "linear-gradient(135deg, #c89f7e 0%, #d4a574 50%, #e8c4a0 100%)",
   bronze: "linear-gradient(135deg, #cd7f32 0%, #d4af37 50%, #ffd700 100%)",
+
+  // Premium Dark Themes - Ultra sophisticated
+  noir: "linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 40%, #262626 100%)",
+  charcoal: "linear-gradient(160deg, #141414 0%, #1f1f1f 50%, #2a2a2a 100%)",
+  abyss: "linear-gradient(145deg, #000000 0%, #0a0a0f 50%, #121218 100%)",
+  eclipse: "linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d2d5a 100%)",
+
+  // Tech/SaaS Inspired - Clean, modern
+  linear: "linear-gradient(135deg, #5c6ac4 0%, #8b5cf6 50%, #d946ef 100%)",
+  notion: "linear-gradient(135deg, #f7f6f3 0%, #eae6df 50%, #e3ddd4 100%)",
+  vercel: "linear-gradient(135deg, #000000 0%, #111111 50%, #171717 100%)",
+  stripe: "linear-gradient(135deg, #635bff 0%, #7a73ff 50%, #a5b4fc 100%)",
+  figma: "linear-gradient(135deg, #f24e1e 0%, #ff7262 30%, #a259ff 70%, #1abcfe 100%)",
+
+  // Luxury/Premium - Elegant and refined
+  platinum: "linear-gradient(135deg, #e5e4e2 0%, #c4c4c4 50%, #a8a8a8 100%)",
+  titanium: "linear-gradient(145deg, #54585a 0%, #6e7275 50%, #888b8d 100%)",
+  champagne: "linear-gradient(135deg, #f7e7ce 0%, #e8d4b8 50%, #d4c4a8 100%)",
+  rosegold: "linear-gradient(135deg, #b76e79 0%, #c9a0a0 50%, #e8c4c4 100%)",
+  blackgold: "linear-gradient(160deg, #0a0a0a 0%, #1a1a1a 40%, #2d2319 70%, #5c4a32 100%)",
+
+  // Professional/Corporate - Clean business look
+  mercury: "linear-gradient(135deg, #e8ecef 0%, #d1d9e0 50%, #b8c5cf 100%)",
+  corporate: "linear-gradient(135deg, #1e3a5f 0%, #2c5282 50%, #3b7ab8 100%)",
+  executive: "linear-gradient(145deg, #1a1a2e 0%, #2d3748 50%, #4a5568 100%)",
+  prestige: "linear-gradient(135deg, #2c1810 0%, #4a2c1a 50%, #6b4423 100%)",
+
+  // Ethereal/Soft - Light and airy
+  mist: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)",
+  frost: "linear-gradient(145deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%)",
+  cloud: "linear-gradient(135deg, #faf5ff 0%, #f3e8ff 50%, #e9d5ff 100%)",
+  silk: "linear-gradient(160deg, #fefefe 0%, #f8f8f8 50%, #f0f0f0 100%)",
+
+  // Gradient Mesh Style - Multi-color sophisticated
+  cosmos: "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
+  nebula: "linear-gradient(145deg, #1a0530 0%, #2d1b4e 40%, #1e3a5f 70%, #0f4c5c 100%)",
+  prism: "linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f093fb 60%, #f5576c 100%)",
+  hologram: "linear-gradient(160deg, #a8edea 0%, #fed6e3 25%, #d299c2 50%, #a8c0ff 75%, #a8edea 100%)",
+
+  // Earth/Nature Premium - Rich and organic
+  mahogany: "linear-gradient(135deg, #4a1c1c 0%, #6b2d2d 50%, #8b4040 100%)",
+  walnut: "linear-gradient(145deg, #3e2723 0%, #5d4037 50%, #795548 100%)",
+  jade: "linear-gradient(135deg, #004d40 0%, #00695c 50%, #00897b 100%)",
+  ruby: "linear-gradient(160deg, #6b0f1a 0%, #9b1b30 50%, #c41e3a 100%)",
 } as const;
 
 type ThemeType = keyof typeof THEMES;
@@ -188,6 +233,7 @@ function ThemeSelector({
   }, [onClose]);
 
   const themeNames: Record<ThemeType, string> = {
+    // Original
     midnight: "Midnight", sunset: "Sunset", ocean: "Ocean", forest: "Forest",
     lavender: "Lavender", golden: "Golden", coral: "Coral", sky: "Sky",
     slate: "Slate", rose: "Rose", pearl: "Pearl", carbon: "Carbon",
@@ -197,6 +243,20 @@ function ThemeSelector({
     cream: "Cream", tropical: "Tropical", peacock: "Peacock", berry: "Berry",
     citrus: "Citrus", candy: "Candy", mango: "Mango", unicorn: "Unicorn",
     chocolate: "Chocolate", caramel: "Caramel", bronze: "Bronze",
+    // Premium Dark
+    noir: "Noir", charcoal: "Charcoal", abyss: "Abyss", eclipse: "Eclipse",
+    // Tech/SaaS
+    linear: "Linear", notion: "Notion", vercel: "Vercel", stripe: "Stripe", figma: "Figma",
+    // Luxury
+    platinum: "Platinum", titanium: "Titanium", champagne: "Champagne", rosegold: "Rose Gold", blackgold: "Black Gold",
+    // Professional
+    mercury: "Mercury", corporate: "Corporate", executive: "Executive", prestige: "Prestige",
+    // Ethereal
+    mist: "Mist", frost: "Frost", cloud: "Cloud", silk: "Silk",
+    // Gradient Mesh
+    cosmos: "Cosmos", nebula: "Nebula", prism: "Prism", hologram: "Hologram",
+    // Earth Premium
+    mahogany: "Mahogany", walnut: "Walnut", jade: "Jade", ruby: "Ruby",
   };
 
   return (
@@ -207,16 +267,24 @@ function ThemeSelector({
         top: "60px",
         left: "20px",
         background: colors.background,
-        borderRadius: "8px",
+        borderRadius: "12px",
         padding: "16px",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.4)",
+        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.5)",
         border: `1px solid ${colors.border}`,
         zIndex: 10000,
-        minWidth: "340px",
+        width: "420px",
+        maxHeight: "70vh",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-        <span style={{ color: colors.text, fontSize: "14px", fontWeight: 500 }}>Select Theme</span>
+        <div>
+          <span style={{ color: colors.text, fontSize: "14px", fontWeight: 600 }}>Select Theme</span>
+          <span style={{ color: colors.textMuted, fontSize: "11px", marginLeft: "8px" }}>
+            {Object.keys(THEMES).length} premium themes
+          </span>
+        </div>
         <button
           onClick={onClose}
           style={{
@@ -234,7 +302,15 @@ function ThemeSelector({
         </button>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "8px", marginBottom: "12px" }}>
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(6, 1fr)",
+        gap: "8px",
+        marginBottom: "12px",
+        overflowY: "auto",
+        maxHeight: "calc(70vh - 100px)",
+        paddingRight: "4px",
+      }}>
         {(Object.keys(THEMES) as ThemeType[]).map((themeKey) => {
           const isSelected = selectedTheme === themeKey;
           const isHovered = hoveredTheme === themeKey;
