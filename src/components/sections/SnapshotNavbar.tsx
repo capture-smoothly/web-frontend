@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { motion, AnimatePresence } from "motion/react";
-import { Camera, Menu, X, LogOut, Download } from "lucide-react";
+import { Camera, Menu, X, LogOut, Download, ImageIcon } from "lucide-react";
 import { Button } from "../ui/Button";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -94,6 +94,15 @@ export const SnapshotNavbar: React.FC = () => {
 
           {/* Desktop CTAs */}
           <div className="hidden md:flex items-center gap-4">
+            {/* Editor Link - Always visible */}
+            <button
+              onClick={() => router.push("/editor")}
+              className="flex items-center gap-1.5 text-dark-lighter hover:text-primary font-medium transition-colors"
+            >
+              <ImageIcon className="w-4 h-4" />
+              Editor
+            </button>
+
             {user ? (
               <>
                 <button
@@ -178,6 +187,18 @@ export const SnapshotNavbar: React.FC = () => {
                 )
               ))}
               <div className="pt-4 border-t border-gray-200 space-y-3">
+                {/* Editor Link - Always visible */}
+                <button
+                  onClick={() => {
+                    router.push("/editor");
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="flex items-center gap-2 w-full text-left py-2 text-dark-lighter hover:text-primary font-medium transition-colors"
+                >
+                  <ImageIcon className="w-4 h-4" />
+                  Editor
+                </button>
+
                 {user ? (
                   <>
                     <button
