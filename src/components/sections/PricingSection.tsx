@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion } from "motion/react";
-import { Check, X, Chrome, Monitor, Zap, Crown, Star } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "motion/react";
+import { Check, X, Chrome, Crown, Star, Gift, PartyPopper } from "lucide-react";
 import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
 import clsx from "clsx";
@@ -102,7 +103,9 @@ const pricingPlans: PricingPlan[] = [
 ];
 
 export const PricingSection: React.FC = () => {
+  const router = useRouter();
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("yearly");
+  const [showComingSoonNotice, setShowComingSoonNotice] = useState(false);
 
   const getPrice = (plan: PricingPlan) => {
     if (plan.monthlyPrice === 0) return "Free";
@@ -117,8 +120,50 @@ export const PricingSection: React.FC = () => {
     return savings;
   };
 
+  const handlePlanClick = (planName: string) => {
+    if (planName === "Free") {
+      router.push("/auth/login");
+    } else {
+      setShowComingSoonNotice(true);
+      setTimeout(() => setShowComingSoonNotice(false), 6000);
+    }
+  };
+
   return (
     <section id="pricing" className="py-20 md:py-32 bg-gradient-to-br from-primary/5 to-secondary/5">
+      {/* Coming Soon Notice */}
+      <AnimatePresence>
+        {showComingSoonNotice && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-24 left-1/2 -translate-x-1/2 z-50 max-w-lg w-full mx-4"
+          >
+            <div className="bg-white rounded-2xl shadow-xl border border-teal/20 p-5 flex items-start gap-4">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-coral/20 to-teal/20 flex items-center justify-center flex-shrink-0">
+                <PartyPopper className="w-6 h-6 text-coral" />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-dark flex items-center gap-2">
+                  Paid Plans Coming in December!
+                  <Gift className="w-4 h-4 text-teal" />
+                </p>
+                <p className="text-sm text-dark-lighter mt-1">
+                  We&apos;re putting the finishing touches on our payment system. Until then, enjoy <span className="font-medium text-teal">every feature completely free</span> - no limits! Happy Thanksgiving!
+                </p>
+              </div>
+              <button
+                onClick={() => setShowComingSoonNotice(false)}
+                className="text-dark-lighter hover:text-dark transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -251,6 +296,7 @@ export const PricingSection: React.FC = () => {
               <Button
                 variant={plan.ctaVariant}
                 className="w-full mb-6"
+                onClick={() => handlePlanClick(plan.name)}
               >
                 {plan.cta}
               </Button>

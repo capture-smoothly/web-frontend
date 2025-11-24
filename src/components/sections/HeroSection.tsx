@@ -1,20 +1,19 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   Sparkles,
   Zap,
   Edit3,
   ChevronDown,
-  Play,
   Chrome,
   Monitor,
+  X,
 } from "lucide-react";
 import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
-import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
 
 const stats = [
@@ -25,7 +24,12 @@ const stats = [
 
 export const HeroSection: React.FC = () => {
   const router = useRouter();
-  const { user } = useAuth();
+  const [showExtensionNotice, setShowExtensionNotice] = useState(false);
+
+  const handleExtensionClick = () => {
+    setShowExtensionNotice(true);
+    setTimeout(() => setShowExtensionNotice(false), 5000);
+  };
 
   return (
     <section
@@ -134,16 +138,14 @@ export const HeroSection: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
           >
-            <a
-              href="https://chromewebstore.google.com/detail/ilovesnapshots/your-extension-id"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Button
+              size="lg"
+              className="text-lg px-10 py-5"
+              onClick={handleExtensionClick}
             >
-              <Button size="lg" className="text-lg px-10 py-5">
-                <Chrome className="w-5 h-5 mr-2" />
-                Add to Chrome - It&apos;s Free
-              </Button>
-            </a>
+              <Chrome className="w-5 h-5 mr-2" />
+              Add to Chrome - It&apos;s Free
+            </Button>
             <Button
               size="lg"
               variant="outline"
@@ -154,6 +156,36 @@ export const HeroSection: React.FC = () => {
               Try Web Editor
             </Button>
           </motion.div>
+
+          {/* Extension Coming Soon Notice */}
+          <AnimatePresence>
+            {showExtensionNotice && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="fixed top-24 left-1/2 -translate-x-1/2 z-50 max-w-md w-full mx-4"
+              >
+                <div className="bg-white rounded-2xl shadow-xl border border-coral/20 p-4 flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-coral/10 flex items-center justify-center flex-shrink-0">
+                    <Chrome className="w-5 h-5 text-coral" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-dark">Extension launching this week!</p>
+                    <p className="text-sm text-dark-lighter mt-1">
+                      Our Chrome extension is currently under review. In the meantime, try the Web Editor - it has all the same great features!
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setShowExtensionNotice(false)}
+                    className="text-dark-lighter hover:text-dark transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Stats Bar */}
           <motion.div
