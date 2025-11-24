@@ -4351,7 +4351,7 @@ export default function ScreenshotEditor() {
                 pan.y / zoom
               }px)`,
               transformOrigin: "center center",
-              transition: isPanning ? "none" : "transform 0.1s ease-out",
+              transition: isPanning ? "none" : "transform 0.05s ease-out",
               willChange: isPanning ? "transform" : "auto",
               background: THEMES[selectedTheme],
               padding: `${calculateCardPadding(cardPadding)}px`,
@@ -4495,7 +4495,7 @@ export default function ScreenshotEditor() {
                 pan.y / zoom
               }px)`,
               transformOrigin: "center center",
-              transition: isPanning ? "none" : "transform 0.1s ease-out",
+              transition: isPanning ? "none" : "transform 0.05s ease-out",
               willChange: isPanning ? "transform" : "auto",
               background: windowChromeTheme === "light" ? "#ffffff" : "#1a1a1a",
               borderRadius: "12px",
