@@ -911,8 +911,14 @@ export default function ScreenshotEditor() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Set canvas to full image resolution
     canvas.width = image.naturalWidth;
     canvas.height = image.naturalHeight;
+
+    // Enable high-quality image rendering
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+
     ctx.drawImage(image, 0, 0);
   }, []);
 
@@ -2105,10 +2111,14 @@ export default function ScreenshotEditor() {
       const width = Math.floor(rect.width);
       const height = Math.floor(rect.height);
 
+      // Use higher scale for better quality (minimum 2, or device pixel ratio if higher)
+      const dpr = Math.max(2, window.devicePixelRatio || 2);
+
       const capturedCanvas = await html2canvas(backgroundContainer, {
         backgroundColor: null,
-        scale: 2,
+        scale: dpr,
         useCORS: true,
+        allowTaint: false,
         width: width,
         height: height,
         windowWidth: width,
@@ -2124,9 +2134,9 @@ export default function ScreenshotEditor() {
 
       backgroundContainer.style.transform = currentTransform;
 
-      // Trim edge artifacts by cropping 1-2 pixels from edges (scaled)
+      // Trim edge artifacts by cropping pixels from edges (scaled by dpr)
       const cleanCanvas = document.createElement("canvas");
-      const trim = 2; // pixels to trim from each edge (at scale)
+      const trim = Math.ceil(dpr); // pixels to trim from each edge (scales with dpr)
       const sourceWidth = capturedCanvas.width;
       const sourceHeight = capturedCanvas.height;
 
@@ -2136,6 +2146,10 @@ export default function ScreenshotEditor() {
 
       const cleanCtx = cleanCanvas.getContext("2d");
       if (cleanCtx) {
+        // Enable high-quality image rendering
+        cleanCtx.imageSmoothingEnabled = true;
+        cleanCtx.imageSmoothingQuality = "high";
+
         // Draw from source, skipping the trim amount from edges
         cleanCtx.drawImage(
           capturedCanvas,
@@ -2202,10 +2216,14 @@ export default function ScreenshotEditor() {
         const width = Math.floor(rect.width);
         const height = Math.floor(rect.height);
 
+        // Use higher scale for better quality (minimum 2, or device pixel ratio if higher)
+        const dpr = Math.max(2, window.devicePixelRatio || 2);
+
         const capturedCanvas = await html2canvas(backgroundContainer, {
           backgroundColor: null,
-          scale: 2,
+          scale: dpr,
           useCORS: true,
+          allowTaint: false,
           width: width,
           height: height,
           windowWidth: width,
@@ -2220,8 +2238,8 @@ export default function ScreenshotEditor() {
         });
         backgroundContainer.style.transform = currentTransform;
 
-        // Trim edge artifacts by cropping 1-2 pixels from edges (scaled)
-        const trim = 2; // pixels to trim from each edge (at scale)
+        // Trim edge artifacts by cropping pixels from edges (scaled by dpr)
+        const trim = Math.ceil(dpr); // pixels to trim from each edge (scales with dpr)
         const sourceWidth = capturedCanvas.width;
         const sourceHeight = capturedCanvas.height;
 
@@ -2232,6 +2250,10 @@ export default function ScreenshotEditor() {
 
         const cleanCtx = canvas.getContext("2d");
         if (cleanCtx) {
+          // Enable high-quality image rendering
+          cleanCtx.imageSmoothingEnabled = true;
+          cleanCtx.imageSmoothingQuality = "high";
+
           // Draw from source, skipping the trim amount from edges
           cleanCtx.drawImage(
             capturedCanvas,
@@ -2251,6 +2273,11 @@ export default function ScreenshotEditor() {
         canvas.height = mainCanvas.height;
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
+
+        // Enable high-quality image rendering
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+
         ctx.drawImage(mainCanvas, 0, 0);
         if (annotationCanvas) ctx.drawImage(annotationCanvas, 0, 0);
       }
