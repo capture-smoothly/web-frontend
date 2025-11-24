@@ -3161,6 +3161,58 @@ export default function ScreenshotEditor() {
             )}
           </>
         )}
+
+        {/* Dashboard/Sign In Button - Always visible */}
+        <button
+          onClick={() => router.push(user ? "/dashboard" : "/auth/login")}
+          style={{
+            padding: "8px 16px",
+            cursor: "pointer",
+            backgroundColor: user ? colors.buttonBg : "#10B981",
+            color: user ? colors.textSecondary : "white",
+            border: `1px solid ${user ? colors.buttonBgHover : "#10B981"}`,
+            borderRadius: "6px",
+            fontWeight: 500,
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            fontSize: "14px",
+            transition: "all 0.2s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.opacity = "0.9";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.opacity = "1";
+          }}
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            {user ? (
+              <>
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+              </>
+            ) : (
+              <>
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                <polyline points="10 17 15 12 10 7" />
+                <line x1="15" y1="12" x2="3" y2="12" />
+              </>
+            )}
+          </svg>
+          {user ? "Dashboard" : "Sign In"}
+        </button>
       </div>
 
       {/* Theme Selector Popup */}
