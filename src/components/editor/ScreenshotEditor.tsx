@@ -2036,25 +2036,52 @@ export default function ScreenshotEditor() {
 
       const html2canvas = (await import("html2canvas")).default;
 
-      // Get exact dimensions to avoid sub-pixel issues
+      // Get exact dimensions - use floor to avoid capturing extra edge pixels
       const rect = backgroundContainer.getBoundingClientRect();
+      const width = Math.floor(rect.width);
+      const height = Math.floor(rect.height);
+
       const capturedCanvas = await html2canvas(backgroundContainer, {
         backgroundColor: null,
         scale: 2,
         useCORS: true,
-        width: Math.ceil(rect.width),
-        height: Math.ceil(rect.height),
-        windowWidth: Math.ceil(rect.width),
-        windowHeight: Math.ceil(rect.height),
+        width: width,
+        height: height,
+        windowWidth: width,
+        windowHeight: height,
         x: 0,
         y: 0,
         scrollX: 0,
         scrollY: 0,
+        removeContainer: true,
+        imageTimeout: 0,
+        logging: false,
       });
 
       backgroundContainer.style.transform = currentTransform;
 
-      capturedCanvas.toBlob((blob) => {
+      // Trim edge artifacts by cropping 1-2 pixels from edges (scaled)
+      const cleanCanvas = document.createElement("canvas");
+      const scale = 2;
+      const trim = 2; // pixels to trim from each edge (at scale)
+      const sourceWidth = capturedCanvas.width;
+      const sourceHeight = capturedCanvas.height;
+
+      // Final dimensions after trimming
+      cleanCanvas.width = sourceWidth - trim * 2;
+      cleanCanvas.height = sourceHeight - trim * 2;
+
+      const cleanCtx = cleanCanvas.getContext("2d");
+      if (cleanCtx) {
+        // Draw from source, skipping the trim amount from edges
+        cleanCtx.drawImage(
+          capturedCanvas,
+          trim, trim, sourceWidth - trim * 2, sourceHeight - trim * 2,
+          0, 0, cleanCanvas.width, cleanCanvas.height
+        );
+      }
+
+      (cleanCtx ? cleanCanvas : capturedCanvas).toBlob((blob) => {
         if (!blob) return;
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -2107,22 +2134,50 @@ export default function ScreenshotEditor() {
 
         const html2canvas = (await import("html2canvas")).default;
 
-        // Get exact dimensions to avoid sub-pixel issues
+        // Get exact dimensions - use floor to avoid capturing extra edge pixels
         const rect = backgroundContainer.getBoundingClientRect();
-        canvas = await html2canvas(backgroundContainer, {
+        const width = Math.floor(rect.width);
+        const height = Math.floor(rect.height);
+
+        const capturedCanvas = await html2canvas(backgroundContainer, {
           backgroundColor: null,
           scale: 2,
           useCORS: true,
-          width: Math.ceil(rect.width),
-          height: Math.ceil(rect.height),
-          windowWidth: Math.ceil(rect.width),
-          windowHeight: Math.ceil(rect.height),
+          width: width,
+          height: height,
+          windowWidth: width,
+          windowHeight: height,
           x: 0,
           y: 0,
           scrollX: 0,
           scrollY: 0,
+          removeContainer: true,
+          imageTimeout: 0,
+          logging: false,
         });
         backgroundContainer.style.transform = currentTransform;
+
+        // Trim edge artifacts by cropping 1-2 pixels from edges (scaled)
+        const trim = 2; // pixels to trim from each edge (at scale)
+        const sourceWidth = capturedCanvas.width;
+        const sourceHeight = capturedCanvas.height;
+
+        // Final dimensions after trimming
+        canvas = document.createElement("canvas");
+        canvas.width = sourceWidth - trim * 2;
+        canvas.height = sourceHeight - trim * 2;
+
+        const cleanCtx = canvas.getContext("2d");
+        if (cleanCtx) {
+          // Draw from source, skipping the trim amount from edges
+          cleanCtx.drawImage(
+            capturedCanvas,
+            trim, trim, sourceWidth - trim * 2, sourceHeight - trim * 2,
+            0, 0, canvas.width, canvas.height
+          );
+        } else {
+          canvas = capturedCanvas;
+        }
       } else {
         const mainCanvas = canvasRef.current;
         const annotationCanvas = annotationCanvasRef.current;
