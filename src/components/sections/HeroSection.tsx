@@ -153,7 +153,7 @@ export const HeroSection: React.FC = () => {
               onClick={() => router.push("/editor")}
             >
               <Monitor className="w-5 h-5 mr-2" />
-              Try Web Editor
+              Try Web Editor - Its Free!
             </Button>
           </motion.div>
 
@@ -171,9 +171,13 @@ export const HeroSection: React.FC = () => {
                     <Chrome className="w-5 h-5 text-coral" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-dark">Extension launching this week!</p>
+                    <p className="font-semibold text-dark">
+                      Extension launching this week!
+                    </p>
                     <p className="text-sm text-dark-lighter mt-1">
-                      Our Chrome extension is currently under review. In the meantime, try the Web Editor - it has all the same great features!
+                      Our Chrome extension is currently under review. In the
+                      meantime, try the Web Editor - it has all the same great
+                      features!
                     </p>
                   </div>
                   <button
