@@ -688,11 +688,11 @@ export default function ScreenshotEditor() {
   // Visual settings
   const [includeWindowChrome, setIncludeWindowChrome] = useState(true);
   const [windowChromeTheme, setWindowChromeTheme] = useState<"light" | "dark">(
-    "light"
+    "dark"
   );
   const [showBackground, setShowBackground] = useState(true);
   const [editorTheme, setEditorTheme] = useState<"light" | "dark">("dark");
-  const [selectedTheme, setSelectedTheme] = useState<ThemeType>("sunset");
+  const [selectedTheme, setSelectedTheme] = useState<ThemeType>("figma");
   const [showThemeSelector, setShowThemeSelector] = useState(false);
 
   // Width and padding
