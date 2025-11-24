@@ -737,6 +737,9 @@ export default function ScreenshotEditor() {
   const [onboardingStep, setOnboardingStep] = useState(0);
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(true); // Default true to prevent flash
 
+  // Unsaved changes prompt state
+  const [showUnsavedPrompt, setShowUnsavedPrompt] = useState(false);
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
   const annotationCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -2645,6 +2648,175 @@ export default function ScreenshotEditor() {
         </div>
       )}
 
+      {/* Unsaved Changes Prompt Modal */}
+      {showUnsavedPrompt && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.7)",
+            backdropFilter: "blur(4px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 10000,
+            padding: "20px",
+          }}
+          onClick={() => setShowUnsavedPrompt(false)}
+        >
+          <div
+            style={{
+              background: editorTheme === "dark" ? "#1E1E1E" : "#FFFFFF",
+              borderRadius: "16px",
+              padding: "32px",
+              maxWidth: "420px",
+              width: "100%",
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+              border: `1px solid ${editorTheme === "dark" ? "#2D2D2D" : "#E5E7EB"}`,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Warning Icon */}
+            <div
+              style={{
+                width: "56px",
+                height: "56px",
+                borderRadius: "50%",
+                background: "rgba(249, 115, 22, 0.1)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 20px",
+              }}
+            >
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#F97316"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            </div>
+
+            {/* Title */}
+            <h3
+              style={{
+                fontSize: "20px",
+                fontWeight: 700,
+                color: editorTheme === "dark" ? "#FFFFFF" : "#1A1A1A",
+                marginBottom: "12px",
+                textAlign: "center",
+              }}
+            >
+              Unsaved Changes
+            </h3>
+
+            {/* Description */}
+            <p
+              style={{
+                fontSize: "15px",
+                color: editorTheme === "dark" ? "#A0A0A0" : "#6B7280",
+                marginBottom: "24px",
+                textAlign: "center",
+                lineHeight: "1.5",
+              }}
+            >
+              You have an image in the editor that hasn&apos;t been downloaded. If you leave now, your changes will be lost.
+            </p>
+
+            {/* Buttons */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              {/* Download Button */}
+              <button
+                onClick={() => {
+                  setShowUnsavedPrompt(false);
+                  handleDownload();
+                }}
+                style={{
+                  padding: "14px 24px",
+                  borderRadius: "10px",
+                  border: "none",
+                  background: "#F97316",
+                  color: "white",
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Download Image
+              </button>
+
+              {/* Continue Without Downloading */}
+              <button
+                onClick={() => {
+                  setShowUnsavedPrompt(false);
+                  router.push("/dashboard");
+                }}
+                style={{
+                  padding: "14px 24px",
+                  borderRadius: "10px",
+                  border: `1px solid ${editorTheme === "dark" ? "#3D3D3D" : "#E5E7EB"}`,
+                  background: "transparent",
+                  color: editorTheme === "dark" ? "#A0A0A0" : "#6B7280",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                Continue without downloading
+              </button>
+
+              {/* Cancel */}
+              <button
+                onClick={() => setShowUnsavedPrompt(false)}
+                style={{
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "none",
+                  background: "transparent",
+                  color: editorTheme === "dark" ? "#6B7280" : "#9CA3AF",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Top Toolbar */}
       <div
         style={{
@@ -3473,13 +3645,24 @@ export default function ScreenshotEditor() {
 
         {/* Dashboard/Sign In Button - Always visible */}
         <button
-          onClick={() => router.push(user ? "/dashboard" : "/auth/login")}
+          onClick={() => {
+            if (user) {
+              // If there's an image loaded, show unsaved changes prompt
+              if (imageUrl) {
+                setShowUnsavedPrompt(true);
+              } else {
+                router.push("/dashboard");
+              }
+            } else {
+              router.push("/auth/login");
+            }
+          }}
           style={{
             padding: "8px 16px",
             cursor: "pointer",
-            backgroundColor: user ? colors.buttonBg : "#10B981",
-            color: user ? colors.textSecondary : "white",
-            border: `1px solid ${user ? colors.buttonBgHover : "#10B981"}`,
+            backgroundColor: user ? "#F97316" : "#10B981",
+            color: "white",
+            border: "none",
             borderRadius: "6px",
             fontWeight: 500,
             display: "flex",
