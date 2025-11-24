@@ -217,7 +217,7 @@ export const PricingSection: React.FC = () => {
             Yearly
           </span>
           {billingPeriod === "yearly" && (
-            <Badge variant="success" className="text-xs ml-2">
+            <Badge variant="warning" className="text-xs ml-2">
               Save up to 33%
             </Badge>
           )}

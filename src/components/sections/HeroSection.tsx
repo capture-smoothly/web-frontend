@@ -192,7 +192,7 @@ export const HeroSection: React.FC = () => {
           </AnimatePresence>
 
           {/* Stats Bar */}
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
@@ -210,7 +210,7 @@ export const HeroSection: React.FC = () => {
                 <p className="text-sm text-dark-lighter">{stat.label}</p>
               </motion.div>
             ))}
-          </motion.div>
+          </motion.div> */}
 
           {/* Hero Visual */}
           <motion.div
