@@ -11,8 +11,12 @@ import { useAuth } from "@/contexts/AuthContext";
 const navLinks = [
   { label: "Features", href: "#features", isExternal: false },
   { label: "Pricing", href: "#pricing", isExternal: false },
-  { label: "Docs", href: "https://www.youtube.com/@IloveSnapshots", isExternal: true },
-  { label: "About", href: "#about", isExternal: false },
+  {
+    label: "Docs",
+    href: "https://www.youtube.com/@IloveSnapshots",
+    isExternal: true,
+  },
+  // { label: "About", href: "#about", isExternal: false },
 ];
 
 export const SnapshotNavbar: React.FC = () => {
@@ -32,8 +36,8 @@ export const SnapshotNavbar: React.FC = () => {
 
   const scrollToSection = (href: string) => {
     // If we're not on the home page, navigate there first
-    if (window.location.pathname !== '/') {
-      router.push('/' + href);
+    if (window.location.pathname !== "/") {
+      router.push("/" + href);
       setIsMobileMenuOpen(false);
       return;
     }
@@ -52,15 +56,16 @@ export const SnapshotNavbar: React.FC = () => {
       transition={{ duration: 0.3 }}
       className={clsx(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled
-          ? "bg-white shadow-md backdrop-blur-sm"
-          : "bg-transparent"
+        isScrolled ? "bg-white shadow-md backdrop-blur-sm" : "bg-transparent"
       )}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/')}>
+          <div
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => router.push("/")}
+          >
             <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center">
               <Camera className="w-6 h-6 text-white" />
             </div>
@@ -69,7 +74,7 @@ export const SnapshotNavbar: React.FC = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
+            {navLinks.map((link) =>
               link.isExternal ? (
                 <a
                   key={link.href}
@@ -89,7 +94,7 @@ export const SnapshotNavbar: React.FC = () => {
                   {link.label}
                 </button>
               )
-            ))}
+            )}
           </div>
 
           {/* Desktop CTAs */}
@@ -114,7 +119,9 @@ export const SnapshotNavbar: React.FC = () => {
                 <Button
                   size="md"
                   onClick={() => {
-                    alert("Extension launching this week! In the meantime, try the Web Editor.");
+                    alert(
+                      "Extension launching this week! In the meantime, try the Web Editor."
+                    );
                   }}
                   className="flex items-center gap-2"
                 >
@@ -141,7 +148,9 @@ export const SnapshotNavbar: React.FC = () => {
                 </Button>
                 <Button
                   size="md"
-                  onClick={() => window.open("https://x.com/THEBOSS036", "_blank")}
+                  onClick={() =>
+                    window.open("https://x.com/THEBOSS036", "_blank")
+                  }
                   className="flex items-center gap-2"
                 >
                   <Download className="w-4 h-4" />
@@ -176,7 +185,7 @@ export const SnapshotNavbar: React.FC = () => {
             className="md:hidden bg-white border-t border-gray-200 shadow-lg"
           >
             <div className="px-4 py-6 space-y-4">
-              {navLinks.map((link) => (
+              {navLinks.map((link) =>
                 link.isExternal ? (
                   <a
                     key={link.href}
@@ -196,7 +205,7 @@ export const SnapshotNavbar: React.FC = () => {
                     {link.label}
                   </button>
                 )
-              ))}
+              )}
               <div className="pt-4 border-t border-gray-200 space-y-3">
                 {user ? (
                   <>
@@ -225,7 +234,9 @@ export const SnapshotNavbar: React.FC = () => {
                       size="md"
                       className="w-full flex items-center justify-center gap-2"
                       onClick={() => {
-                        alert("Extension launching this week! In the meantime, try the Web Editor.");
+                        alert(
+                          "Extension launching this week! In the meantime, try the Web Editor."
+                        );
                         setIsMobileMenuOpen(false);
                       }}
                     >
