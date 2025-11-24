@@ -84,8 +84,7 @@ export const HeroSection: React.FC = () => {
           >
             Capture any webpage, turn text into beautiful graphics, and edit
             everything with pro tools. Use our Chrome extension for quick
-            captures and edit them in extension's editor, or the web editor for
-            detailed work.
+            captures, or the web editor for detailed work.
           </motion.p>
 
           {/* Platform Badges */}
