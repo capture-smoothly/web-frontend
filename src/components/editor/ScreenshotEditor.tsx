@@ -2397,17 +2397,54 @@ export default function ScreenshotEditor() {
   const handleImageLoadComplete = () => {
     setIsLoaded(true);
     drawImage();
-    // Fit to screen
-    const container = containerRef.current;
-    const image = imageRef.current;
-    if (container && image) {
-      const containerWidth = container.clientWidth - 40;
-      const containerHeight = container.clientHeight - 40;
-      const scaleX = containerWidth / image.naturalWidth;
-      const scaleY = containerHeight / image.naturalHeight;
-      setZoom(Math.min(scaleX, scaleY, 1));
-    }
+    // Fit to screen after a brief delay to allow DOM to render
+    setTimeout(() => {
+      handleZoomFit();
+    }, 50);
     if (history.length === 0) saveCurrentState();
+  };
+
+  const handleZoomFit = () => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const containerWidth = container.clientWidth - 40;
+    const containerHeight = container.clientHeight - 40;
+
+    // For regular images - fit based on the wrapper element dimensions
+    if (showBackground) {
+      const backgroundWrapper = document.querySelector(
+        "[data-screenshot-with-background]"
+      ) as HTMLElement;
+      if (backgroundWrapper) {
+        const wrapperWidth = backgroundWrapper.offsetWidth;
+        const wrapperHeight = backgroundWrapper.offsetHeight;
+
+        const scaleX = containerWidth / wrapperWidth;
+        const scaleY = containerHeight / wrapperHeight;
+        const newZoom = Math.min(scaleX, scaleY, 1);
+
+        setZoom(newZoom);
+        setPan({ x: 0, y: 0 });
+        panRef.current = { x: 0, y: 0 };
+      }
+      return;
+    }
+
+    // Otherwise fit based on the window chrome wrapper dimensions
+    const windowChrome = windowChromeRef.current;
+    if (windowChrome) {
+      const wrapperWidth = windowChrome.offsetWidth;
+      const wrapperHeight = windowChrome.offsetHeight;
+
+      const scaleX = containerWidth / wrapperWidth;
+      const scaleY = containerHeight / wrapperHeight;
+      const newZoom = Math.min(scaleX, scaleY, 1);
+
+      setZoom(newZoom);
+      setPan({ x: 0, y: 0 });
+      panRef.current = { x: 0, y: 0 };
+    }
   };
 
   const getCursor = () => {
@@ -5501,18 +5538,7 @@ export default function ScreenshotEditor() {
               style={{ display: "flex", gap: "4px", justifyContent: "center" }}
             >
               <TooltipButton
-                onClick={() => {
-                  const container = containerRef.current;
-                  const image = imageRef.current;
-                  if (container && image) {
-                    const containerWidth = container.clientWidth - 40;
-                    const containerHeight = container.clientHeight - 40;
-                    const scaleX = containerWidth / image.naturalWidth;
-                    const scaleY = containerHeight / image.naturalHeight;
-                    setZoom(Math.min(scaleX, scaleY, 1));
-                    setPan({ x: 0, y: 0 });
-                  }
-                }}
+                onClick={handleZoomFit}
                 tooltip="Fit to Screen"
                 tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
