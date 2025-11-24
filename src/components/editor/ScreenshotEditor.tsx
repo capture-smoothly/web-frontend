@@ -732,6 +732,11 @@ export default function ScreenshotEditor() {
   // Drag and drop
   const [isDragOver, setIsDragOver] = useState(false);
 
+  // Onboarding state
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingStep, setOnboardingStep] = useState(0);
+  const [hasSeenOnboarding, setHasSeenOnboarding] = useState(true); // Default true to prevent flash
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
   const annotationCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -823,6 +828,68 @@ export default function ScreenshotEditor() {
     document.addEventListener("paste", handlePaste);
     return () => document.removeEventListener("paste", handlePaste);
   }, [handleFileSelect]);
+
+  // Check onboarding status on mount
+  useEffect(() => {
+    const seen = localStorage.getItem("ilovesnapshots_onboarding_complete");
+    if (!seen) {
+      setHasSeenOnboarding(false);
+      setShowOnboarding(true);
+    }
+  }, []);
+
+  // Onboarding steps configuration
+  const onboardingSteps = [
+    {
+      title: "Welcome to ILoveSnapshots! 🎨",
+      description: "Create beautiful screenshots in seconds. Let's show you around!",
+      icon: "👋",
+    },
+    {
+      title: "Upload Your Screenshot",
+      description: "Drag & drop an image, paste from clipboard (Ctrl+V), or click to upload. Supports PNG, JPG, GIF, and WebP.",
+      icon: "📤",
+    },
+    {
+      title: "Choose a Theme",
+      description: "Click the 'Theme' button to pick from 100+ beautiful gradient backgrounds for your screenshot.",
+      icon: "🎨",
+    },
+    {
+      title: "Customize Your Design",
+      description: "Adjust padding, width, and toggle the window chrome on/off. Use annotation tools to add arrows, shapes, and highlights.",
+      icon: "✨",
+    },
+    {
+      title: "Export Your Creation",
+      description: "Download your polished screenshot or copy it directly to clipboard. That's it - you're ready to create!",
+      icon: "🚀",
+    },
+  ];
+
+  const handleCompleteOnboarding = () => {
+    localStorage.setItem("ilovesnapshots_onboarding_complete", "true");
+    setShowOnboarding(false);
+    setHasSeenOnboarding(true);
+  };
+
+  const handleNextStep = () => {
+    if (onboardingStep < onboardingSteps.length - 1) {
+      setOnboardingStep(onboardingStep + 1);
+    } else {
+      handleCompleteOnboarding();
+    }
+  };
+
+  const handlePrevStep = () => {
+    if (onboardingStep > 0) {
+      setOnboardingStep(onboardingStep - 1);
+    }
+  };
+
+  const handleSkipOnboarding = () => {
+    handleCompleteOnboarding();
+  };
 
   // Handle drag and drop
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -2384,6 +2451,200 @@ export default function ScreenshotEditor() {
         />
       )}
 
+      {/* Onboarding Modal */}
+      {showOnboarding && !hasSeenOnboarding && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.8)",
+            backdropFilter: "blur(8px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 10000,
+            padding: "20px",
+          }}
+        >
+          <div
+            style={{
+              background: editorTheme === "dark" ? "#1E1E1E" : "#FFFFFF",
+              borderRadius: "20px",
+              padding: "40px",
+              maxWidth: "480px",
+              width: "100%",
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+              border: `1px solid ${editorTheme === "dark" ? "#2D2D2D" : "#E5E7EB"}`,
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            {/* Gradient accent bar */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: "4px",
+                background: "linear-gradient(90deg, #f24e1e 0%, #ff7262 30%, #a259ff 70%, #1abcfe 100%)",
+              }}
+            />
+
+            {/* Close/Skip button */}
+            <button
+              onClick={handleSkipOnboarding}
+              style={{
+                position: "absolute",
+                top: "16px",
+                right: "16px",
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                padding: "8px",
+                borderRadius: "8px",
+                color: editorTheme === "dark" ? "#A0A0A0" : "#6B7280",
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+                fontSize: "13px",
+              }}
+            >
+              Skip
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+
+            {/* Icon */}
+            <div
+              style={{
+                fontSize: "48px",
+                marginBottom: "20px",
+                textAlign: "center",
+              }}
+            >
+              {onboardingSteps[onboardingStep].icon}
+            </div>
+
+            {/* Title */}
+            <h2
+              style={{
+                fontSize: "24px",
+                fontWeight: 700,
+                color: editorTheme === "dark" ? "#FFFFFF" : "#1A1A1A",
+                marginBottom: "12px",
+                textAlign: "center",
+              }}
+            >
+              {onboardingSteps[onboardingStep].title}
+            </h2>
+
+            {/* Description */}
+            <p
+              style={{
+                fontSize: "16px",
+                color: editorTheme === "dark" ? "#A0A0A0" : "#6B7280",
+                marginBottom: "32px",
+                textAlign: "center",
+                lineHeight: "1.6",
+              }}
+            >
+              {onboardingSteps[onboardingStep].description}
+            </p>
+
+            {/* Progress dots */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "8px",
+                marginBottom: "24px",
+              }}
+            >
+              {onboardingSteps.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setOnboardingStep(index)}
+                  style={{
+                    width: index === onboardingStep ? "24px" : "8px",
+                    height: "8px",
+                    borderRadius: "4px",
+                    background: index === onboardingStep
+                      ? "linear-gradient(90deg, #f24e1e, #a259ff)"
+                      : editorTheme === "dark" ? "#3D3D3D" : "#E5E7EB",
+                    border: "none",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Navigation buttons */}
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                justifyContent: "center",
+              }}
+            >
+              {onboardingStep > 0 && (
+                <button
+                  onClick={handlePrevStep}
+                  style={{
+                    padding: "12px 24px",
+                    borderRadius: "10px",
+                    border: `1px solid ${editorTheme === "dark" ? "#3D3D3D" : "#E5E7EB"}`,
+                    background: "transparent",
+                    color: editorTheme === "dark" ? "#E0E0E0" : "#374151",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  Back
+                </button>
+              )}
+              <button
+                onClick={handleNextStep}
+                style={{
+                  padding: "12px 32px",
+                  borderRadius: "10px",
+                  border: "none",
+                  background: "linear-gradient(135deg, #f24e1e 0%, #ff7262 30%, #a259ff 70%, #1abcfe 100%)",
+                  color: "white",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  boxShadow: "0 4px 14px rgba(162, 89, 255, 0.4)",
+                }}
+              >
+                {onboardingStep === onboardingSteps.length - 1 ? "Get Started!" : "Next"}
+              </button>
+            </div>
+
+            {/* Step counter */}
+            <p
+              style={{
+                fontSize: "12px",
+                color: editorTheme === "dark" ? "#6B7280" : "#9CA3AF",
+                textAlign: "center",
+                marginTop: "20px",
+              }}
+            >
+              Step {onboardingStep + 1} of {onboardingSteps.length}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Top Toolbar */}
       <div
         style={{
@@ -3170,6 +3431,45 @@ export default function ScreenshotEditor() {
             )}
           </>
         )}
+
+        {/* Help Button - Restart onboarding */}
+        <TooltipButton
+          onClick={() => {
+            setOnboardingStep(0);
+            setHasSeenOnboarding(false);
+            setShowOnboarding(true);
+          }}
+          tooltip="Show Tutorial"
+          tooltipBg={colors.tooltipBg}
+          tooltipText={colors.textSecondary}
+          tooltipBorder={colors.border}
+          style={{
+            padding: "8px",
+            cursor: "pointer",
+            backgroundColor: colors.buttonBg,
+            color: colors.textMuted,
+            border: `1px solid ${colors.border}`,
+            borderRadius: "6px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        </TooltipButton>
 
         {/* Dashboard/Sign In Button - Always visible */}
         <button
