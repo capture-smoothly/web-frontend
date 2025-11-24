@@ -4,13 +4,13 @@ import React from "react";
 import { motion } from "motion/react";
 import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
-import { Chrome, Star, Users, Shield } from "lucide-react";
+import { Chrome, Monitor, Shield, Zap } from "lucide-react";
 
 const trustBadges = [
-  { icon: Chrome, label: "Launching This Week" },
-  { icon: Users, label: "Early Bird Pricing Available" },
-  { icon: Star, label: "Lifetime Deals (Limited)" },
-  { icon: Shield, label: "100% Secure" },
+  { icon: Shield, label: "7-Day Free Trial" },
+  { icon: Zap, label: "No Credit Card Needed" },
+  { icon: Chrome, label: "Works Everywhere" },
+  { icon: Monitor, label: "Extension + Web Editor" },
 ];
 
 export const FinalCTASection: React.FC = () => {
@@ -44,7 +44,7 @@ export const FinalCTASection: React.FC = () => {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            Be Among the First to Transform Your Content Creation
+            Ready to Make Your Screenshots Stand Out?
           </h2>
         </motion.div>
 
@@ -55,7 +55,7 @@ export const FinalCTASection: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-xl md:text-2xl text-white/90 mb-10"
         >
-          We&apos;re launching this week. Join our early adopters and get exclusive lifetime discounts. 14-day free trial, no credit card required.
+          Join thousands of creators, developers, and professionals who use ILoveSnapshots every day. Start with the free plan and upgrade when you&apos;re ready.
         </motion.p>
 
         <motion.div
@@ -65,12 +65,21 @@ export const FinalCTASection: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
         >
-          <Button size="lg" className="bg-white text-primary hover:bg-white/90 text-lg px-10 py-5">
-            Start 14-Day Free Trial
-          </Button>
-          <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 text-lg px-10 py-5">
-            See Pricing
-          </Button>
+          <a
+            href="https://chromewebstore.google.com/detail/ilovesnapshots/your-extension-id"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button size="lg" className="bg-white text-primary hover:bg-white/90 text-lg px-10 py-5">
+              <Chrome className="w-5 h-5 mr-2" />
+              Add to Chrome - Free
+            </Button>
+          </a>
+          <a href="#pricing">
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 text-lg px-10 py-5">
+              View All Plans
+            </Button>
+          </a>
         </motion.div>
 
         <motion.div

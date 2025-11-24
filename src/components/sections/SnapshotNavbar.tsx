@@ -4,21 +4,26 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { motion, AnimatePresence } from "motion/react";
-import { Camera, Menu, X, LogOut, Download } from "lucide-react";
+import { Camera, Menu, X, Download, ImageIcon, Chrome } from "lucide-react";
 import { Button } from "../ui/Button";
 import { useAuth } from "@/contexts/AuthContext";
 
 const navLinks = [
   { label: "Features", href: "#features", isExternal: false },
   { label: "Pricing", href: "#pricing", isExternal: false },
-  { label: "Docs", href: "https://www.youtube.com/@IloveSnapshots", isExternal: true },
-  { label: "About", href: "#about", isExternal: false },
+  {
+    label: "Docs",
+    href: "https://www.youtube.com/@IloveSnapshots",
+    isExternal: true,
+  },
+  // { label: "About", href: "#about", isExternal: false },
 ];
 
 export const SnapshotNavbar: React.FC = () => {
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showExtensionNotice, setShowExtensionNotice] = useState(false);
   const { user, signOut } = useAuth();
 
   useEffect(() => {
@@ -32,8 +37,8 @@ export const SnapshotNavbar: React.FC = () => {
 
   const scrollToSection = (href: string) => {
     // If we're not on the home page, navigate there first
-    if (window.location.pathname !== '/') {
-      router.push('/' + href);
+    if (window.location.pathname !== "/") {
+      router.push("/" + href);
       setIsMobileMenuOpen(false);
       return;
     }
@@ -45,6 +50,11 @@ export const SnapshotNavbar: React.FC = () => {
     }
   };
 
+  const handleExtensionClick = () => {
+    setShowExtensionNotice(true);
+    setTimeout(() => setShowExtensionNotice(false), 5000);
+  };
+
   return (
     <motion.nav
       initial={{ y: -100 }}
@@ -52,15 +62,16 @@ export const SnapshotNavbar: React.FC = () => {
       transition={{ duration: 0.3 }}
       className={clsx(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled
-          ? "bg-white shadow-md backdrop-blur-sm"
-          : "bg-transparent"
+        isScrolled ? "bg-white shadow-md backdrop-blur-sm" : "bg-transparent"
       )}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/')}>
+          <div
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => router.push("/")}
+          >
             <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center">
               <Camera className="w-6 h-6 text-white" />
             </div>
@@ -69,7 +80,7 @@ export const SnapshotNavbar: React.FC = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
+            {navLinks.map((link) =>
               link.isExternal ? (
                 <a
                   key={link.href}
@@ -89,7 +100,7 @@ export const SnapshotNavbar: React.FC = () => {
                   {link.label}
                 </button>
               )
-            ))}
+            )}
           </div>
 
           {/* Desktop CTAs */}
@@ -104,11 +115,20 @@ export const SnapshotNavbar: React.FC = () => {
                 </button>
                 <Button
                   size="md"
-                  variant="outline"
-                  onClick={signOut}
+                  variant="secondary"
+                  onClick={() => router.push("/editor")}
+                  className="flex items-center gap-2"
                 >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sign Out
+                  <ImageIcon className="w-4 h-4" />
+                  Open Editor
+                </Button>
+                <Button
+                  size="md"
+                  onClick={handleExtensionClick}
+                  className="flex items-center gap-2"
+                >
+                  <Chrome className="w-4 h-4" />
+                  Get Extension
                 </Button>
               </>
             ) : (
@@ -121,7 +141,18 @@ export const SnapshotNavbar: React.FC = () => {
                 </button>
                 <Button
                   size="md"
-                  onClick={() => window.open("https://x.com/THEBOSS036", "_blank")}
+                  variant="secondary"
+                  onClick={() => router.push("/editor")}
+                  className="flex items-center gap-2"
+                >
+                  <ImageIcon className="w-4 h-4" />
+                  Open Editor
+                </Button>
+                <Button
+                  size="md"
+                  onClick={() =>
+                    window.open("https://x.com/THEBOSS036", "_blank")
+                  }
                   className="flex items-center gap-2"
                 >
                   <Download className="w-4 h-4" />
@@ -156,7 +187,7 @@ export const SnapshotNavbar: React.FC = () => {
             className="md:hidden bg-white border-t border-gray-200 shadow-lg"
           >
             <div className="px-4 py-6 space-y-4">
-              {navLinks.map((link) => (
+              {navLinks.map((link) =>
                 link.isExternal ? (
                   <a
                     key={link.href}
@@ -176,7 +207,7 @@ export const SnapshotNavbar: React.FC = () => {
                     {link.label}
                   </button>
                 )
-              ))}
+              )}
               <div className="pt-4 border-t border-gray-200 space-y-3">
                 {user ? (
                   <>
@@ -191,15 +222,26 @@ export const SnapshotNavbar: React.FC = () => {
                     </button>
                     <Button
                       size="md"
-                      variant="outline"
-                      className="w-full"
+                      variant="secondary"
+                      className="w-full flex items-center justify-center gap-2"
                       onClick={() => {
-                        signOut();
+                        router.push("/editor");
                         setIsMobileMenuOpen(false);
                       }}
                     >
-                      <LogOut className="w-4 h-4 mr-2" />
-                      Sign Out
+                      <ImageIcon className="w-4 h-4" />
+                      Open Editor
+                    </Button>
+                    <Button
+                      size="md"
+                      className="w-full flex items-center justify-center gap-2"
+                      onClick={() => {
+                        handleExtensionClick();
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <Chrome className="w-4 h-4" />
+                      Get Extension
                     </Button>
                   </>
                 ) : (
@@ -215,6 +257,18 @@ export const SnapshotNavbar: React.FC = () => {
                     </button>
                     <Button
                       size="md"
+                      variant="secondary"
+                      className="w-full flex items-center justify-center gap-2"
+                      onClick={() => {
+                        router.push("/editor");
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <ImageIcon className="w-4 h-4" />
+                      Open Editor
+                    </Button>
+                    <Button
+                      size="md"
                       className="w-full flex items-center justify-center gap-2"
                       onClick={() => {
                         window.open("https://x.com/THEBOSS036", "_blank");
@@ -227,6 +281,40 @@ export const SnapshotNavbar: React.FC = () => {
                   </>
                 )}
               </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Extension Coming Soon Notice */}
+      <AnimatePresence>
+        {showExtensionNotice && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-24 left-1/2 -translate-x-1/2 z-50 max-w-md w-full mx-4"
+          >
+            <div className="bg-white rounded-2xl shadow-xl border border-coral/20 p-4 flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-coral/10 flex items-center justify-center flex-shrink-0">
+                <Chrome className="w-5 h-5 text-coral" />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-dark">
+                  Extension launching this week!
+                </p>
+                <p className="text-sm text-dark-lighter mt-1">
+                  Our Chrome extension is currently under review. In the
+                  meantime, try the Web Editor - it has all the same great
+                  features!
+                </p>
+              </div>
+              <button
+                onClick={() => setShowExtensionNotice(false)}
+                className="text-dark-lighter hover:text-dark transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
           </motion.div>
         )}

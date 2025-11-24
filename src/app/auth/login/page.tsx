@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Mail,
   Lock,
@@ -15,8 +15,10 @@ import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "motion/react";
 
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect") || "/dashboard";
   const { user, isLoading: authLoading } = useAuth();
   const [isSignIn, setIsSignIn] = useState(false);
   const [email, setEmail] = useState("");
@@ -43,9 +45,9 @@ export default function LoginPage() {
   // Redirect if already logged in
   useEffect(() => {
     if (!authLoading && user) {
-      router.push("/dashboard");
+      router.push(redirectUrl);
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading, router, redirectUrl]);
 
   // Listen for auth state changes and send tokens to Chrome extension
   useEffect(() => {
@@ -125,12 +127,12 @@ export default function LoginPage() {
         // User is immediately authenticated (email confirmation disabled)
         setMessage({
           type: "success",
-          text: "Account created successfully! Redirecting to dashboard...",
+          text: "Account created successfully! Redirecting...",
         });
 
         // Wait a bit for the auth state to update, then redirect
         setTimeout(() => {
-          router.push("/dashboard");
+          router.push(redirectUrl);
           router.refresh(); // Force refresh to update auth state
         }, 1500);
       }
@@ -160,12 +162,12 @@ export default function LoginPage() {
       if (data.user) {
         setMessage({
           type: "success",
-          text: "Successfully signed in! Redirecting to dashboard...",
+          text: "Successfully signed in! Redirecting...",
         });
 
-        // Redirect to dashboard after a short delay
+        // Redirect after a short delay
         setTimeout(() => {
-          router.push("/dashboard");
+          router.push(redirectUrl);
         }, 1000);
       }
     } catch (error: any) {
@@ -186,7 +188,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectUrl)}`,
         },
       });
 
@@ -440,5 +442,19 @@ export default function LoginPage() {
         </motion.div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gradient-hero">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      }
+    >
+      <LoginPageContent />
+    </Suspense>
   );
 }

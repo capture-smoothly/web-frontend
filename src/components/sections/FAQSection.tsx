@@ -6,42 +6,58 @@ import { Accordion } from "../ui/Accordion";
 
 const faqItems = [
   {
-    question: "Is ILoveSnapshots really free?",
-    answer: "Yes! Our free tier gives you:\n• 10 text-to-image snapshots per month (with watermark)\n• Unlimited visible area screenshots\n• 3 basic gradient themes\n• Basic annotation tools\n\nUpgrade to Pro ($9.99/month) for:\n• Unlimited text-to-images (no watermark)\n• All 35+ premium themes\n• Full-page screenshot capture\n• Advanced editing tools (blur, pixelate, advanced shapes)\n• Priority support",
+    question: "What's the difference between the extension and the web editor?",
+    answer: "The Chrome extension is for capturing screenshots directly from any webpage - full-page captures, visible area, text-to-image, all with one click. The web editor is for deeper editing work - you can upload any image, use advanced annotation tools, apply themes, and do detailed touch-ups. Think of the extension as your capture tool and the web editor as your finishing studio.",
   },
   {
-    question: "How is the text-to-image feature different from screenshots?",
-    answer: "Instead of taking a picture of text, we convert the actual text into a beautifully designed image with your choice of 35+ themes. It's like having a graphic designer in your browser!",
+    question: "Do I need the extension to use the web editor?",
+    answer: "Nope! They work independently. You can use the web editor with any image you upload - screenshots from your phone, images from your computer, whatever you need to edit. But they work great together too - capture with the extension, then open in the web editor for advanced edits.",
   },
   {
-    question: "What is two-point selection and why do I need it?",
-    answer: "Traditional text selection breaks when you scroll. With two-point selection, click where you want to start, scroll down as far as you need, then click where you want to end. Your selection stays perfect throughout.",
+    question: "What's included in the free plan?",
+    answer: "The free plan gives you:\n• Chrome extension access\n• 5 screenshots per day\n• 3 basic gradient themes\n• Visible area screenshots\n• Basic annotations (arrows, rectangles)\n• Exports with a small watermark\n\nIt's genuinely useful for light usage. No credit card needed to start.",
   },
   {
-    question: "Does this work on any website?",
-    answer: "Yes! ILoveSnapshots works on all websites, including social media, news sites, documentation, and web apps.",
+    question: "What's the difference between Pro and Master?",
+    answer: "Pro ($3/month or $24/year) unlocks all extension features - unlimited screenshots, full-page capture, all 35+ themes, blur/pixelate tools, no watermark.\n\nMaster ($4/month or $36/year) includes everything in Pro PLUS full web editor access, 2GB cloud storage, shareable links, priority support, and the ability to request new features. If you edit screenshots regularly, Master pays for itself.",
   },
   {
-    question: "What are the keyboard shortcuts?",
-    answer: "Visible Screenshot: Ctrl+Shift+Y | Full Page: Ctrl+Shift+U | Copy Capture: Alt+Shift+J | Copy Selection: Alt+Shift+K",
+    question: "Can I try Pro or Master before paying?",
+    answer: "Absolutely. Both Pro and Master come with a 7-day free trial. Full access, no restrictions. Cancel before the trial ends and you won't be charged anything.",
   },
   {
-    question: "Can I use this offline?",
-    answer: "Yes! All core features work offline. Cloud features (coming soon) will require internet connection.",
+    question: "How does the text-to-image feature work?",
+    answer: "Select any text on a webpage, and we'll turn it into a beautiful graphic with your chosen theme. It's not a screenshot - we actually render the text with professional styling. Perfect for sharing quotes, code snippets, tweets, or any text content on social media.",
   },
   {
-    question: "How do I cancel my subscription?",
-    answer: "You can cancel anytime from your account settings. No questions asked, no cancellation fees.",
+    question: "What about full-page screenshots? How long can they be?",
+    answer: "Our full-page capture handles pages up to 32,767 pixels tall - that's basically any webpage you'll encounter. The extension scrolls through the page automatically and stitches everything together. You'll see a progress indicator while it works. Takes a few seconds for really long pages.",
   },
   {
-    question: "Is my data secure?",
-    answer: "Absolutely. We don't upload your screenshots to our servers unless you explicitly use cloud storage features. Everything stays local in your browser.",
+    question: "Is my data private?",
+    answer: "Very. Screenshots are processed locally in your browser by default. We don't see them unless you explicitly use cloud features (Master plan). Even then, your images are encrypted and only accessible by you. We don't train AI on your content or sell your data. Ever.",
+  },
+  {
+    question: "What keyboard shortcuts are available?",
+    answer: "All the main actions have shortcuts:\n• Visible Screenshot: Ctrl+Shift+Y\n• Full Page: Ctrl+Shift+U\n• Copy Capture: Alt+Shift+J\n• Copy Selection: Alt+Shift+K\n\nYou can customize these in the extension settings.",
+  },
+  {
+    question: "Can I cancel anytime?",
+    answer: "Yes, no tricks here. Cancel from your account settings whenever you want. You'll keep access until the end of your billing period. No cancellation fees, no hoops to jump through.",
+  },
+  {
+    question: "Do you offer refunds?",
+    answer: "If you're not happy within the first 14 days, just email us and we'll refund you. No questions asked. We'd rather you try it risk-free than hesitate.",
+  },
+  {
+    question: "Will you add more features?",
+    answer: "We're actively building. Video/GIF recording, OCR text extraction, team sharing, and API access are all on the roadmap. Master plan users can request features directly and get early access to new tools.",
   },
 ];
 
 export const FAQSection: React.FC = () => {
   return (
-    <section className="py-20 md:py-32 bg-white">
+    <section id="faq" className="py-20 md:py-32 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -51,8 +67,11 @@ export const FAQSection: React.FC = () => {
           className="text-center mb-12"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-dark mb-4">
-            Frequently Asked Questions
+            Common Questions
           </h2>
+          <p className="text-xl text-dark-lighter">
+            Everything you need to know before getting started
+          </p>
         </motion.div>
 
         <motion.div
@@ -62,6 +81,25 @@ export const FAQSection: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           <Accordion items={faqItems} />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="text-center mt-12"
+        >
+          <p className="text-dark-lighter">
+            Still have questions?{" "}
+            <a
+              href="mailto:support@ilovesnapshots.com"
+              className="text-coral hover:underline font-medium"
+            >
+              Drop us an email
+            </a>
+            {" "}and we'll get back to you within 24 hours.
+          </p>
         </motion.div>
       </div>
     </section>
