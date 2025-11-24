@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { motion, AnimatePresence } from "motion/react";
-import { Camera, Menu, X, LogOut, Download, ImageIcon } from "lucide-react";
+import { Camera, Menu, X, Download, ImageIcon, Chrome } from "lucide-react";
 import { Button } from "../ui/Button";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -113,11 +113,13 @@ export const SnapshotNavbar: React.FC = () => {
                 </Button>
                 <Button
                   size="md"
-                  variant="outline"
-                  onClick={signOut}
+                  onClick={() => {
+                    alert("Extension launching this week! In the meantime, try the Web Editor.");
+                  }}
+                  className="flex items-center gap-2"
                 >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sign Out
+                  <Chrome className="w-4 h-4" />
+                  Get Extension
                 </Button>
               </>
             ) : (
@@ -221,15 +223,14 @@ export const SnapshotNavbar: React.FC = () => {
                     </Button>
                     <Button
                       size="md"
-                      variant="outline"
-                      className="w-full"
+                      className="w-full flex items-center justify-center gap-2"
                       onClick={() => {
-                        signOut();
+                        alert("Extension launching this week! In the meantime, try the Web Editor.");
                         setIsMobileMenuOpen(false);
                       }}
                     >
-                      <LogOut className="w-4 h-4 mr-2" />
-                      Sign Out
+                      <Chrome className="w-4 h-4" />
+                      Get Extension
                     </Button>
                   </>
                 ) : (

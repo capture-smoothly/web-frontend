@@ -16,6 +16,8 @@ import {
   Home,
   Settings,
   CreditCard,
+  Chrome,
+  Monitor,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
@@ -166,12 +168,37 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-4xl font-bold text-dark mb-2">
-            Welcome back, {profile?.full_name || "User"}! 👋
-          </h1>
-          <p className="text-gray-600">
-            Here's an overview of your account and subscription.
-          </p>
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div>
+              <h1 className="text-4xl font-bold text-dark mb-2">
+                Welcome back, {profile?.full_name || "User"}! 👋
+              </h1>
+              <p className="text-gray-600">
+                Here&apos;s an overview of your account and subscription.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Button
+                size="md"
+                variant="secondary"
+                onClick={() => router.push("/editor")}
+                className="flex items-center gap-2"
+              >
+                <Monitor className="w-4 h-4" />
+                Open Web Editor
+              </Button>
+              <Button
+                size="md"
+                onClick={() => {
+                  alert("Extension launching this week! In the meantime, try the Web Editor.");
+                }}
+                className="flex items-center gap-2"
+              >
+                <Chrome className="w-4 h-4" />
+                Get Extension
+              </Button>
+            </div>
+          </div>
         </motion.div>
 
         {/* Stats Grid */}
