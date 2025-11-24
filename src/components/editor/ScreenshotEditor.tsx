@@ -678,6 +678,13 @@ export default function ScreenshotEditor() {
   const [spacePressed, setSpacePressed] = useState(false);
   const [panModeEnabled, setPanModeEnabled] = useState(false);
 
+  // Refs for smooth panning (avoid state updates during drag)
+  const panRef = useRef({ x: 0, y: 0 });
+  const panStartRef = useRef({ x: 0, y: 0 });
+  const isPanningRef = useRef(false);
+  const rafIdRef = useRef<number | null>(null);
+  const transformContainerRef = useRef<HTMLDivElement>(null);
+
   // Visual settings
   const [includeWindowChrome, setIncludeWindowChrome] = useState(true);
   const [windowChromeTheme, setWindowChromeTheme] = useState<"light" | "dark">(
@@ -1307,8 +1314,11 @@ export default function ScreenshotEditor() {
 
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (spacePressed || e.button === 1 || panModeEnabled) {
+      // Use refs for smooth panning - avoid state updates during drag
+      isPanningRef.current = true;
+      panRef.current = { ...pan };
+      panStartRef.current = { x: e.clientX - pan.x, y: e.clientY - pan.y };
       setIsPanning(true);
-      setPanStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
       return;
     }
 
@@ -1414,9 +1424,30 @@ export default function ScreenshotEditor() {
     }
   };
 
+  // Helper function to update transform directly on DOM for smooth panning
+  const updatePanTransform = useCallback((newPan: { x: number; y: number }) => {
+    const container = transformContainerRef.current;
+    if (container) {
+      container.style.transform = `scale(${zoom}) translate(${newPan.x / zoom}px, ${newPan.y / zoom}px)`;
+    }
+  }, [zoom]);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (isPanning) {
-      setPan({ x: e.clientX - panStart.x, y: e.clientY - panStart.y });
+    if (isPanningRef.current) {
+      // Calculate new pan position
+      const newPan = {
+        x: e.clientX - panStartRef.current.x,
+        y: e.clientY - panStartRef.current.y,
+      };
+      panRef.current = newPan;
+
+      // Use requestAnimationFrame for smooth updates
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
+      rafIdRef.current = requestAnimationFrame(() => {
+        updatePanTransform(newPan);
+      });
       return;
     }
 
@@ -1519,6 +1550,16 @@ export default function ScreenshotEditor() {
   };
 
   const handleMouseUp = () => {
+    // Sync pan ref to state when panning ends
+    if (isPanningRef.current) {
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
+      setPan(panRef.current);
+      isPanningRef.current = false;
+    }
+
     if (isDrawingAnnotation && currentAnnotation) {
       const hasSize =
         currentAnnotation.type === "freehand"
@@ -1642,8 +1683,21 @@ export default function ScreenshotEditor() {
     };
 
     const handleDocumentMouseMove = (e: MouseEvent) => {
-      if (isPanning) {
-        setPan({ x: e.clientX - panStart.x, y: e.clientY - panStart.y });
+      if (isPanningRef.current) {
+        // Calculate new pan position using refs for smooth updates
+        const newPan = {
+          x: e.clientX - panStartRef.current.x,
+          y: e.clientY - panStartRef.current.y,
+        };
+        panRef.current = newPan;
+
+        // Use requestAnimationFrame for smooth updates
+        if (rafIdRef.current) {
+          cancelAnimationFrame(rafIdRef.current);
+        }
+        rafIdRef.current = requestAnimationFrame(() => {
+          updatePanTransform(newPan);
+        });
         return;
       }
 
@@ -1746,6 +1800,16 @@ export default function ScreenshotEditor() {
     };
 
     const handleDocumentMouseUp = () => {
+      // Sync pan ref to state when panning ends
+      if (isPanningRef.current) {
+        if (rafIdRef.current) {
+          cancelAnimationFrame(rafIdRef.current);
+          rafIdRef.current = null;
+        }
+        setPan(panRef.current);
+        isPanningRef.current = false;
+      }
+
       if (isDrawingAnnotation && currentAnnotation) {
         const hasSize =
           currentAnnotation.type === "freehand"
@@ -1792,7 +1856,6 @@ export default function ScreenshotEditor() {
     borderCrop,
     borderCropDragEdge,
     activeTool,
-    panStart,
     annotations,
     imageUrl,
     showBackground,
@@ -1800,6 +1863,7 @@ export default function ScreenshotEditor() {
     windowChromeTheme,
     selectedTheme,
     saveToHistory,
+    updatePanTransform,
   ]);
 
   const handleUndo = useCallback(() => {
@@ -2062,7 +2126,6 @@ export default function ScreenshotEditor() {
 
       // Trim edge artifacts by cropping 1-2 pixels from edges (scaled)
       const cleanCanvas = document.createElement("canvas");
-      const scale = 2;
       const trim = 2; // pixels to trim from each edge (at scale)
       const sourceWidth = capturedCanvas.width;
       const sourceHeight = capturedCanvas.height;
@@ -3673,6 +3736,7 @@ export default function ScreenshotEditor() {
         ) : showBackground ? (
           /* Image with Background */
           <div
+            ref={transformContainerRef}
             data-screenshot-with-background="true"
             style={{
               transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${
@@ -3680,6 +3744,7 @@ export default function ScreenshotEditor() {
               }px)`,
               transformOrigin: "center center",
               transition: isPanning ? "none" : "transform 0.1s ease-out",
+              willChange: isPanning ? "transform" : "auto",
               background: THEMES[selectedTheme],
               padding: `${calculateCardPadding(cardPadding)}px`,
               borderRadius: "0",
@@ -3813,13 +3878,17 @@ export default function ScreenshotEditor() {
         ) : (
           /* Image without Background */
           <div
-            ref={windowChromeRef}
+            ref={(el) => {
+              windowChromeRef.current = el;
+              if (!showBackground) transformContainerRef.current = el;
+            }}
             style={{
               transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${
                 pan.y / zoom
               }px)`,
               transformOrigin: "center center",
               transition: isPanning ? "none" : "transform 0.1s ease-out",
+              willChange: isPanning ? "transform" : "auto",
               background: windowChromeTheme === "light" ? "#ffffff" : "#1a1a1a",
               borderRadius: "12px",
               overflow: "hidden",
