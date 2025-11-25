@@ -2,11 +2,27 @@
 
 import React from "react";
 import { motion } from "motion/react";
-import { Cloud, Video, BarChart3, Link2, Users, Smartphone, Search, Bot, Image, Repeat, Chrome, CreditCard, Mail, Globe, FileText } from "lucide-react";
+import {
+  Cloud,
+  Video,
+  BarChart3,
+  Link2,
+  Users,
+  Smartphone,
+  Search,
+  Bot,
+  Image,
+  Repeat,
+  Chrome,
+  CreditCard,
+  Mail,
+  Globe,
+  FileText,
+} from "lucide-react";
 
 const roadmapPhases = [
   {
-    phase: "Phase 1: Launch (December 2024)",
+    phase: "Phase 1: Launch (December 2025)",
     features: [
       { icon: Chrome, label: "Chrome Store publication" },
       { icon: CreditCard, label: "Payment integration with Paddle" },
@@ -81,7 +97,9 @@ export const RoadmapSection: React.FC = () => {
                         <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                           <feature.icon className="w-5 h-5 text-primary" />
                         </div>
-                        <p className="text-dark-lighter pt-2">{feature.label}</p>
+                        <p className="text-dark-lighter pt-2">
+                          {feature.label}
+                        </p>
                       </div>
                     ))}
                   </div>

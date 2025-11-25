@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         <div className="flex flex-col gap-4 sm:flex-row sm:justify-between">
           <div className="text-center">
-            © 2024 Your Company, Inc. All Rights reserved
+            © 2025 ILoveSnapshots, Inc. All Rights reserved
           </div>
           <ul className="flex justify-center gap-2.5">
             <li>
