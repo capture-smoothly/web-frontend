@@ -16,7 +16,12 @@ export const FloatingInstallButton: React.FC = () => {
       <Button
         size="lg"
         className="shadow-lg hover:shadow-xl flex items-center gap-2"
-        onClick={() => window.open("https://x.com/THEBOSS036", "_blank")}
+        onClick={() =>
+          window.open(
+            "https://chromewebstore.google.com/detail/mnaeoccblgmbchggojbhijgeidlnnpmm?utm_source=item-share-cb",
+            "_blank"
+          )
+        }
       >
         <Download className="w-5 h-5" />
         Install Extension

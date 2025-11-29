@@ -66,7 +66,7 @@ export const FinalCTASection: React.FC = () => {
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
         >
           <a
-            href="https://chromewebstore.google.com/detail/ilovesnapshots/your-extension-id"
+            href="https://chromewebstore.google.com/detail/mnaeoccblgmbchggojbhijgeidlnnpmm?utm_source=item-share-cb"
             target="_blank"
             rel="noopener noreferrer"
           >

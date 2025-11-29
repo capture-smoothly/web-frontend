@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import {
   Camera,
   Loader2,
@@ -18,7 +18,8 @@ import {
   CreditCard,
   Chrome,
   Monitor,
-  X,
+  PlayCircle,
+  BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
@@ -48,7 +49,6 @@ export default function DashboardPage() {
   const [supabase, setSupabase] = useState<ReturnType<
     typeof createClient
   > | null>(null);
-  const [showExtensionNotice, setShowExtensionNotice] = useState(false);
 
   // Initialize Supabase
   useEffect(() => {
@@ -110,8 +110,10 @@ export default function DashboardPage() {
   };
 
   const handleExtensionClick = () => {
-    setShowExtensionNotice(true);
-    setTimeout(() => setShowExtensionNotice(false), 5000);
+    window.open(
+      "https://chromewebstore.google.com/detail/mnaeoccblgmbchggojbhijgeidlnnpmm?utm_source=item-share-cb",
+      "_blank"
+    );
   };
 
   // Show loading while checking auth
@@ -150,7 +152,9 @@ export default function DashboardPage() {
               <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center">
                 <Camera className="w-6 h-6 text-white" />
               </div>
-              <span className="text-2xl font-bold text-dark">ILoveSnapshots</span>
+              <span className="text-2xl font-bold text-dark">
+                ILoveSnapshots
+              </span>
             </button>
 
             {/* Actions */}
@@ -202,6 +206,57 @@ export default function DashboardPage() {
                 <Chrome className="w-4 h-4" />
                 Get Extension
               </Button>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Tutorial Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="mb-8"
+        >
+          <div className="bg-gradient-to-r from-purple-500 to-teal rounded-2xl shadow-colorful p-8 text-white relative overflow-hidden">
+            {/* Decorative elements */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full -ml-24 -mb-24" />
+
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                  <BookOpen className="w-6 h-6 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold">
+                  Learn How to Use the Extension
+                </h2>
+              </div>
+
+              <p className="text-white/90 mb-6 text-lg">
+                Watch our quick tutorial video to learn how to capture and edit
+                perfect screenshots with the ILoveSnapshots extension.
+              </p>
+
+              <div className="flex flex-wrap gap-4">
+                <Button
+                  size="lg"
+                  className="bg-white text-coral hover:bg-gray-100 font-semibold shadow-xl"
+                  onClick={() =>
+                    window.open("https://youtu.be/MaFE9Il0wC0", "_blank")
+                  }
+                >
+                  <PlayCircle className="w-5 h-5 mr-2" />
+                  Watch Tutorial
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-2 border-white text-white hover:bg-white/10 font-semibold"
+                  onClick={() => router.push("/editor")}
+                >
+                  Try Web Editor
+                </Button>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -428,40 +483,6 @@ export default function DashboardPage() {
           </Button>
         </motion.div>
       </div>
-
-      {/* Extension Coming Soon Notice */}
-      <AnimatePresence>
-        {showExtensionNotice && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed top-24 left-1/2 -translate-x-1/2 z-50 max-w-md w-full mx-4"
-          >
-            <div className="bg-white rounded-2xl shadow-xl border border-coral/20 p-4 flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-coral/10 flex items-center justify-center flex-shrink-0">
-                <Chrome className="w-5 h-5 text-coral" />
-              </div>
-              <div className="flex-1">
-                <p className="font-semibold text-dark">
-                  Extension launching this week!
-                </p>
-                <p className="text-sm text-dark-lighter mt-1">
-                  Our Chrome extension is currently under review. In the
-                  meantime, try the Web Editor - it has all the same great
-                  features!
-                </p>
-              </div>
-              <button
-                onClick={() => setShowExtensionNotice(false)}
-                className="text-dark-lighter hover:text-dark transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
