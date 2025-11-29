@@ -714,6 +714,9 @@ export default function ScreenshotEditor() {
     "download" | "copy"
   >("download");
 
+  // Quality modal state
+  const [showQualityModal, setShowQualityModal] = useState(false);
+
   // History
   const [history, setHistory] = useState<HistoryState[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
@@ -2156,13 +2159,21 @@ export default function ScreenshotEditor() {
   }, [user]);
 
   // Download and copy
-  const handleDownload = async () => {
+  const handleDownload = () => {
     // Check if user is logged in
     if (!user) {
       setLoginPromptAction("download");
       setShowLoginPrompt(true);
       return;
     }
+
+    // Show quality selection modal
+    setShowQualityModal(true);
+  };
+
+  const performDownload = async (quality: "standard" | "hd") => {
+    // Close the modal
+    setShowQualityModal(false);
 
     if (showBackground) {
       const backgroundContainer = document.querySelector(
@@ -2181,12 +2192,13 @@ export default function ScreenshotEditor() {
       const width = Math.floor(rect.width);
       const height = Math.floor(rect.height);
 
-      // Use higher scale for better quality (minimum 2, or device pixel ratio if higher)
-      const dpr = Math.max(2, window.devicePixelRatio || 2);
+      // Use higher scale for better quality
+      // HD: Ultra quality (DPR * 3) | Standard: Good quality (2x)
+      const scale = quality === "hd" ? window.devicePixelRatio * 3 : 2;
 
       const capturedCanvas = await html2canvas(backgroundContainer, {
         backgroundColor: null,
-        scale: dpr,
+        scale: scale,
         useCORS: true,
         allowTaint: false,
         width: width,
@@ -2204,9 +2216,9 @@ export default function ScreenshotEditor() {
 
       backgroundContainer.style.transform = currentTransform;
 
-      // Trim edge artifacts by cropping pixels from edges (scaled by dpr)
+      // Trim edge artifacts by cropping pixels from edges (scaled by scale)
       const cleanCanvas = document.createElement("canvas");
-      const trim = Math.ceil(dpr); // pixels to trim from each edge (scales with dpr)
+      const trim = Math.ceil(scale); // pixels to trim from each edge (scales with scale)
       const sourceWidth = capturedCanvas.width;
       const sourceHeight = capturedCanvas.height;
 
@@ -4137,6 +4149,266 @@ export default function ScreenshotEditor() {
             </p>
           </div>
         </>
+      )}
+
+      {/* Quality Selection Modal */}
+      {showQualityModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 100000,
+            backdropFilter: "blur(4px)",
+          }}
+          onClick={() => setShowQualityModal(false)}
+        >
+          <div
+            style={{
+              background: colors.background,
+              borderRadius: "16px",
+              padding: "32px",
+              maxWidth: "480px",
+              width: "90%",
+              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.5)",
+              border: `1px solid ${colors.border}`,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div style={{ marginBottom: "24px", textAlign: "center" }}>
+              <h3
+                style={{
+                  margin: "0 0 8px 0",
+                  fontSize: "22px",
+                  fontWeight: 600,
+                  color: colors.text,
+                }}
+              >
+                Choose Download Quality
+              </h3>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "14px",
+                  color: colors.textMuted,
+                  lineHeight: "1.5",
+                }}
+              >
+                Select the quality that best suits your needs
+              </p>
+            </div>
+
+            {/* Quality Options */}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+            >
+              {/* Standard Quality Option */}
+              <button
+                onClick={() => performDownload("standard")}
+                style={{
+                  background: colors.buttonBg,
+                  border: `2px solid ${colors.border}`,
+                  borderRadius: "12px",
+                  padding: "20px",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  textAlign: "left",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "8px",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = colors.textMuted;
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = colors.border;
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
+              >
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "12px" }}
+                >
+                  <div
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "10px",
+                      background:
+                        "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "20px",
+                    }}
+                  >
+                    ⚡
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        color: colors.text,
+                        marginBottom: "4px",
+                      }}
+                    >
+                      Standard Quality
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "13px",
+                        color: colors.textMuted,
+                        lineHeight: "1.4",
+                      }}
+                    >
+                      Fast download • Perfect for sharing
+                    </div>
+                  </div>
+                </div>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    color: colors.textSecondary,
+                    paddingLeft: "52px",
+                    lineHeight: "1.5",
+                  }}
+                >
+                  Good quality, smaller file size. Ideal for quick sharing on
+                  social media and messaging apps.
+                </div>
+              </button>
+
+              {/* HD Quality Option */}
+              <button
+                onClick={() => performDownload("hd")}
+                style={{
+                  background:
+                    "linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%)",
+                  border: "2px solid #3B82F6",
+                  borderRadius: "12px",
+                  padding: "20px",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  textAlign: "left",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "8px",
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 8px 24px rgba(59, 130, 246, 0.3)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "none";
+                }}
+              >
+                {/* Recommended Badge */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "12px",
+                    right: "12px",
+                    background: "#3B82F6",
+                    color: "white",
+                    fontSize: "10px",
+                    fontWeight: 600,
+                    padding: "4px 8px",
+                    borderRadius: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Recommended
+                </div>
+
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "12px" }}
+                >
+                  <div
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "10px",
+                      background:
+                        "linear-gradient(135deg, #3B82F6 0%, #9333EA 100%)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "20px",
+                    }}
+                  >
+                    ✨
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        color: colors.text,
+                        marginBottom: "4px",
+                      }}
+                    >
+                      Ultra HD Quality
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "13px",
+                        color: colors.textMuted,
+                        lineHeight: "1.4",
+                      }}
+                    >
+                      Premium quality • Crisp & sharp
+                    </div>
+                  </div>
+                </div>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    color: colors.textSecondary,
+                    paddingLeft: "52px",
+                    lineHeight: "1.5",
+                  }}
+                >
+                  Maximum resolution with crystal-clear text. Best for
+                  professional use, presentations, and printing.
+                </div>
+                <div
+                  style={{
+                    fontSize: "11px",
+                    color: "#F59E0B",
+                    paddingLeft: "52px",
+                    marginTop: "4px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                  }}
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                  >
+                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                  </svg>
+                  Note: Larger file size due to higher quality
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Watch Demo and Contact Buttons - Below Toolbar on Left */}
