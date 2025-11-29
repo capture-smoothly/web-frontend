@@ -23,7 +23,6 @@ export const SnapshotNavbar: React.FC = () => {
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showExtensionNotice, setShowExtensionNotice] = useState(false);
   const { user, signOut } = useAuth();
 
   useEffect(() => {
@@ -51,8 +50,10 @@ export const SnapshotNavbar: React.FC = () => {
   };
 
   const handleExtensionClick = () => {
-    setShowExtensionNotice(true);
-    setTimeout(() => setShowExtensionNotice(false), 5000);
+    window.open(
+      "https://chromewebstore.google.com/detail/mnaeoccblgmbchggojbhijgeidlnnpmm?utm_source=item-share-cb",
+      "_blank"
+    );
   };
 
   return (
@@ -150,9 +151,7 @@ export const SnapshotNavbar: React.FC = () => {
                 </Button>
                 <Button
                   size="md"
-                  onClick={() =>
-                    window.open("https://x.com/THEBOSS036", "_blank")
-                  }
+                  onClick={handleExtensionClick}
                   className="flex items-center gap-2"
                 >
                   <Download className="w-4 h-4" />
@@ -271,7 +270,7 @@ export const SnapshotNavbar: React.FC = () => {
                       size="md"
                       className="w-full flex items-center justify-center gap-2"
                       onClick={() => {
-                        window.open("https://x.com/THEBOSS036", "_blank");
+                        handleExtensionClick();
                         setIsMobileMenuOpen(false);
                       }}
                     >
@@ -286,39 +285,6 @@ export const SnapshotNavbar: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Extension Coming Soon Notice */}
-      <AnimatePresence>
-        {showExtensionNotice && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed top-24 left-1/2 -translate-x-1/2 z-50 max-w-md w-full mx-4"
-          >
-            <div className="bg-white rounded-2xl shadow-xl border border-coral/20 p-4 flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-coral/10 flex items-center justify-center flex-shrink-0">
-                <Chrome className="w-5 h-5 text-coral" />
-              </div>
-              <div className="flex-1">
-                <p className="font-semibold text-dark">
-                  Extension launching this week!
-                </p>
-                <p className="text-sm text-dark-lighter mt-1">
-                  Our Chrome extension is currently under review. In the
-                  meantime, try the Web Editor - it has all the same great
-                  features!
-                </p>
-              </div>
-              <button
-                onClick={() => setShowExtensionNotice(false)}
-                className="text-dark-lighter hover:text-dark transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.nav>
   );
 };
