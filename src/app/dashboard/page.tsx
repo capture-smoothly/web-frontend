@@ -18,6 +18,8 @@ import {
   CreditCard,
   Chrome,
   Monitor,
+  PlayCircle,
+  BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
@@ -150,7 +152,9 @@ export default function DashboardPage() {
               <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center">
                 <Camera className="w-6 h-6 text-white" />
               </div>
-              <span className="text-2xl font-bold text-dark">ILoveSnapshots</span>
+              <span className="text-2xl font-bold text-dark">
+                ILoveSnapshots
+              </span>
             </button>
 
             {/* Actions */}
@@ -202,6 +206,57 @@ export default function DashboardPage() {
                 <Chrome className="w-4 h-4" />
                 Get Extension
               </Button>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Tutorial Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="mb-8"
+        >
+          <div className="bg-gradient-to-r from-purple-500 to-teal rounded-2xl shadow-colorful p-8 text-white relative overflow-hidden">
+            {/* Decorative elements */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full -ml-24 -mb-24" />
+
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                  <BookOpen className="w-6 h-6 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold">
+                  Learn How to Use the Extension
+                </h2>
+              </div>
+
+              <p className="text-white/90 mb-6 text-lg">
+                Watch our quick tutorial video to learn how to capture and edit
+                perfect screenshots with the ILoveSnapshots extension.
+              </p>
+
+              <div className="flex flex-wrap gap-4">
+                <Button
+                  size="lg"
+                  className="bg-white text-coral hover:bg-gray-100 font-semibold shadow-xl"
+                  onClick={() =>
+                    window.open("https://youtu.be/MaFE9Il0wC0", "_blank")
+                  }
+                >
+                  <PlayCircle className="w-5 h-5 mr-2" />
+                  Watch Tutorial
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-2 border-white text-white hover:bg-white/10 font-semibold"
+                  onClick={() => router.push("/editor")}
+                >
+                  Try Web Editor
+                </Button>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -428,7 +483,6 @@ export default function DashboardPage() {
           </Button>
         </motion.div>
       </div>
-
     </div>
   );
 }
