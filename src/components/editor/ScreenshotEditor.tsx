@@ -1287,6 +1287,10 @@ export default function ScreenshotEditor() {
   // Copy/feedback state
   const [isCopied, setIsCopied] = useState(false);
 
+  // Tool notification state
+  const [toolNotification, setToolNotification] = useState<string>("");
+  const [showToolNotification, setShowToolNotification] = useState(false);
+
   // Contact popup state
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [isEmailCopied, setIsEmailCopied] = useState(false);
@@ -2888,6 +2892,7 @@ export default function ScreenshotEditor() {
       setActiveTool("crop");
       setBorderCrop(null);
       setCropArea(null);
+      showNotification("Click and drag to select crop area");
     }
   };
 
@@ -2911,6 +2916,7 @@ export default function ScreenshotEditor() {
       }
       setActiveTool("crop");
       setCropArea(null);
+      showNotification("Drag the edges to crop the image");
     }
   };
 
@@ -2928,6 +2934,15 @@ export default function ScreenshotEditor() {
       }
     }
   }, [activeTool, cropMode, borderCrop]);
+
+  // Show tool notification helper
+  const showNotification = (message: string) => {
+    setToolNotification(message);
+    setShowToolNotification(true);
+    setTimeout(() => {
+      setShowToolNotification(false);
+    }, 4000); // Hide after 4 seconds
+  };
 
   // Save editor state to localStorage for persistence after login
   const saveEditorStateForLogin = useCallback(() => {
@@ -3918,7 +3933,10 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => {
                   setPanModeEnabled(!panModeEnabled);
-                  if (!panModeEnabled) setActiveTool("select");
+                  if (!panModeEnabled) {
+                    setActiveTool("select");
+                    showNotification("Click and drag to pan around the canvas");
+                  }
                 }}
                 tooltip="Pan (Space)"
                 tooltipBg={colors.tooltipBg}
@@ -3954,6 +3972,11 @@ export default function ScreenshotEditor() {
                   } else {
                     setActiveTool("crop");
                     setPanModeEnabled(false);
+                    showNotification(
+                      cropMode === "border"
+                        ? "Drag the edges to crop the image"
+                        : "Click and drag to select crop area"
+                    );
                   }
                 }}
                 tooltip="Crop (C)"
@@ -4141,58 +4164,58 @@ export default function ScreenshotEditor() {
                   <path d="M2 8h12M2 8l2-2M2 8l2 2M14 8l-2-2M14 8l-2 2" />
                 </svg>
               </TooltipButton>
-                {showWidthControl && (
+              {showWidthControl && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "calc(100% + 8px)",
+                    left: "0",
+                    background: colors.toolbar,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "8px",
+                    padding: "12px",
+                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+                    zIndex: 1000,
+                    minWidth: "200px",
+                  }}
+                >
                   <div
                     style={{
-                      position: "absolute",
-                      top: "calc(100% + 8px)",
-                      left: "0",
-                      background: colors.toolbar,
-                      border: `1px solid ${colors.border}`,
-                      borderRadius: "8px",
-                      padding: "12px",
-                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
-                      zIndex: 1000,
-                      minWidth: "200px",
+                      fontSize: "11px",
+                      color: colors.textMuted,
+                      marginBottom: "8px",
+                      fontWeight: 500,
                     }}
                   >
-                    <div
+                    Card Width
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={cardWidth}
+                      onChange={(e) => setCardWidth(Number(e.target.value))}
+                      style={{ flex: 1 }}
+                    />
+                    <span
                       style={{
                         fontSize: "11px",
-                        color: colors.textMuted,
-                        marginBottom: "8px",
+                        color: colors.textSecondary,
                         fontWeight: 500,
                       }}
                     >
-                      Card Width
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                      }}
-                    >
-                      <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={cardWidth}
-                        onChange={(e) => setCardWidth(Number(e.target.value))}
-                        style={{ flex: 1 }}
-                      />
-                      <span
-                        style={{
-                          fontSize: "11px",
-                          color: colors.textSecondary,
-                          fontWeight: 500,
-                        }}
-                      >
-                        {Math.round(calculateCardWidth(cardWidth))}px
-                      </span>
-                    </div>
+                      {Math.round(calculateCardWidth(cardWidth))}px
+                    </span>
                   </div>
-                )}
+                </div>
+              )}
             </div>
 
             {/* Padding Control */}
@@ -4207,7 +4230,9 @@ export default function ScreenshotEditor() {
                 }}
                 tooltip={
                   showBackground
-                    ? `Padding: ${Math.round(calculateCardPadding(cardPadding))}px`
+                    ? `Padding: ${Math.round(
+                        calculateCardPadding(cardPadding)
+                      )}px`
                     : "Add background to use this feature"
                 }
                 tooltipBg={colors.tooltipBg}
@@ -4245,67 +4270,61 @@ export default function ScreenshotEditor() {
                     strokeWidth="1.5"
                     strokeDasharray="2 2"
                   />
-                  <rect
-                    x="5"
-                    y="5"
-                    width="6"
-                    height="6"
-                    fill="currentColor"
-                  />
+                  <rect x="5" y="5" width="6" height="6" fill="currentColor" />
                 </svg>
               </TooltipButton>
-                {showPaddingControl && (
+              {showPaddingControl && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "calc(100% + 8px)",
+                    left: "0",
+                    background: colors.toolbar,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "8px",
+                    padding: "12px",
+                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+                    zIndex: 1000,
+                    minWidth: "180px",
+                  }}
+                >
                   <div
                     style={{
-                      position: "absolute",
-                      top: "calc(100% + 8px)",
-                      left: "0",
-                      background: colors.toolbar,
-                      border: `1px solid ${colors.border}`,
-                      borderRadius: "8px",
-                      padding: "12px",
-                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
-                      zIndex: 1000,
-                      minWidth: "180px",
+                      fontSize: "11px",
+                      color: colors.textMuted,
+                      marginBottom: "8px",
+                      fontWeight: 500,
                     }}
                   >
-                    <div
+                    Padding Size
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={cardPadding}
+                      onChange={(e) => setCardPadding(Number(e.target.value))}
+                      style={{ flex: 1 }}
+                    />
+                    <span
                       style={{
                         fontSize: "11px",
-                        color: colors.textMuted,
-                        marginBottom: "8px",
+                        color: colors.textSecondary,
                         fontWeight: 500,
                       }}
                     >
-                      Padding Size
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                      }}
-                    >
-                      <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={cardPadding}
-                        onChange={(e) => setCardPadding(Number(e.target.value))}
-                        style={{ flex: 1 }}
-                      />
-                      <span
-                        style={{
-                          fontSize: "11px",
-                          color: colors.textSecondary,
-                          fontWeight: 500,
-                        }}
-                      >
-                        {Math.round(calculateCardPadding(cardPadding))}px
-                      </span>
-                    </div>
+                      {Math.round(calculateCardPadding(cardPadding))}px
+                    </span>
                   </div>
-                )}
+                </div>
+              )}
             </div>
 
             {/* Undo/Redo - pushes action buttons to right */}
@@ -5910,6 +5929,7 @@ export default function ScreenshotEditor() {
                 onClick={() => {
                   setActiveTool("line");
                   setPanModeEnabled(false);
+                  showNotification("Click and drag to draw a straight line");
                 }}
                 tooltip="Line (L)"
                 tooltipPosition="left"
@@ -5985,6 +6005,7 @@ export default function ScreenshotEditor() {
                 onClick={() => {
                   setActiveTool("arrow");
                   setPanModeEnabled(false);
+                  showNotification("Click and drag to draw an arrow");
                 }}
                 tooltip="Arrow (A)"
                 tooltipPosition="left"
@@ -6026,6 +6047,7 @@ export default function ScreenshotEditor() {
                 onClick={() => {
                   setActiveTool("circle");
                   setPanModeEnabled(false);
+                  showNotification("Click and drag to draw a circle");
                 }}
                 tooltip="Circle (C)"
                 tooltipPosition="left"
@@ -6064,6 +6086,7 @@ export default function ScreenshotEditor() {
                 onClick={() => {
                   setActiveTool("rectangle");
                   setPanModeEnabled(false);
+                  showNotification("Click and drag to draw a rectangle");
                 }}
                 tooltip="Rectangle (R)"
                 tooltipPosition="left"
@@ -6102,6 +6125,7 @@ export default function ScreenshotEditor() {
                 onClick={() => {
                   setActiveTool("blur");
                   setPanModeEnabled(false);
+                  showNotification("Click and drag to blur an area");
                 }}
                 tooltip="Blur (B)"
                 tooltipPosition="left"
@@ -6147,6 +6171,7 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => {
                   setActiveTool("highlight");
+                  showNotification("Click and drag to highlight an area");
                   setPanModeEnabled(false);
                 }}
                 tooltip="Highlight (H)"
@@ -6959,6 +6984,46 @@ export default function ScreenshotEditor() {
           </div>
         )}
       </div>
+
+      {/* Tool Notification Toast */}
+      {showToolNotification && (
+        <div
+          style={{
+            position: "fixed",
+            top: "80px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: colors.toolbar,
+            padding: "12px 24px",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontWeight: 500,
+            color: colors.textSecondary,
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+            border: `1px solid ${colors.border}`,
+            zIndex: 10000,
+            animation: "slideDown 0.3s ease-out",
+          }}
+        >
+          {toolNotification}
+        </div>
+      )}
+
+      {/* CSS Animation */}
+      <style>
+        {`
+          @keyframes slideDown {
+            from {
+              opacity: 0;
+              transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(-50%) translateY(0);
+            }
+          }
+        `}
+      </style>
     </div>
   );
 }
