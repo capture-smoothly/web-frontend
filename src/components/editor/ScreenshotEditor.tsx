@@ -1236,7 +1236,7 @@ export default function ScreenshotEditor() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeTool, setActiveTool] = useState<Tool>("select");
   const [cropArea, setCropArea] = useState<CropArea | null>(null);
-  const [cropMode, setCropMode] = useState<"freeform" | "border">("freeform");
+  const [cropMode, setCropMode] = useState<"freeform" | "border">("border");
   const [borderCrop, setBorderCrop] = useState<{
     top: number;
     bottom: number;
@@ -2915,6 +2915,21 @@ export default function ScreenshotEditor() {
       setCropArea(null);
     }
   };
+
+  // Initialize border crop when crop tool is activated with border mode
+  useEffect(() => {
+    if (activeTool === "crop" && cropMode === "border" && !borderCrop) {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        setBorderCrop({
+          top: 0,
+          bottom: canvas.height,
+          left: 0,
+          right: canvas.width,
+        });
+      }
+    }
+  }, [activeTool, cropMode, borderCrop]);
 
   // Save editor state to localStorage for persistence after login
   const saveEditorStateForLogin = useCallback(() => {
