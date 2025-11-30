@@ -679,7 +679,6 @@ function ThemeSelector({
               <button
                 onClick={() => {
                   onThemeSelect(themeKey);
-                  onClose();
                 }}
                 onMouseEnter={() => setHoveredTheme(themeKey)}
                 onMouseLeave={() => setHoveredTheme(null)}
