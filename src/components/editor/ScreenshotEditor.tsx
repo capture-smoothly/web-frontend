@@ -920,6 +920,80 @@ export default function ScreenshotEditor() {
     [handleFileSelect]
   );
 
+  // Prevent body scroll and browser zoom
+  useEffect(() => {
+    // Prevent page scroll by setting body overflow to hidden
+    const originalOverflow = document.body.style.overflow;
+    const originalTouchAction = document.body.style.touchAction;
+    const originalOverscrollBehavior = document.body.style.overscrollBehavior;
+
+    document.body.style.overflow = "hidden";
+    document.body.style.touchAction = "none";
+    document.body.style.overscrollBehavior = "none";
+
+    const preventBrowserZoom = (e: WheelEvent) => {
+      // Detect Ctrl+wheel (trackpad pinch) or Meta+wheel
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    };
+
+    // Prevent touchpad pinch-to-zoom gestures
+    const preventGestureZoom = (e: Event) => {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    };
+
+    // Also prevent keyboard zoom shortcuts globally (except our custom ones)
+    const preventKeyboardZoom = (e: KeyboardEvent) => {
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        (e.key === "+" || e.key === "=" || e.key === "-" || e.key === "0")
+      ) {
+        // Let our custom handlers take over
+        e.preventDefault();
+      }
+    };
+
+    // Add listeners with passive: false to allow preventDefault
+    document.addEventListener("wheel", preventBrowserZoom, {
+      passive: false,
+      capture: true,
+    });
+    document.addEventListener("gesturestart", preventGestureZoom, {
+      passive: false,
+    });
+    document.addEventListener("gesturechange", preventGestureZoom, {
+      passive: false,
+    });
+    document.addEventListener("gestureend", preventGestureZoom, {
+      passive: false,
+    });
+    document.addEventListener("keydown", preventKeyboardZoom, {
+      capture: true,
+    });
+
+    return () => {
+      // Restore original body styles
+      document.body.style.overflow = originalOverflow;
+      document.body.style.touchAction = originalTouchAction;
+      document.body.style.overscrollBehavior = originalOverscrollBehavior;
+
+      document.removeEventListener("wheel", preventBrowserZoom, {
+        capture: true,
+      } as EventListenerOptions);
+      document.removeEventListener("gesturestart", preventGestureZoom);
+      document.removeEventListener("gesturechange", preventGestureZoom);
+      document.removeEventListener("gestureend", preventGestureZoom);
+      document.removeEventListener("keydown", preventKeyboardZoom, {
+        capture: true,
+      } as EventListenerOptions);
+    };
+  }, []);
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -929,16 +1003,15 @@ export default function ScreenshotEditor() {
       }
       if (e.key === "0" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setZoom(1);
-        setPan({ x: 0, y: 0 });
+        handleZoomReset();
       }
       if (e.key === "=" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setZoom((prev) => Math.min(prev * 1.2, 10));
+        handleZoomIn();
       }
       if (e.key === "-" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setZoom((prev) => Math.max(prev / 1.2, 0.1));
+        handleZoomOut();
       }
       if (e.key === "z" && (e.metaKey || e.ctrlKey) && !e.shiftKey) {
         e.preventDefault();
@@ -1679,12 +1752,84 @@ export default function ScreenshotEditor() {
 
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
-    if (spacePressed) {
-      setPan({ x: pan.x - e.deltaX, y: pan.y - e.deltaY });
+    e.stopPropagation();
+
+    // Don't allow Ctrl+wheel zoom - users should use zoom buttons
+    if (e.ctrlKey || e.metaKey) {
       return;
     }
-    const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    setZoom(Math.min(Math.max(zoom * delta, 0.1), 10));
+
+    // ALWAYS pan on any wheel/scroll event (trackpad or mouse)
+    // For mouse wheel (which typically only has deltaY), we also pan vertically
+    // For trackpad (which has both deltaX and deltaY), we pan in both directions
+    const newPan = {
+      x: pan.x - e.deltaX,
+      y: pan.y - e.deltaY,
+    };
+    setPan(newPan);
+  };
+
+  const handleZoomIn = () => {
+    setZoom((prev) => {
+      // Define zoom levels: 10%, 25%, 50%, 75%, 100%, then 50% increments up to 300%, then 1.2x
+      const belowHundred = [0.1, 0.25, 0.5, 0.75, 1.0];
+      const hundredToThreeHundred = [1.0, 1.5, 2.0, 2.5, 3.0];
+
+      // If current zoom is below 100%, use 25% increments
+      if (prev < 1.0) {
+        const nextLevel = belowHundred.find((level) => level > prev + 0.01);
+        if (nextLevel) return nextLevel;
+        return 1.0;
+      }
+
+      // Between 100% and 300%, use 50% increments (100, 150, 200, 250, 300)
+      if (prev < 3.0) {
+        const nextLevel = hundredToThreeHundred.find((level) => level > prev + 0.01);
+        if (nextLevel) return nextLevel;
+        return 3.0;
+      }
+
+      // Above 300%, use 1.2x increments (360%, 432%, etc.)
+      return Math.min(prev * 1.2, 10);
+    });
+  };
+
+  const handleZoomOut = () => {
+    setZoom((prev) => {
+      // Define zoom levels in reverse: 100%, 75%, 50%, 25%, 10%
+      const belowHundred = [1.0, 0.75, 0.5, 0.25, 0.1];
+      const hundredToThreeHundred = [3.0, 2.5, 2.0, 1.5, 1.0];
+
+      // If current zoom is at or below 100%, use 25% decrements
+      if (prev <= 1.0) {
+        for (let i = 0; i < belowHundred.length; i++) {
+          if (prev > belowHundred[i] + 0.01) {
+            return belowHundred[i];
+          }
+        }
+        return 0.1; // Already at lowest
+      }
+
+      // Between 100% and 300%, use 50% decrements (300, 250, 200, 150, 100)
+      if (prev <= 3.0) {
+        for (let i = 0; i < hundredToThreeHundred.length; i++) {
+          if (prev > hundredToThreeHundred[i] + 0.01) {
+            return hundredToThreeHundred[i];
+          }
+        }
+        return 1.0; // Snap to 100%
+      }
+
+      // Above 300%, use 1.2x decrements until we reach 300%
+      const newZoom = prev / 1.2;
+      if (newZoom <= 3.0) return 3.0; // Snap to 300%
+      return Math.max(newZoom, 0.1);
+    });
+  };
+
+  const handleZoomReset = () => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
   };
 
   // Track if we're restoring from history (to avoid saving during restore)
@@ -2490,6 +2635,8 @@ export default function ScreenshotEditor() {
         color: colors.text,
         fontFamily:
           "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        overflow: "hidden",
+        touchAction: "none",
       }}
     >
       {/* Hidden file input */}
@@ -4524,6 +4671,8 @@ export default function ScreenshotEditor() {
           background: editorTheme === "dark" ? "#262626" : "#E5E7EB",
           cursor: getCursor(),
           border: isDragOver ? "3px dashed #3B82F6" : "none",
+          touchAction: "none",
+          overscrollBehavior: "none",
         }}
       >
         {!imageUrl ? (
@@ -5735,7 +5884,7 @@ export default function ScreenshotEditor() {
             {/* Row 1: Zoom Out, Percentage, Zoom In */}
             <div style={{ display: "flex", gap: "4px" }}>
               <TooltipButton
-                onClick={() => setZoom(Math.max(zoom / 1.2, 0.1))}
+                onClick={handleZoomOut}
                 tooltip="Zoom Out (Ctrl + -)"
                 tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
@@ -5760,10 +5909,7 @@ export default function ScreenshotEditor() {
               </TooltipButton>
 
               <TooltipButton
-                onClick={() => {
-                  setZoom(1);
-                  setPan({ x: 0, y: 0 });
-                }}
+                onClick={handleZoomReset}
                 tooltip="Reset Zoom (Ctrl + 0)"
                 tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
@@ -5789,7 +5935,7 @@ export default function ScreenshotEditor() {
               </TooltipButton>
 
               <TooltipButton
-                onClick={() => setZoom(Math.min(zoom * 1.2, 10))}
+                onClick={handleZoomIn}
                 tooltip="Zoom In (Ctrl + =)"
                 tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
