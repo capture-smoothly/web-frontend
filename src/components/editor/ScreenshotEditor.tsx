@@ -1378,17 +1378,25 @@ export default function ScreenshotEditor() {
 
   // Canvas event handlers
   const getCanvasCoordinates = (
-    e: React.MouseEvent<HTMLCanvasElement> | MouseEvent
+    e: React.MouseEvent<HTMLCanvasElement> | MouseEvent,
+    clamp: boolean = false
   ) => {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
-    return {
-      x: (e.clientX - rect.left) * scaleX,
-      y: (e.clientY - rect.top) * scaleY,
-    };
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+
+    if (clamp) {
+      return {
+        x: Math.max(0, Math.min(canvas.width, x)),
+        y: Math.max(0, Math.min(canvas.height, y)),
+      };
+    }
+
+    return { x, y };
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -1530,7 +1538,7 @@ export default function ScreenshotEditor() {
       return;
     }
 
-    const { x, y } = getCanvasCoordinates(e);
+    const { x, y } = getCanvasCoordinates(e, true); // Clamp coordinates to canvas bounds
 
     if (isDrawingAnnotation && currentAnnotation) {
       if (currentAnnotation.type === "freehand") {
@@ -1755,9 +1763,13 @@ export default function ScreenshotEditor() {
       const rect = canvas.getBoundingClientRect();
       const scaleX = canvas.width / rect.width;
       const scaleY = canvas.height / rect.height;
+      const x = (e.clientX - rect.left) * scaleX;
+      const y = (e.clientY - rect.top) * scaleY;
+
+      // Clamp coordinates to canvas bounds
       return {
-        x: (e.clientX - rect.left) * scaleX,
-        y: (e.clientY - rect.top) * scaleY,
+        x: Math.max(0, Math.min(canvas.width, x)),
+        y: Math.max(0, Math.min(canvas.height, y)),
       };
     };
 
