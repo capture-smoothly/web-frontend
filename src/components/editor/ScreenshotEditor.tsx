@@ -2049,12 +2049,29 @@ export default function ScreenshotEditor() {
         }
         break;
       case "freehand":
-        if (annotation.points && annotation.points.length > 1) {
+        if (annotation.points && annotation.points.length > 0) {
           ctx.beginPath();
           ctx.moveTo(annotation.points[0].x, annotation.points[0].y);
-          for (let i = 1; i < annotation.points.length; i++) {
-            ctx.lineTo(annotation.points[i].x, annotation.points[i].y);
+
+          if (annotation.points.length === 1) {
+            // Draw a small dot for single point
+            ctx.lineTo(annotation.points[0].x + 0.1, annotation.points[0].y + 0.1);
+          } else if (annotation.points.length === 2) {
+            // Draw a straight line for two points
+            ctx.lineTo(annotation.points[1].x, annotation.points[1].y);
+          } else {
+            // Use quadratic curves for smoother lines with 3+ points
+            for (let i = 1; i < annotation.points.length - 1; i++) {
+              const xc = (annotation.points[i].x + annotation.points[i + 1].x) / 2;
+              const yc = (annotation.points[i].y + annotation.points[i + 1].y) / 2;
+              ctx.quadraticCurveTo(annotation.points[i].x, annotation.points[i].y, xc, yc);
+            }
+            // Draw the last segment
+            const lastPoint = annotation.points[annotation.points.length - 1];
+            const secondLastPoint = annotation.points[annotation.points.length - 2];
+            ctx.quadraticCurveTo(secondLastPoint.x, secondLastPoint.y, lastPoint.x, lastPoint.y);
           }
+
           ctx.stroke();
         }
         break;
@@ -5967,6 +5984,7 @@ export default function ScreenshotEditor() {
                 onClick={() => {
                   setActiveTool("freehand");
                   setPanModeEnabled(false);
+                  showNotification("Click and drag to draw freehand");
                 }}
                 tooltip="Freehand (F)"
                 tooltipPosition="left"
