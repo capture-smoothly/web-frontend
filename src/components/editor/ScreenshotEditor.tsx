@@ -334,23 +334,44 @@ function TooltipButton({
 
 // Helper function to generate gradient CSS
 function generateGradient(
-  type: 'linear' | 'radial' | 'angular' | 'diamond',
+  type: "linear" | "radial" | "angular" | "diamond",
   color1: string,
   color2: string,
   angle: number = 135
 ): string {
   switch (type) {
-    case 'linear':
+    case "linear":
       return `linear-gradient(${angle}deg, ${color1} 0%, ${color2} 100%)`;
-    case 'radial':
-      const positions = ['center', 'top', 'right', 'bottom', 'left', 'top right', 'bottom right', 'bottom left', 'top left'];
+    case "radial":
+      const positions = [
+        "center",
+        "top",
+        "right",
+        "bottom",
+        "left",
+        "top right",
+        "bottom right",
+        "bottom left",
+        "top left",
+      ];
       const posIndex = Math.floor((angle % 360) / 40) % positions.length;
       return `radial-gradient(circle at ${positions[posIndex]}, ${color1} 0%, ${color2} 100%)`;
-    case 'angular':
+    case "angular":
       return `conic-gradient(from ${angle}deg, ${color1}, ${color2}, ${color1})`;
-    case 'diamond':
-      const diamondPositions = ['center', 'top', 'right', 'bottom', 'left', 'top right', 'bottom right', 'bottom left', 'top left'];
-      const diamondIndex = Math.floor((angle % 360) / 40) % diamondPositions.length;
+    case "diamond":
+      const diamondPositions = [
+        "center",
+        "top",
+        "right",
+        "bottom",
+        "left",
+        "top right",
+        "bottom right",
+        "bottom left",
+        "top left",
+      ];
+      const diamondIndex =
+        Math.floor((angle % 360) / 40) % diamondPositions.length;
       return `radial-gradient(ellipse at ${diamondPositions[diamondIndex]}, ${color1} 0%, ${color2} 100%)`;
     default:
       return `linear-gradient(${angle}deg, ${color1} 0%, ${color2} 100%)`;
@@ -363,11 +384,11 @@ function ThemeSelector({
   onThemeSelect,
   onClose,
   editorTheme,
-  initialCustomColor = '#D8FF00',
-  initialCustomColor2 = '#FF00FF',
-  initialGradientType = 'linear',
+  initialCustomColor = "#D8FF00",
+  initialCustomColor2 = "#FF00FF",
+  initialGradientType = "linear",
   initialGradientAngle = 135,
-  initialCustomMode = 'solid',
+  initialCustomMode = "solid",
   onCustomChange,
 }: {
   selectedTheme: ThemeType;
@@ -376,16 +397,16 @@ function ThemeSelector({
   editorTheme: "light" | "dark";
   initialCustomColor?: string;
   initialCustomColor2?: string;
-  initialGradientType?: 'linear' | 'radial' | 'angular' | 'diamond';
+  initialGradientType?: "linear" | "radial" | "angular" | "diamond";
   initialGradientAngle?: number;
-  initialCustomMode?: 'solid' | 'gradient';
+  initialCustomMode?: "solid" | "gradient";
   onCustomChange?: (
     color: string,
     settings: {
       color2: string;
-      type: 'linear' | 'radial' | 'angular' | 'diamond';
+      type: "linear" | "radial" | "angular" | "diamond";
       angle: number;
-      mode: 'solid' | 'gradient';
+      mode: "solid" | "gradient";
     }
   ) => void;
 }) {
@@ -402,27 +423,30 @@ function ThemeSelector({
   const colorUpdateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Debounced update function for parent state
-  const debouncedParentUpdate = useCallback((
-    color: string,
-    color2: string,
-    type: 'linear' | 'radial' | 'angular' | 'diamond',
-    angle: number,
-    mode: 'solid' | 'gradient'
-  ) => {
-    if (colorUpdateTimeoutRef.current) {
-      clearTimeout(colorUpdateTimeoutRef.current);
-    }
-    colorUpdateTimeoutRef.current = setTimeout(() => {
-      if (onCustomChange) {
-        onCustomChange(color, {
-          color2: color2,
-          type: type,
-          angle: angle,
-          mode: mode,
-        });
+  const debouncedParentUpdate = useCallback(
+    (
+      color: string,
+      color2: string,
+      type: "linear" | "radial" | "angular" | "diamond",
+      angle: number,
+      mode: "solid" | "gradient"
+    ) => {
+      if (colorUpdateTimeoutRef.current) {
+        clearTimeout(colorUpdateTimeoutRef.current);
       }
-    }, 0); // Update immediately but async to avoid blocking
-  }, [onCustomChange]);
+      colorUpdateTimeoutRef.current = setTimeout(() => {
+        if (onCustomChange) {
+          onCustomChange(color, {
+            color2: color2,
+            type: type,
+            angle: angle,
+            mode: mode,
+          });
+        }
+      }, 0); // Update immediately but async to avoid blocking
+    },
+    [onCustomChange]
+  );
 
   const colors = {
     background: editorTheme === "dark" ? "#1E1E1E" : "#FFFFFF",
@@ -628,7 +652,7 @@ function ThemeSelector({
               // Apply default custom colors when switching to custom mode
               const defaultColor1 = "#D8FF00";
               const defaultColor2 = "#FF00FF";
-              const defaultType = "radial";
+              const defaultType = "linear";
               setCustomColor(defaultColor1);
               setCustomColor2(defaultColor2);
               setGradientType(defaultType);
@@ -689,85 +713,85 @@ function ThemeSelector({
             paddingRight: "4px",
           }}
         >
-        {(Object.keys(THEMES) as ThemeType[]).map((themeKey) => {
-          const isSelected = selectedTheme === themeKey;
-          const isHovered = hoveredTheme === themeKey;
+          {(Object.keys(THEMES) as ThemeType[]).map((themeKey) => {
+            const isSelected = selectedTheme === themeKey;
+            const isHovered = hoveredTheme === themeKey;
 
-          return (
-            <div key={themeKey} style={{ position: "relative" }}>
-              <button
-                onClick={() => {
-                  onThemeSelect(themeKey);
-                }}
-                onMouseEnter={() => setHoveredTheme(themeKey)}
-                onMouseLeave={() => setHoveredTheme(null)}
-                style={{
-                  width: "100%",
-                  aspectRatio: "1",
-                  padding: "0",
-                  background: THEMES[themeKey],
-                  border: isSelected
-                    ? "2px solid #3B82F6"
-                    : "2px solid rgba(255, 255, 255, 0.1)",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  position: "relative",
-                  transform: isHovered ? "scale(1.05)" : "scale(1)",
-                }}
-              >
-                {isSelected && (
+            return (
+              <div key={themeKey} style={{ position: "relative" }}>
+                <button
+                  onClick={() => {
+                    onThemeSelect(themeKey);
+                  }}
+                  onMouseEnter={() => setHoveredTheme(themeKey)}
+                  onMouseLeave={() => setHoveredTheme(null)}
+                  style={{
+                    width: "100%",
+                    aspectRatio: "1",
+                    padding: "0",
+                    background: THEMES[themeKey],
+                    border: isSelected
+                      ? "2px solid #3B82F6"
+                      : "2px solid rgba(255, 255, 255, 0.1)",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                    position: "relative",
+                    transform: isHovered ? "scale(1.05)" : "scale(1)",
+                  }}
+                >
+                  {isSelected && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "4px",
+                        right: "4px",
+                        width: "16px",
+                        height: "16px",
+                        background: "#3B82F6",
+                        borderRadius: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <svg
+                        width="10"
+                        height="10"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="2.5"
+                      >
+                        <path d="M3 8l3 3 7-7" />
+                      </svg>
+                    </div>
+                  )}
+                </button>
+                {isHovered && (
                   <div
                     style={{
                       position: "absolute",
-                      top: "4px",
-                      right: "4px",
-                      width: "16px",
-                      height: "16px",
-                      background: "#3B82F6",
-                      borderRadius: "50%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
+                      bottom: "calc(100% + 8px)",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      background: colors.background,
+                      color: colors.text,
+                      padding: "4px 8px",
+                      borderRadius: "4px",
+                      fontSize: "11px",
+                      whiteSpace: "nowrap",
+                      pointerEvents: "none",
+                      zIndex: 1001,
+                      border: `1px solid ${colors.border}`,
                     }}
                   >
-                    <svg
-                      width="10"
-                      height="10"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      stroke="white"
-                      strokeWidth="2.5"
-                    >
-                      <path d="M3 8l3 3 7-7" />
-                    </svg>
+                    {themeNames[themeKey]}
                   </div>
                 )}
-              </button>
-              {isHovered && (
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "calc(100% + 8px)",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    background: colors.background,
-                    color: colors.text,
-                    padding: "4px 8px",
-                    borderRadius: "4px",
-                    fontSize: "11px",
-                    whiteSpace: "nowrap",
-                    pointerEvents: "none",
-                    zIndex: 1001,
-                    border: `1px solid ${colors.border}`,
-                  }}
-                >
-                  {themeNames[themeKey]}
-                </div>
-              )}
-            </div>
-          );
-        })}
+              </div>
+            );
+          })}
         </div>
       ) : (
         /* Custom Color Picker */
@@ -797,7 +821,8 @@ function ThemeSelector({
                 lineHeight: "1.4",
               }}
             >
-              Watch custom tutorial to understand how to use it
+              Watch tutorial to understand how to use custom colors and
+              gradients.
             </div>
             <button
               onClick={() =>
@@ -854,7 +879,13 @@ function ThemeSelector({
                 const newColor = (e.target as HTMLInputElement).value;
                 setCustomColor(newColor);
                 setCustomMode("solid");
-                debouncedParentUpdate(newColor, customColor2, gradientType, gradientAngle, "solid");
+                debouncedParentUpdate(
+                  newColor,
+                  customColor2,
+                  gradientType,
+                  gradientAngle,
+                  "solid"
+                );
               }}
               style={{
                 width: "100%",
@@ -873,7 +904,11 @@ function ThemeSelector({
               }}
             >
               <span
-                style={{ color: colors.text, fontSize: "12px", fontWeight: 500 }}
+                style={{
+                  color: colors.text,
+                  fontSize: "12px",
+                  fontWeight: 500,
+                }}
               >
                 Hex:
               </span>
@@ -993,7 +1028,11 @@ function ThemeSelector({
                 }}
               >
                 <span
-                  style={{ color: colors.text, fontSize: "12px", fontWeight: 500 }}
+                  style={{
+                    color: colors.text,
+                    fontSize: "12px",
+                    fontWeight: 500,
+                  }}
                 >
                   Direction
                 </span>
@@ -1075,7 +1114,13 @@ function ThemeSelector({
                     const newColor = (e.target as HTMLInputElement).value;
                     setCustomColor(newColor);
                     setCustomMode("gradient");
-                    debouncedParentUpdate(newColor, customColor2, gradientType, gradientAngle, "gradient");
+                    debouncedParentUpdate(
+                      newColor,
+                      customColor2,
+                      gradientType,
+                      gradientAngle,
+                      "gradient"
+                    );
                   }}
                   style={{
                     width: "100%",
@@ -1126,7 +1171,13 @@ function ThemeSelector({
                     const newColor = (e.target as HTMLInputElement).value;
                     setCustomColor2(newColor);
                     setCustomMode("gradient");
-                    debouncedParentUpdate(customColor, newColor, gradientType, gradientAngle, "gradient");
+                    debouncedParentUpdate(
+                      customColor,
+                      newColor,
+                      gradientType,
+                      gradientAngle,
+                      "gradient"
+                    );
                   }}
                   style={{
                     width: "100%",
@@ -1223,9 +1274,11 @@ export default function ScreenshotEditor() {
   const [showThemeSelector, setShowThemeSelector] = useState(false);
   const [customColor, setCustomColor] = useState("#D8FF00");
   const [customColor2, setCustomColor2] = useState("#FF00FF");
-  const [gradientType, setGradientType] = useState<'linear' | 'radial' | 'angular' | 'diamond'>('linear');
+  const [gradientType, setGradientType] = useState<
+    "linear" | "radial" | "angular" | "diamond"
+  >("linear");
   const [gradientAngle, setGradientAngle] = useState(135);
-  const [customMode, setCustomMode] = useState<'solid' | 'gradient'>('solid');
+  const [customMode, setCustomMode] = useState<"solid" | "gradient">("solid");
 
   // Width and padding
   const [cardWidth, setCardWidth] = useState(50);
@@ -1286,11 +1339,16 @@ export default function ScreenshotEditor() {
 
   // Helper function to get the background
   const getThemeBackground = () => {
-    if (selectedTheme === 'custom') {
-      if (customMode === 'solid') {
+    if (selectedTheme === "custom") {
+      if (customMode === "solid") {
         return customColor;
       } else {
-        return generateGradient(gradientType, customColor, customColor2, gradientAngle);
+        return generateGradient(
+          gradientType,
+          customColor,
+          customColor2,
+          gradientAngle
+        );
       }
     }
     return THEMES[selectedTheme];
@@ -1393,27 +1451,32 @@ export default function ScreenshotEditor() {
   const onboardingSteps = [
     {
       title: "Welcome to ILoveSnapshots! 🎨",
-      description: "Create beautiful screenshots in seconds. Let's show you around!",
+      description:
+        "Create beautiful screenshots in seconds. Let's show you around!",
       icon: "👋",
     },
     {
       title: "Upload Your Screenshot",
-      description: "Drag & drop an image, paste from clipboard (Ctrl+V), or click to upload. Supports PNG, JPG, GIF, and WebP.",
+      description:
+        "Drag & drop an image, paste from clipboard (Ctrl+V), or click to upload. Supports PNG, JPG, GIF, and WebP.",
       icon: "📤",
     },
     {
       title: "Choose a Theme",
-      description: "Click the 'Theme' button to pick from 100+ beautiful gradient backgrounds for your screenshot.",
+      description:
+        "Click the 'Theme' button to pick from 100+ beautiful gradient backgrounds for your screenshot.",
       icon: "🎨",
     },
     {
       title: "Customize Your Design",
-      description: "Adjust padding, width, and toggle the window chrome on/off. Use annotation tools to add arrows, shapes, and highlights.",
+      description:
+        "Adjust padding, width, and toggle the window chrome on/off. Use annotation tools to add arrows, shapes, and highlights.",
       icon: "✨",
     },
     {
       title: "Export Your Creation",
-      description: "Download your polished screenshot or copy it directly to clipboard. That's it - you're ready to create!",
+      description:
+        "Download your polished screenshot or copy it directly to clipboard. That's it - you're ready to create!",
       icon: "🚀",
     },
   ];
@@ -1478,7 +1541,8 @@ export default function ScreenshotEditor() {
     const originalHtmlOverflow = htmlElement.style.overflow;
     const originalHtmlTouchAction = htmlElement.style.touchAction;
     const originalHtmlOverscrollBehavior = htmlElement.style.overscrollBehavior;
-    const originalHtmlOverscrollBehaviorX = htmlElement.style.overscrollBehaviorX;
+    const originalHtmlOverscrollBehaviorX =
+      htmlElement.style.overscrollBehaviorX;
 
     // Apply to both body and html
     document.body.style.overflow = "hidden";
@@ -2175,12 +2239,17 @@ export default function ScreenshotEditor() {
   };
 
   // Helper function to update transform directly on DOM for smooth panning
-  const updatePanTransform = useCallback((newPan: { x: number; y: number }) => {
-    const container = transformContainerRef.current;
-    if (container) {
-      container.style.transform = `scale(${zoom}) translate(${newPan.x / zoom}px, ${newPan.y / zoom}px)`;
-    }
-  }, [zoom]);
+  const updatePanTransform = useCallback(
+    (newPan: { x: number; y: number }) => {
+      const container = transformContainerRef.current;
+      if (container) {
+        container.style.transform = `scale(${zoom}) translate(${
+          newPan.x / zoom
+        }px, ${newPan.y / zoom}px)`;
+      }
+    },
+    [zoom]
+  );
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (isPanningRef.current) {
@@ -2374,7 +2443,9 @@ export default function ScreenshotEditor() {
 
       // Between 100% and 300%, use 50% increments (100, 150, 200, 250, 300)
       if (prev < 3.0) {
-        const nextLevel = hundredToThreeHundred.find((level) => level > prev + 0.01);
+        const nextLevel = hundredToThreeHundred.find(
+          (level) => level > prev + 0.01
+        );
         if (nextLevel) return nextLevel;
         return 3.0;
       }
@@ -2982,8 +3053,14 @@ export default function ScreenshotEditor() {
         // Draw from source, skipping the trim amount from edges
         cleanCtx.drawImage(
           capturedCanvas,
-          trim, trim, sourceWidth - trim * 2, sourceHeight - trim * 2,
-          0, 0, cleanCanvas.width, cleanCanvas.height
+          trim,
+          trim,
+          sourceWidth - trim * 2,
+          sourceHeight - trim * 2,
+          0,
+          0,
+          cleanCanvas.width,
+          cleanCanvas.height
         );
       }
 
@@ -3098,8 +3175,14 @@ export default function ScreenshotEditor() {
           // Draw from source, skipping the trim amount from edges
           cleanCtx.drawImage(
             capturedCanvas,
-            trim, trim, sourceWidth - trim * 2, sourceHeight - trim * 2,
-            0, 0, canvas.width, canvas.height
+            trim,
+            trim,
+            sourceWidth - trim * 2,
+            sourceHeight - trim * 2,
+            0,
+            0,
+            canvas.width,
+            canvas.height
           );
         } else {
           canvas = capturedCanvas;
@@ -3290,7 +3373,9 @@ export default function ScreenshotEditor() {
               maxWidth: "480px",
               width: "100%",
               boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
-              border: `1px solid ${editorTheme === "dark" ? "#2D2D2D" : "#E5E7EB"}`,
+              border: `1px solid ${
+                editorTheme === "dark" ? "#2D2D2D" : "#E5E7EB"
+              }`,
               position: "relative",
               overflow: "hidden",
             }}
@@ -3303,7 +3388,8 @@ export default function ScreenshotEditor() {
                 left: 0,
                 right: 0,
                 height: "4px",
-                background: "linear-gradient(90deg, #f24e1e 0%, #ff7262 30%, #a259ff 70%, #1abcfe 100%)",
+                background:
+                  "linear-gradient(90deg, #f24e1e 0%, #ff7262 30%, #a259ff 70%, #1abcfe 100%)",
               }}
             />
 
@@ -3327,7 +3413,14 @@ export default function ScreenshotEditor() {
               }}
             >
               Skip
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
@@ -3387,9 +3480,12 @@ export default function ScreenshotEditor() {
                     width: index === onboardingStep ? "24px" : "8px",
                     height: "8px",
                     borderRadius: "4px",
-                    background: index === onboardingStep
-                      ? "linear-gradient(90deg, #f24e1e, #a259ff)"
-                      : editorTheme === "dark" ? "#3D3D3D" : "#E5E7EB",
+                    background:
+                      index === onboardingStep
+                        ? "linear-gradient(90deg, #f24e1e, #a259ff)"
+                        : editorTheme === "dark"
+                        ? "#3D3D3D"
+                        : "#E5E7EB",
                     border: "none",
                     cursor: "pointer",
                     transition: "all 0.3s ease",
@@ -3412,7 +3508,9 @@ export default function ScreenshotEditor() {
                   style={{
                     padding: "12px 24px",
                     borderRadius: "10px",
-                    border: `1px solid ${editorTheme === "dark" ? "#3D3D3D" : "#E5E7EB"}`,
+                    border: `1px solid ${
+                      editorTheme === "dark" ? "#3D3D3D" : "#E5E7EB"
+                    }`,
                     background: "transparent",
                     color: editorTheme === "dark" ? "#E0E0E0" : "#374151",
                     fontSize: "14px",
@@ -3430,7 +3528,8 @@ export default function ScreenshotEditor() {
                   padding: "12px 32px",
                   borderRadius: "10px",
                   border: "none",
-                  background: "linear-gradient(135deg, #f24e1e 0%, #ff7262 30%, #a259ff 70%, #1abcfe 100%)",
+                  background:
+                    "linear-gradient(135deg, #f24e1e 0%, #ff7262 30%, #a259ff 70%, #1abcfe 100%)",
                   color: "white",
                   fontSize: "14px",
                   fontWeight: 600,
@@ -3439,7 +3538,9 @@ export default function ScreenshotEditor() {
                   boxShadow: "0 4px 14px rgba(162, 89, 255, 0.4)",
                 }}
               >
-                {onboardingStep === onboardingSteps.length - 1 ? "Get Started!" : "Next"}
+                {onboardingStep === onboardingSteps.length - 1
+                  ? "Get Started!"
+                  : "Next"}
               </button>
             </div>
 
@@ -3485,7 +3586,9 @@ export default function ScreenshotEditor() {
               maxWidth: "420px",
               width: "100%",
               boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
-              border: `1px solid ${editorTheme === "dark" ? "#2D2D2D" : "#E5E7EB"}`,
+              border: `1px solid ${
+                editorTheme === "dark" ? "#2D2D2D" : "#E5E7EB"
+              }`,
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -3541,11 +3644,14 @@ export default function ScreenshotEditor() {
                 lineHeight: "1.5",
               }}
             >
-              You have an image in the editor that hasn&apos;t been downloaded. If you leave now, your changes will be lost.
+              You have an image in the editor that hasn&apos;t been downloaded.
+              If you leave now, your changes will be lost.
             </p>
 
             {/* Buttons */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+            >
               {/* Download Button */}
               <button
                 onClick={() => {
@@ -3595,7 +3701,9 @@ export default function ScreenshotEditor() {
                 style={{
                   padding: "14px 24px",
                   borderRadius: "10px",
-                  border: `1px solid ${editorTheme === "dark" ? "#3D3D3D" : "#E5E7EB"}`,
+                  border: `1px solid ${
+                    editorTheme === "dark" ? "#3D3D3D" : "#E5E7EB"
+                  }`,
                   background: "transparent",
                   color: editorTheme === "dark" ? "#A0A0A0" : "#6B7280",
                   fontSize: "14px",
@@ -4548,7 +4656,7 @@ export default function ScreenshotEditor() {
             setGradientType(settings.type);
             setGradientAngle(settings.angle);
             setCustomMode(settings.mode);
-            setSelectedTheme('custom' as ThemeType);
+            setSelectedTheme("custom" as ThemeType);
           }}
         />
       )}
@@ -5278,7 +5386,8 @@ export default function ScreenshotEditor() {
               fontWeight: 400,
             }}
           >
-            You can directly take the screenshots of website pages and edit them in the editor using our extension
+            You can directly take the screenshots of website pages and edit them
+            in the editor using our extension
           </p>
           <button
             onClick={() =>
@@ -5305,7 +5414,7 @@ export default function ScreenshotEditor() {
             }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001h-.002l-5.344 9.257c.206.01.413.016.621.016 6.627 0 12-5.373 12-12 0-1.54-.29-3.011-.818-4.364zM12 16.364a4.364 4.364 0 1 1 0-8.728 4.364 4.364 0 0 1 0 8.728z"/>
+              <path d="M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001h-.002l-5.344 9.257c.206.01.413.016.621.016 6.627 0 12-5.373 12-12 0-1.54-.29-3.011-.818-4.364zM12 16.364a4.364 4.364 0 1 1 0-8.728 4.364 4.364 0 0 1 0 8.728z" />
             </svg>
             Try Extension
           </button>
