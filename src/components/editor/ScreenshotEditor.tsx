@@ -1192,6 +1192,7 @@ export default function ScreenshotEditor() {
 
   // Unsaved changes prompt state
   const [showUnsavedPrompt, setShowUnsavedPrompt] = useState(false);
+  const [navigateAfterDownload, setNavigateAfterDownload] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -2869,6 +2870,12 @@ export default function ScreenshotEditor() {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+
+        // Navigate to dashboard if flag is set
+        if (navigateAfterDownload) {
+          setNavigateAfterDownload(false);
+          router.push("/dashboard");
+        }
       }, "image/png");
       return;
     }
@@ -2886,6 +2893,12 @@ export default function ScreenshotEditor() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+
+      // Navigate to dashboard if flag is set
+      if (navigateAfterDownload) {
+        setNavigateAfterDownload(false);
+        router.push("/dashboard");
+      }
     }, "image/png");
   };
 
@@ -3410,6 +3423,7 @@ export default function ScreenshotEditor() {
               <button
                 onClick={() => {
                   setShowUnsavedPrompt(false);
+                  setNavigateAfterDownload(true);
                   handleDownload();
                 }}
                 style={{
