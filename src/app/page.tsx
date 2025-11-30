@@ -1,5 +1,6 @@
 import { SnapshotNavbar } from "@/components/sections/SnapshotNavbar";
 import { HeroSection } from "@/components/sections/HeroSection";
+import { ExtensionPromotionSection } from "@/components/sections/ExtensionPromotionSection";
 import { ProblemSection } from "@/components/sections/ProblemSection";
 import { SolutionSection } from "@/components/sections/SolutionSection";
 import { HowItWorksSection } from "@/components/sections/HowItWorksSection";
@@ -19,6 +20,7 @@ export default function Home() {
       <SnapshotNavbar />
       <main>
         <HeroSection />
+        <ExtensionPromotionSection />
         <ProblemSection />
         <HowItWorksSection />
         <SolutionSection />

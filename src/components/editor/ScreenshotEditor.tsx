@@ -185,6 +185,9 @@ const THEMES = {
   lead: "linear-gradient(135deg, #3a3a3a 0%, #4d4d4d 40%, #606060 70%, #737373 100%)",
   gunmetal:
     "linear-gradient(145deg, #2a3439 0%, #3d4a50 40%, #536872 70%, #6b8693 100%)",
+
+  // Custom theme
+  custom: "#D8FF00",
 } as const;
 
 type ThemeType = keyof typeof THEMES;
@@ -329,26 +332,128 @@ function TooltipButton({
   );
 }
 
+// Helper function to generate gradient CSS
+function generateGradient(
+  type: "linear" | "radial" | "angular" | "diamond",
+  color1: string,
+  color2: string,
+  angle: number = 135
+): string {
+  switch (type) {
+    case "linear":
+      return `linear-gradient(${angle}deg, ${color1} 0%, ${color2} 100%)`;
+    case "radial":
+      const positions = [
+        "center",
+        "top",
+        "right",
+        "bottom",
+        "left",
+        "top right",
+        "bottom right",
+        "bottom left",
+        "top left",
+      ];
+      const posIndex = Math.floor((angle % 360) / 40) % positions.length;
+      return `radial-gradient(circle at ${positions[posIndex]}, ${color1} 0%, ${color2} 100%)`;
+    case "angular":
+      return `conic-gradient(from ${angle}deg, ${color1}, ${color2}, ${color1})`;
+    case "diamond":
+      const diamondPositions = [
+        "center",
+        "top",
+        "right",
+        "bottom",
+        "left",
+        "top right",
+        "bottom right",
+        "bottom left",
+        "top left",
+      ];
+      const diamondIndex =
+        Math.floor((angle % 360) / 40) % diamondPositions.length;
+      return `radial-gradient(ellipse at ${diamondPositions[diamondIndex]}, ${color1} 0%, ${color2} 100%)`;
+    default:
+      return `linear-gradient(${angle}deg, ${color1} 0%, ${color2} 100%)`;
+  }
+}
+
 // Theme Selector Component
 function ThemeSelector({
   selectedTheme,
   onThemeSelect,
   onClose,
   editorTheme,
+  initialCustomColor = "#D8FF00",
+  initialCustomColor2 = "#FF00FF",
+  initialGradientType = "linear",
+  initialGradientAngle = 135,
+  initialCustomMode = "solid",
+  onCustomChange,
 }: {
   selectedTheme: ThemeType;
   onThemeSelect: (theme: ThemeType) => void;
   onClose: () => void;
   editorTheme: "light" | "dark";
+  initialCustomColor?: string;
+  initialCustomColor2?: string;
+  initialGradientType?: "linear" | "radial" | "angular" | "diamond";
+  initialGradientAngle?: number;
+  initialCustomMode?: "solid" | "gradient";
+  onCustomChange?: (
+    color: string,
+    settings: {
+      color2: string;
+      type: "linear" | "radial" | "angular" | "diamond";
+      angle: number;
+      mode: "solid" | "gradient";
+    }
+  ) => void;
 }) {
   const [hoveredTheme, setHoveredTheme] = useState<ThemeType | null>(null);
+  const [showCustom, setShowCustom] = useState(false);
+  const [customColor, setCustomColor] = useState(initialCustomColor);
+  const [customColor2, setCustomColor2] = useState(initialCustomColor2);
+  const [gradientType, setGradientType] = useState(initialGradientType);
+  const [gradientAngle, setGradientAngle] = useState(initialGradientAngle);
+  const [customMode, setCustomMode] = useState(initialCustomMode);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Refs for smooth color updates without state lag
+  const colorUpdateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Debounced update function for parent state
+  const debouncedParentUpdate = useCallback(
+    (
+      color: string,
+      color2: string,
+      type: "linear" | "radial" | "angular" | "diamond",
+      angle: number,
+      mode: "solid" | "gradient"
+    ) => {
+      if (colorUpdateTimeoutRef.current) {
+        clearTimeout(colorUpdateTimeoutRef.current);
+      }
+      colorUpdateTimeoutRef.current = setTimeout(() => {
+        if (onCustomChange) {
+          onCustomChange(color, {
+            color2: color2,
+            type: type,
+            angle: angle,
+            mode: mode,
+          });
+        }
+      }, 0); // Update immediately but async to avoid blocking
+    },
+    [onCustomChange]
+  );
 
   const colors = {
     background: editorTheme === "dark" ? "#1E1E1E" : "#FFFFFF",
     border: editorTheme === "dark" ? "#2D2D2D" : "#E0E0E0",
     text: editorTheme === "dark" ? "#E0E0E0" : "#2D2D2D",
     textMuted: editorTheme === "dark" ? "#A0A0A0" : "#6B7280",
+    buttonBg: editorTheme === "dark" ? "#2D2D2D" : "#F5F5F5",
   };
 
   useEffect(() => {
@@ -492,6 +597,8 @@ function ThemeSelector({
     zinc: "Zinc",
     lead: "Lead",
     gunmetal: "Gunmetal",
+    // Custom
+    custom: "Custom",
   };
 
   return (
@@ -519,23 +626,58 @@ function ThemeSelector({
           justifyContent: "space-between",
           alignItems: "center",
           marginBottom: "12px",
+          gap: "8px",
         }}
       >
-        <div>
-          <span
-            style={{ color: colors.text, fontSize: "14px", fontWeight: 600 }}
-          >
-            Select Theme
-          </span>
-          <span
+        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          <button
+            onClick={() => setShowCustom(false)}
             style={{
-              color: colors.textMuted,
-              fontSize: "11px",
-              marginLeft: "8px",
+              background: !showCustom ? "#3B82F6" : "transparent",
+              border: !showCustom ? "none" : `1px solid ${colors.border}`,
+              color: !showCustom ? "white" : colors.text,
+              fontSize: "13px",
+              fontWeight: 500,
+              padding: "6px 12px",
+              borderRadius: "6px",
+              cursor: "pointer",
+              transition: "all 0.2s",
             }}
           >
-            {Object.keys(THEMES).length} premium themes
-          </span>
+            Select Theme
+          </button>
+          <button
+            onClick={() => {
+              setShowCustom(true);
+              // Only apply default custom colors if user hasn't customized yet
+              // Check if colors are still at their initial state
+              if (customColor === "#D8FF00" && customColor2 === "#FF00FF") {
+                // Already at default, just show the custom panel
+                if (onCustomChange) {
+                  onCustomChange(customColor, {
+                    color2: customColor2,
+                    type: gradientType,
+                    angle: gradientAngle,
+                    mode: customMode,
+                  });
+                }
+              }
+              // If user has customized, keep their custom colors and just show the panel
+            }}
+            style={{
+              background: showCustom ? "#3B82F6" : "transparent",
+              border: showCustom ? "none" : `1px solid ${colors.border}`,
+              color: showCustom ? "white" : colors.text,
+              fontSize: "13px",
+              fontWeight: 500,
+              padding: "6px 12px",
+              borderRadius: "6px",
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+          >
+            Custom
+          </button>
         </div>
         <button
           onClick={onClose}
@@ -548,104 +690,538 @@ function ThemeSelector({
             padding: "0",
             width: "24px",
             height: "24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           ×
         </button>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(6, 1fr)",
-          gap: "8px",
-          marginBottom: "12px",
-          overflowY: "auto",
-          maxHeight: "calc(70vh - 100px)",
-          paddingRight: "4px",
-        }}
-      >
-        {(Object.keys(THEMES) as ThemeType[]).map((themeKey) => {
-          const isSelected = selectedTheme === themeKey;
-          const isHovered = hoveredTheme === themeKey;
+      {!showCustom ? (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(6, 1fr)",
+            gap: "8px",
+            marginBottom: "12px",
+            overflowY: "auto",
+            maxHeight: "calc(70vh - 100px)",
+            paddingRight: "4px",
+          }}
+        >
+          {(Object.keys(THEMES) as ThemeType[]).map((themeKey) => {
+            const isSelected = selectedTheme === themeKey;
+            const isHovered = hoveredTheme === themeKey;
 
-          return (
-            <div key={themeKey} style={{ position: "relative" }}>
-              <button
-                onClick={() => {
-                  onThemeSelect(themeKey);
-                  onClose();
-                }}
-                onMouseEnter={() => setHoveredTheme(themeKey)}
-                onMouseLeave={() => setHoveredTheme(null)}
-                style={{
-                  width: "100%",
-                  aspectRatio: "1",
-                  padding: "0",
-                  background: THEMES[themeKey],
-                  border: isSelected
-                    ? "2px solid #3B82F6"
-                    : "2px solid rgba(255, 255, 255, 0.1)",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  position: "relative",
-                  transform: isHovered ? "scale(1.05)" : "scale(1)",
-                }}
-              >
-                {isSelected && (
+            return (
+              <div key={themeKey} style={{ position: "relative" }}>
+                <button
+                  onClick={() => {
+                    onThemeSelect(themeKey);
+                  }}
+                  onMouseEnter={() => setHoveredTheme(themeKey)}
+                  onMouseLeave={() => setHoveredTheme(null)}
+                  style={{
+                    width: "100%",
+                    aspectRatio: "1",
+                    padding: "0",
+                    background: THEMES[themeKey],
+                    border: isSelected
+                      ? "2px solid #3B82F6"
+                      : "2px solid rgba(255, 255, 255, 0.1)",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                    position: "relative",
+                    transform: isHovered ? "scale(1.05)" : "scale(1)",
+                  }}
+                >
+                  {isSelected && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "4px",
+                        right: "4px",
+                        width: "16px",
+                        height: "16px",
+                        background: "#3B82F6",
+                        borderRadius: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <svg
+                        width="10"
+                        height="10"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="2.5"
+                      >
+                        <path d="M3 8l3 3 7-7" />
+                      </svg>
+                    </div>
+                  )}
+                </button>
+                {isHovered && (
                   <div
                     style={{
                       position: "absolute",
-                      top: "4px",
-                      right: "4px",
-                      width: "16px",
-                      height: "16px",
-                      background: "#3B82F6",
-                      borderRadius: "50%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
+                      bottom: "calc(100% + 8px)",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      background: colors.background,
+                      color: colors.text,
+                      padding: "4px 8px",
+                      borderRadius: "4px",
+                      fontSize: "11px",
+                      whiteSpace: "nowrap",
+                      pointerEvents: "none",
+                      zIndex: 1001,
+                      border: `1px solid ${colors.border}`,
                     }}
                   >
-                    <svg
-                      width="10"
-                      height="10"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      stroke="white"
-                      strokeWidth="2.5"
-                    >
-                      <path d="M3 8l3 3 7-7" />
-                    </svg>
+                    {themeNames[themeKey]}
                   </div>
                 )}
-              </button>
-              {isHovered && (
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "calc(100% + 8px)",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    background: colors.background,
-                    color: colors.text,
-                    padding: "4px 8px",
-                    borderRadius: "4px",
-                    fontSize: "11px",
-                    whiteSpace: "nowrap",
-                    pointerEvents: "none",
-                    zIndex: 1001,
-                    border: `1px solid ${colors.border}`,
-                  }}
-                >
-                  {themeNames[themeKey]}
-                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        /* Custom Color Picker */
+        <div
+          style={{
+            marginBottom: "12px",
+            overflowY: "auto",
+            maxHeight: "calc(70vh - 100px)",
+            paddingRight: "4px",
+          }}
+        >
+          {/* Tutorial Section */}
+          <div
+            style={{
+              marginBottom: "16px",
+              padding: "12px",
+              backgroundColor: colors.buttonBg,
+              border: `1px solid ${colors.border}`,
+              borderRadius: "8px",
+            }}
+          >
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "12px",
+                marginBottom: "8px",
+                lineHeight: "1.4",
+              }}
+            >
+              Watch tutorial to understand how to use custom colors and
+              gradients.
+            </div>
+            <button
+              onClick={() =>
+                window.open(
+                  "https://youtu.be/_0s6b6V4Ybk?si=0p7_hbH6hd_5MIwV",
+                  "_blank"
+                )
+              }
+              style={{
+                width: "100%",
+                padding: "8px 16px",
+                fontSize: "12px",
+                cursor: "pointer",
+                backgroundColor: "#8B5CF6",
+                color: "white",
+                border: "none",
+                borderRadius: "6px",
+                fontWeight: 500,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+              }}
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+              >
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z" />
+              </svg>
+              Watch Tutorial
+            </button>
+          </div>
+
+          {/* Solid Section */}
+          <div style={{ marginBottom: "16px" }}>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 500,
+                marginBottom: "8px",
+              }}
+            >
+              Solid
+            </div>
+            <input
+              type="color"
+              value={customColor}
+              onInput={(e) => {
+                const newColor = (e.target as HTMLInputElement).value;
+                setCustomColor(newColor);
+                setCustomMode("solid");
+                debouncedParentUpdate(
+                  newColor,
+                  customColor2,
+                  gradientType,
+                  gradientAngle,
+                  "solid"
+                );
+              }}
+              style={{
+                width: "100%",
+                height: "120px",
+                border: `1px solid ${colors.border}`,
+                borderRadius: "8px",
+                cursor: "pointer",
+              }}
+            />
+            <div
+              style={{
+                marginTop: "8px",
+                display: "flex",
+                gap: "8px",
+                alignItems: "center",
+              }}
+            >
+              <span
+                style={{
+                  color: colors.text,
+                  fontSize: "12px",
+                  fontWeight: 500,
+                }}
+              >
+                Hex:
+              </span>
+              <input
+                type="text"
+                value={customColor}
+                onChange={(e) => {
+                  const newValue = e.target.value;
+                  if (newValue.startsWith("#")) {
+                    setCustomColor(newValue);
+                    if (/^#[0-9A-F]{6}$/i.test(newValue)) {
+                      setCustomMode("solid");
+                      if (onCustomChange) {
+                        onCustomChange(newValue, {
+                          color2: customColor2,
+                          type: gradientType,
+                          angle: gradientAngle,
+                          mode: "solid",
+                        });
+                      }
+                    }
+                  }
+                }}
+                style={{
+                  flex: 1,
+                  padding: "6px 12px",
+                  background: colors.background,
+                  border: `1px solid ${colors.border}`,
+                  borderRadius: "6px",
+                  color: colors.text,
+                  fontSize: "12px",
+                  fontFamily: "monospace",
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Gradient Section */}
+          <div>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 500,
+                marginBottom: "8px",
+              }}
+            >
+              Gradient
+            </div>
+
+            {/* Gradient Type Selector */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(4, 1fr)",
+                gap: "6px",
+                marginBottom: "12px",
+              }}
+            >
+              {(["linear", "radial", "angular", "diamond"] as const).map(
+                (type) => (
+                  <button
+                    key={type}
+                    onClick={() => {
+                      setGradientType(type);
+                      setCustomMode("gradient");
+                      if (onCustomChange) {
+                        onCustomChange(customColor, {
+                          color2: customColor2,
+                          type: type,
+                          angle: gradientAngle,
+                          mode: "gradient",
+                        });
+                      }
+                    }}
+                    style={{
+                      padding: "8px",
+                      background:
+                        gradientType === type && customMode === "gradient"
+                          ? "#3B82F6"
+                          : colors.background,
+                      border: `1px solid ${colors.border}`,
+                      borderRadius: "6px",
+                      color:
+                        gradientType === type && customMode === "gradient"
+                          ? "white"
+                          : colors.text,
+                      fontSize: "11px",
+                      fontWeight: 500,
+                      cursor: "pointer",
+                      textTransform: "capitalize",
+                      transition: "all 0.2s",
+                    }}
+                  >
+                    {type}
+                  </button>
+                )
               )}
             </div>
-          );
-        })}
-      </div>
+
+            {/* Angle/Direction Control */}
+            <div
+              style={{
+                marginBottom: "12px",
+                padding: "12px",
+                background: colors.background,
+                borderRadius: "6px",
+                border: `1px solid ${colors.border}`,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "8px",
+                }}
+              >
+                <span
+                  style={{
+                    color: colors.text,
+                    fontSize: "12px",
+                    fontWeight: 500,
+                  }}
+                >
+                  Direction
+                </span>
+                <span
+                  style={{
+                    color: colors.textMuted,
+                    fontSize: "11px",
+                    fontFamily: "monospace",
+                  }}
+                >
+                  {gradientAngle}°
+                </span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="360"
+                value={gradientAngle}
+                onChange={(e) => {
+                  const newAngle = parseInt(e.target.value);
+                  setGradientAngle(newAngle);
+                  setCustomMode("gradient");
+                  if (onCustomChange) {
+                    onCustomChange(customColor, {
+                      color2: customColor2,
+                      type: gradientType,
+                      angle: newAngle,
+                      mode: "gradient",
+                    });
+                  }
+                }}
+                style={{
+                  width: "100%",
+                  height: "4px",
+                  borderRadius: "2px",
+                  background: `linear-gradient(90deg, ${customColor} 0%, ${customColor2} 100%)`,
+                  outline: "none",
+                  cursor: "pointer",
+                }}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginTop: "4px",
+                }}
+              >
+                <span style={{ color: colors.textMuted, fontSize: "10px" }}>
+                  0°
+                </span>
+                <span style={{ color: colors.textMuted, fontSize: "10px" }}>
+                  90°
+                </span>
+                <span style={{ color: colors.textMuted, fontSize: "10px" }}>
+                  180°
+                </span>
+                <span style={{ color: colors.textMuted, fontSize: "10px" }}>
+                  270°
+                </span>
+                <span style={{ color: colors.textMuted, fontSize: "10px" }}>
+                  360°
+                </span>
+              </div>
+            </div>
+
+            {/* Color Pickers for Gradient */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "8px",
+              }}
+            >
+              <div>
+                <input
+                  type="color"
+                  value={customColor}
+                  onInput={(e) => {
+                    const newColor = (e.target as HTMLInputElement).value;
+                    setCustomColor(newColor);
+                    setCustomMode("gradient");
+                    debouncedParentUpdate(
+                      newColor,
+                      customColor2,
+                      gradientType,
+                      gradientAngle,
+                      "gradient"
+                    );
+                  }}
+                  style={{
+                    width: "100%",
+                    height: "60px",
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                  }}
+                />
+                <input
+                  type="text"
+                  value={customColor}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    if (newValue.startsWith("#")) {
+                      setCustomColor(newValue);
+                      if (/^#[0-9A-F]{6}$/i.test(newValue)) {
+                        setCustomMode("gradient");
+                        if (onCustomChange) {
+                          onCustomChange(newValue, {
+                            color2: customColor2,
+                            type: gradientType,
+                            angle: gradientAngle,
+                            mode: "gradient",
+                          });
+                        }
+                      }
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    marginTop: "4px",
+                    padding: "4px 8px",
+                    background: colors.background,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "4px",
+                    color: colors.text,
+                    fontSize: "11px",
+                    fontFamily: "monospace",
+                  }}
+                />
+              </div>
+              <div>
+                <input
+                  type="color"
+                  value={customColor2}
+                  onInput={(e) => {
+                    const newColor = (e.target as HTMLInputElement).value;
+                    setCustomColor2(newColor);
+                    setCustomMode("gradient");
+                    debouncedParentUpdate(
+                      customColor,
+                      newColor,
+                      gradientType,
+                      gradientAngle,
+                      "gradient"
+                    );
+                  }}
+                  style={{
+                    width: "100%",
+                    height: "60px",
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                  }}
+                />
+                <input
+                  type="text"
+                  value={customColor2}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    if (newValue.startsWith("#")) {
+                      setCustomColor2(newValue);
+                      if (/^#[0-9A-F]{6}$/i.test(newValue)) {
+                        setCustomMode("gradient");
+                        if (onCustomChange) {
+                          onCustomChange(customColor, {
+                            color2: newValue,
+                            type: gradientType,
+                            angle: gradientAngle,
+                            mode: "gradient",
+                          });
+                        }
+                      }
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    marginTop: "4px",
+                    padding: "4px 8px",
+                    background: colors.background,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "4px",
+                    color: colors.text,
+                    fontSize: "11px",
+                    fontFamily: "monospace",
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -658,7 +1234,7 @@ export default function ScreenshotEditor() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeTool, setActiveTool] = useState<Tool>("select");
   const [cropArea, setCropArea] = useState<CropArea | null>(null);
-  const [cropMode, setCropMode] = useState<"freeform" | "border">("freeform");
+  const [cropMode, setCropMode] = useState<"freeform" | "border">("border");
   const [borderCrop, setBorderCrop] = useState<{
     top: number;
     bottom: number;
@@ -694,6 +1270,13 @@ export default function ScreenshotEditor() {
   const [editorTheme, setEditorTheme] = useState<"light" | "dark">("dark");
   const [selectedTheme, setSelectedTheme] = useState<ThemeType>("figma");
   const [showThemeSelector, setShowThemeSelector] = useState(false);
+  const [customColor, setCustomColor] = useState("#D8FF00");
+  const [customColor2, setCustomColor2] = useState("#FF00FF");
+  const [gradientType, setGradientType] = useState<
+    "linear" | "radial" | "angular" | "diamond"
+  >("linear");
+  const [gradientAngle, setGradientAngle] = useState(135);
+  const [customMode, setCustomMode] = useState<"solid" | "gradient">("solid");
 
   // Width and padding
   const [cardWidth, setCardWidth] = useState(50);
@@ -703,6 +1286,10 @@ export default function ScreenshotEditor() {
 
   // Copy/feedback state
   const [isCopied, setIsCopied] = useState(false);
+
+  // Tool notification state
+  const [toolNotification, setToolNotification] = useState<string>("");
+  const [showToolNotification, setShowToolNotification] = useState(false);
 
   // Contact popup state
   const [showContactPopup, setShowContactPopup] = useState(false);
@@ -742,6 +1329,7 @@ export default function ScreenshotEditor() {
 
   // Unsaved changes prompt state
   const [showUnsavedPrompt, setShowUnsavedPrompt] = useState(false);
+  const [navigateAfterDownload, setNavigateAfterDownload] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -750,6 +1338,23 @@ export default function ScreenshotEditor() {
   const containerRef = useRef<HTMLDivElement>(null);
   const windowChromeRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Helper function to get the background
+  const getThemeBackground = () => {
+    if (selectedTheme === "custom") {
+      if (customMode === "solid") {
+        return customColor;
+      } else {
+        return generateGradient(
+          gradientType,
+          customColor,
+          customColor2,
+          gradientAngle
+        );
+      }
+    }
+    return THEMES[selectedTheme];
+  };
 
   // Theme colors
   const themeColors = {
@@ -848,27 +1453,32 @@ export default function ScreenshotEditor() {
   const onboardingSteps = [
     {
       title: "Welcome to ILoveSnapshots! 🎨",
-      description: "Create beautiful screenshots in seconds. Let's show you around!",
+      description:
+        "Create beautiful screenshots in seconds. Let's show you around!",
       icon: "👋",
     },
     {
       title: "Upload Your Screenshot",
-      description: "Drag & drop an image, paste from clipboard (Ctrl+V), or click to upload. Supports PNG, JPG, GIF, and WebP.",
+      description:
+        "Drag & drop an image, paste from clipboard (Ctrl+V), or click to upload. Supports PNG, JPG, GIF, and WebP.",
       icon: "📤",
     },
     {
       title: "Choose a Theme",
-      description: "Click the 'Theme' button to pick from 100+ beautiful gradient backgrounds for your screenshot.",
+      description:
+        "Click the 'Theme' button to pick from 100+ beautiful gradient backgrounds for your screenshot.",
       icon: "🎨",
     },
     {
       title: "Customize Your Design",
-      description: "Adjust padding, width, and toggle the window chrome on/off. Use annotation tools to add arrows, shapes, and highlights.",
+      description:
+        "Adjust padding, width, and toggle the window chrome on/off. Use annotation tools to add arrows, shapes, and highlights.",
       icon: "✨",
     },
     {
       title: "Export Your Creation",
-      description: "Download your polished screenshot or copy it directly to clipboard. That's it - you're ready to create!",
+      description:
+        "Download your polished screenshot or copy it directly to clipboard. That's it - you're ready to create!",
       icon: "🚀",
     },
   ];
@@ -920,6 +1530,126 @@ export default function ScreenshotEditor() {
     [handleFileSelect]
   );
 
+  // Prevent body scroll and browser zoom
+  useEffect(() => {
+    // Prevent page scroll by setting body overflow to hidden
+    const originalOverflow = document.body.style.overflow;
+    const originalTouchAction = document.body.style.touchAction;
+    const originalOverscrollBehavior = document.body.style.overscrollBehavior;
+    const originalOverscrollBehaviorX = document.body.style.overscrollBehaviorX;
+
+    // Also save HTML element styles
+    const htmlElement = document.documentElement;
+    const originalHtmlOverflow = htmlElement.style.overflow;
+    const originalHtmlTouchAction = htmlElement.style.touchAction;
+    const originalHtmlOverscrollBehavior = htmlElement.style.overscrollBehavior;
+    const originalHtmlOverscrollBehaviorX =
+      htmlElement.style.overscrollBehaviorX;
+
+    // Apply to both body and html
+    document.body.style.overflow = "hidden";
+    document.body.style.touchAction = "none";
+    document.body.style.overscrollBehavior = "none";
+    document.body.style.overscrollBehaviorX = "none";
+
+    htmlElement.style.overflow = "hidden";
+    htmlElement.style.touchAction = "none";
+    htmlElement.style.overscrollBehavior = "none";
+    htmlElement.style.overscrollBehaviorX = "none";
+
+    const preventBrowserZoom = (e: WheelEvent) => {
+      // Detect Ctrl+wheel (trackpad pinch) or Meta+wheel
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    };
+
+    // Prevent touchpad pinch-to-zoom gestures
+    const preventGestureZoom = (e: Event) => {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    };
+
+    // Also prevent keyboard zoom shortcuts globally (except our custom ones)
+    const preventKeyboardZoom = (e: KeyboardEvent) => {
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        (e.key === "+" || e.key === "=" || e.key === "-" || e.key === "0")
+      ) {
+        // Let our custom handlers take over
+        e.preventDefault();
+      }
+    };
+
+    // Prevent browser back/forward swipe navigation
+    const preventSwipeNavigation = (e: TouchEvent) => {
+      // Prevent two-finger horizontal swipes from triggering browser navigation
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+
+    // Add listeners with passive: false to allow preventDefault
+    document.addEventListener("wheel", preventBrowserZoom, {
+      passive: false,
+      capture: true,
+    });
+    document.addEventListener("gesturestart", preventGestureZoom, {
+      passive: false,
+    });
+    document.addEventListener("gesturechange", preventGestureZoom, {
+      passive: false,
+    });
+    document.addEventListener("gestureend", preventGestureZoom, {
+      passive: false,
+    });
+    document.addEventListener("keydown", preventKeyboardZoom, {
+      capture: true,
+    });
+    document.addEventListener("touchstart", preventSwipeNavigation, {
+      passive: false,
+      capture: true,
+    });
+    document.addEventListener("touchmove", preventSwipeNavigation, {
+      passive: false,
+      capture: true,
+    });
+
+    return () => {
+      // Restore original body styles
+      document.body.style.overflow = originalOverflow;
+      document.body.style.touchAction = originalTouchAction;
+      document.body.style.overscrollBehavior = originalOverscrollBehavior;
+      document.body.style.overscrollBehaviorX = originalOverscrollBehaviorX;
+
+      // Restore original html styles
+      htmlElement.style.overflow = originalHtmlOverflow;
+      htmlElement.style.touchAction = originalHtmlTouchAction;
+      htmlElement.style.overscrollBehavior = originalHtmlOverscrollBehavior;
+      htmlElement.style.overscrollBehaviorX = originalHtmlOverscrollBehaviorX;
+
+      document.removeEventListener("wheel", preventBrowserZoom, {
+        capture: true,
+      } as EventListenerOptions);
+      document.removeEventListener("gesturestart", preventGestureZoom);
+      document.removeEventListener("gesturechange", preventGestureZoom);
+      document.removeEventListener("gestureend", preventGestureZoom);
+      document.removeEventListener("keydown", preventKeyboardZoom, {
+        capture: true,
+      } as EventListenerOptions);
+      document.removeEventListener("touchstart", preventSwipeNavigation, {
+        capture: true,
+      } as EventListenerOptions);
+      document.removeEventListener("touchmove", preventSwipeNavigation, {
+        capture: true,
+      } as EventListenerOptions);
+    };
+  }, []);
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -929,16 +1659,15 @@ export default function ScreenshotEditor() {
       }
       if (e.key === "0" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setZoom(1);
-        setPan({ x: 0, y: 0 });
+        handleZoomReset();
       }
       if (e.key === "=" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setZoom((prev) => Math.min(prev * 1.2, 10));
+        handleZoomIn();
       }
       if (e.key === "-" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setZoom((prev) => Math.max(prev / 1.2, 0.1));
+        handleZoomOut();
       }
       if (e.key === "z" && (e.metaKey || e.ctrlKey) && !e.shiftKey) {
         e.preventDefault();
@@ -1320,12 +2049,29 @@ export default function ScreenshotEditor() {
         }
         break;
       case "freehand":
-        if (annotation.points && annotation.points.length > 1) {
+        if (annotation.points && annotation.points.length > 0) {
           ctx.beginPath();
           ctx.moveTo(annotation.points[0].x, annotation.points[0].y);
-          for (let i = 1; i < annotation.points.length; i++) {
-            ctx.lineTo(annotation.points[i].x, annotation.points[i].y);
+
+          if (annotation.points.length === 1) {
+            // Draw a small dot for single point
+            ctx.lineTo(annotation.points[0].x + 0.1, annotation.points[0].y + 0.1);
+          } else if (annotation.points.length === 2) {
+            // Draw a straight line for two points
+            ctx.lineTo(annotation.points[1].x, annotation.points[1].y);
+          } else {
+            // Use quadratic curves for smoother lines with 3+ points
+            for (let i = 1; i < annotation.points.length - 1; i++) {
+              const xc = (annotation.points[i].x + annotation.points[i + 1].x) / 2;
+              const yc = (annotation.points[i].y + annotation.points[i + 1].y) / 2;
+              ctx.quadraticCurveTo(annotation.points[i].x, annotation.points[i].y, xc, yc);
+            }
+            // Draw the last segment
+            const lastPoint = annotation.points[annotation.points.length - 1];
+            const secondLastPoint = annotation.points[annotation.points.length - 2];
+            ctx.quadraticCurveTo(secondLastPoint.x, secondLastPoint.y, lastPoint.x, lastPoint.y);
           }
+
           ctx.stroke();
         }
         break;
@@ -1378,17 +2124,25 @@ export default function ScreenshotEditor() {
 
   // Canvas event handlers
   const getCanvasCoordinates = (
-    e: React.MouseEvent<HTMLCanvasElement> | MouseEvent
+    e: React.MouseEvent<HTMLCanvasElement> | MouseEvent,
+    clamp: boolean = false
   ) => {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
-    return {
-      x: (e.clientX - rect.left) * scaleX,
-      y: (e.clientY - rect.top) * scaleY,
-    };
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+
+    if (clamp) {
+      return {
+        x: Math.max(0, Math.min(canvas.width, x)),
+        y: Math.max(0, Math.min(canvas.height, y)),
+      };
+    }
+
+    return { x, y };
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -1504,12 +2258,17 @@ export default function ScreenshotEditor() {
   };
 
   // Helper function to update transform directly on DOM for smooth panning
-  const updatePanTransform = useCallback((newPan: { x: number; y: number }) => {
-    const container = transformContainerRef.current;
-    if (container) {
-      container.style.transform = `scale(${zoom}) translate(${newPan.x / zoom}px, ${newPan.y / zoom}px)`;
-    }
-  }, [zoom]);
+  const updatePanTransform = useCallback(
+    (newPan: { x: number; y: number }) => {
+      const container = transformContainerRef.current;
+      if (container) {
+        container.style.transform = `scale(${zoom}) translate(${
+          newPan.x / zoom
+        }px, ${newPan.y / zoom}px)`;
+      }
+    },
+    [zoom]
+  );
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (isPanningRef.current) {
@@ -1530,7 +2289,7 @@ export default function ScreenshotEditor() {
       return;
     }
 
-    const { x, y } = getCanvasCoordinates(e);
+    const { x, y } = getCanvasCoordinates(e, true); // Clamp coordinates to canvas bounds
 
     if (isDrawingAnnotation && currentAnnotation) {
       if (currentAnnotation.type === "freehand") {
@@ -1671,12 +2430,86 @@ export default function ScreenshotEditor() {
 
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
-    if (spacePressed) {
-      setPan({ x: pan.x - e.deltaX, y: pan.y - e.deltaY });
+    e.stopPropagation();
+
+    // Don't allow Ctrl+wheel zoom - users should use zoom buttons
+    if (e.ctrlKey || e.metaKey) {
       return;
     }
-    const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    setZoom(Math.min(Math.max(zoom * delta, 0.1), 10));
+
+    // ALWAYS pan on any wheel/scroll event (trackpad or mouse)
+    // For mouse wheel (which typically only has deltaY), we also pan vertically
+    // For trackpad (which has both deltaX and deltaY), we pan in both directions
+    const newPan = {
+      x: pan.x - e.deltaX,
+      y: pan.y - e.deltaY,
+    };
+    setPan(newPan);
+  };
+
+  const handleZoomIn = () => {
+    setZoom((prev) => {
+      // Define zoom levels: 10%, 25%, 50%, 75%, 100%, then 50% increments up to 300%, then 1.2x
+      const belowHundred = [0.1, 0.25, 0.5, 0.75, 1.0];
+      const hundredToThreeHundred = [1.0, 1.5, 2.0, 2.5, 3.0];
+
+      // If current zoom is below 100%, use 25% increments
+      if (prev < 1.0) {
+        const nextLevel = belowHundred.find((level) => level > prev + 0.01);
+        if (nextLevel) return nextLevel;
+        return 1.0;
+      }
+
+      // Between 100% and 300%, use 50% increments (100, 150, 200, 250, 300)
+      if (prev < 3.0) {
+        const nextLevel = hundredToThreeHundred.find(
+          (level) => level > prev + 0.01
+        );
+        if (nextLevel) return nextLevel;
+        return 3.0;
+      }
+
+      // Above 300%, use 1.2x increments (360%, 432%, etc.)
+      return Math.min(prev * 1.2, 10);
+    });
+  };
+
+  const handleZoomOut = () => {
+    setZoom((prev) => {
+      // Define zoom levels in reverse: 100%, 75%, 50%, 25%, 10%
+      const belowHundred = [1.0, 0.75, 0.5, 0.25, 0.1];
+      const hundredToThreeHundred = [3.0, 2.5, 2.0, 1.5, 1.0];
+
+      // If current zoom is at or below 100%, use 25% decrements
+      if (prev <= 1.0) {
+        for (let i = 0; i < belowHundred.length; i++) {
+          if (prev > belowHundred[i] + 0.01) {
+            return belowHundred[i];
+          }
+        }
+        return 0.1; // Already at lowest
+      }
+
+      // Between 100% and 300%, use 50% decrements (300, 250, 200, 150, 100)
+      if (prev <= 3.0) {
+        for (let i = 0; i < hundredToThreeHundred.length; i++) {
+          if (prev > hundredToThreeHundred[i] + 0.01) {
+            return hundredToThreeHundred[i];
+          }
+        }
+        return 1.0; // Snap to 100%
+      }
+
+      // Above 300%, use 1.2x decrements until we reach 300%
+      const newZoom = prev / 1.2;
+      if (newZoom <= 3.0) return 3.0; // Snap to 300%
+      return Math.max(newZoom, 0.1);
+    });
+  };
+
+  const handleZoomReset = () => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
   };
 
   // Track if we're restoring from history (to avoid saving during restore)
@@ -1755,9 +2588,13 @@ export default function ScreenshotEditor() {
       const rect = canvas.getBoundingClientRect();
       const scaleX = canvas.width / rect.width;
       const scaleY = canvas.height / rect.height;
+      const x = (e.clientX - rect.left) * scaleX;
+      const y = (e.clientY - rect.top) * scaleY;
+
+      // Clamp coordinates to canvas bounds
       return {
-        x: (e.clientX - rect.left) * scaleX,
-        y: (e.clientY - rect.top) * scaleY,
+        x: Math.max(0, Math.min(canvas.width, x)),
+        y: Math.max(0, Math.min(canvas.height, y)),
       };
     };
 
@@ -2072,6 +2909,7 @@ export default function ScreenshotEditor() {
       setActiveTool("crop");
       setBorderCrop(null);
       setCropArea(null);
+      showNotification("Click and drag to select crop area");
     }
   };
 
@@ -2095,8 +2933,67 @@ export default function ScreenshotEditor() {
       }
       setActiveTool("crop");
       setCropArea(null);
+      showNotification("Drag the edges to crop the image");
     }
   };
+
+  // Initialize border crop when crop tool is activated with border mode
+  useEffect(() => {
+    if (activeTool === "crop" && cropMode === "border" && !borderCrop) {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        setBorderCrop({
+          top: 0,
+          bottom: canvas.height,
+          left: 0,
+          right: canvas.width,
+        });
+      }
+    }
+  }, [activeTool, cropMode, borderCrop]);
+
+  // Show tool notification helper
+  const showNotification = (message: string) => {
+    setToolNotification(message);
+    setShowToolNotification(true);
+    setTimeout(() => {
+      setShowToolNotification(false);
+    }, 4000); // Hide after 4 seconds
+  };
+
+  // Close width/padding controls on click outside or Escape key
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      // Check if click is outside width/padding control dropdowns
+      const isClickInsideWidthControl = target.closest('[data-width-control]');
+      const isClickInsidePaddingControl = target.closest('[data-padding-control]');
+
+      if (!isClickInsideWidthControl && showWidthControl) {
+        setShowWidthControl(false);
+      }
+      if (!isClickInsidePaddingControl && showPaddingControl) {
+        setShowPaddingControl(false);
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setShowWidthControl(false);
+        setShowPaddingControl(false);
+      }
+    };
+
+    if (showWidthControl || showPaddingControl) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [showWidthControl, showPaddingControl]);
 
   // Save editor state to localStorage for persistence after login
   const saveEditorStateForLogin = useCallback(() => {
@@ -2235,8 +3132,14 @@ export default function ScreenshotEditor() {
         // Draw from source, skipping the trim amount from edges
         cleanCtx.drawImage(
           capturedCanvas,
-          trim, trim, sourceWidth - trim * 2, sourceHeight - trim * 2,
-          0, 0, cleanCanvas.width, cleanCanvas.height
+          trim,
+          trim,
+          sourceWidth - trim * 2,
+          sourceHeight - trim * 2,
+          0,
+          0,
+          cleanCanvas.width,
+          cleanCanvas.height
         );
       }
 
@@ -2250,6 +3153,12 @@ export default function ScreenshotEditor() {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+
+        // Navigate to dashboard if flag is set
+        if (navigateAfterDownload) {
+          setNavigateAfterDownload(false);
+          router.push("/dashboard");
+        }
       }, "image/png");
       return;
     }
@@ -2267,6 +3176,12 @@ export default function ScreenshotEditor() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+
+      // Navigate to dashboard if flag is set
+      if (navigateAfterDownload) {
+        setNavigateAfterDownload(false);
+        router.push("/dashboard");
+      }
     }, "image/png");
   };
 
@@ -2339,8 +3254,14 @@ export default function ScreenshotEditor() {
           // Draw from source, skipping the trim amount from edges
           cleanCtx.drawImage(
             capturedCanvas,
-            trim, trim, sourceWidth - trim * 2, sourceHeight - trim * 2,
-            0, 0, canvas.width, canvas.height
+            trim,
+            trim,
+            sourceWidth - trim * 2,
+            sourceHeight - trim * 2,
+            0,
+            0,
+            canvas.width,
+            canvas.height
           );
         } else {
           canvas = capturedCanvas;
@@ -2478,6 +3399,8 @@ export default function ScreenshotEditor() {
         color: colors.text,
         fontFamily:
           "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        overflow: "hidden",
+        touchAction: "none",
       }}
     >
       {/* Hidden file input */}
@@ -2529,7 +3452,9 @@ export default function ScreenshotEditor() {
               maxWidth: "480px",
               width: "100%",
               boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
-              border: `1px solid ${editorTheme === "dark" ? "#2D2D2D" : "#E5E7EB"}`,
+              border: `1px solid ${
+                editorTheme === "dark" ? "#2D2D2D" : "#E5E7EB"
+              }`,
               position: "relative",
               overflow: "hidden",
             }}
@@ -2542,7 +3467,8 @@ export default function ScreenshotEditor() {
                 left: 0,
                 right: 0,
                 height: "4px",
-                background: "linear-gradient(90deg, #f24e1e 0%, #ff7262 30%, #a259ff 70%, #1abcfe 100%)",
+                background:
+                  "linear-gradient(90deg, #f24e1e 0%, #ff7262 30%, #a259ff 70%, #1abcfe 100%)",
               }}
             />
 
@@ -2566,7 +3492,14 @@ export default function ScreenshotEditor() {
               }}
             >
               Skip
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
@@ -2626,9 +3559,12 @@ export default function ScreenshotEditor() {
                     width: index === onboardingStep ? "24px" : "8px",
                     height: "8px",
                     borderRadius: "4px",
-                    background: index === onboardingStep
-                      ? "linear-gradient(90deg, #f24e1e, #a259ff)"
-                      : editorTheme === "dark" ? "#3D3D3D" : "#E5E7EB",
+                    background:
+                      index === onboardingStep
+                        ? "linear-gradient(90deg, #f24e1e, #a259ff)"
+                        : editorTheme === "dark"
+                        ? "#3D3D3D"
+                        : "#E5E7EB",
                     border: "none",
                     cursor: "pointer",
                     transition: "all 0.3s ease",
@@ -2651,7 +3587,9 @@ export default function ScreenshotEditor() {
                   style={{
                     padding: "12px 24px",
                     borderRadius: "10px",
-                    border: `1px solid ${editorTheme === "dark" ? "#3D3D3D" : "#E5E7EB"}`,
+                    border: `1px solid ${
+                      editorTheme === "dark" ? "#3D3D3D" : "#E5E7EB"
+                    }`,
                     background: "transparent",
                     color: editorTheme === "dark" ? "#E0E0E0" : "#374151",
                     fontSize: "14px",
@@ -2669,7 +3607,8 @@ export default function ScreenshotEditor() {
                   padding: "12px 32px",
                   borderRadius: "10px",
                   border: "none",
-                  background: "linear-gradient(135deg, #f24e1e 0%, #ff7262 30%, #a259ff 70%, #1abcfe 100%)",
+                  background:
+                    "linear-gradient(135deg, #f24e1e 0%, #ff7262 30%, #a259ff 70%, #1abcfe 100%)",
                   color: "white",
                   fontSize: "14px",
                   fontWeight: 600,
@@ -2678,7 +3617,9 @@ export default function ScreenshotEditor() {
                   boxShadow: "0 4px 14px rgba(162, 89, 255, 0.4)",
                 }}
               >
-                {onboardingStep === onboardingSteps.length - 1 ? "Get Started!" : "Next"}
+                {onboardingStep === onboardingSteps.length - 1
+                  ? "Get Started!"
+                  : "Next"}
               </button>
             </div>
 
@@ -2724,7 +3665,9 @@ export default function ScreenshotEditor() {
               maxWidth: "420px",
               width: "100%",
               boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
-              border: `1px solid ${editorTheme === "dark" ? "#2D2D2D" : "#E5E7EB"}`,
+              border: `1px solid ${
+                editorTheme === "dark" ? "#2D2D2D" : "#E5E7EB"
+              }`,
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -2780,15 +3723,19 @@ export default function ScreenshotEditor() {
                 lineHeight: "1.5",
               }}
             >
-              You have an image in the editor that hasn&apos;t been downloaded. If you leave now, your changes will be lost.
+              You have an image in the editor that hasn&apos;t been downloaded.
+              If you leave now, your changes will be lost.
             </p>
 
             {/* Buttons */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+            >
               {/* Download Button */}
               <button
                 onClick={() => {
                   setShowUnsavedPrompt(false);
+                  setNavigateAfterDownload(true);
                   handleDownload();
                 }}
                 style={{
@@ -2833,7 +3780,9 @@ export default function ScreenshotEditor() {
                 style={{
                   padding: "14px 24px",
                   borderRadius: "10px",
-                  border: `1px solid ${editorTheme === "dark" ? "#3D3D3D" : "#E5E7EB"}`,
+                  border: `1px solid ${
+                    editorTheme === "dark" ? "#3D3D3D" : "#E5E7EB"
+                  }`,
                   background: "transparent",
                   color: editorTheme === "dark" ? "#A0A0A0" : "#6B7280",
                   fontSize: "14px",
@@ -3035,7 +3984,10 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => {
                   setPanModeEnabled(!panModeEnabled);
-                  if (!panModeEnabled) setActiveTool("select");
+                  if (!panModeEnabled) {
+                    setActiveTool("select");
+                    showNotification("Click and drag to pan around the canvas");
+                  }
                 }}
                 tooltip="Pan (Space)"
                 tooltipBg={colors.tooltipBg}
@@ -3071,6 +4023,11 @@ export default function ScreenshotEditor() {
                   } else {
                     setActiveTool("crop");
                     setPanModeEnabled(false);
+                    showNotification(
+                      cropMode === "border"
+                        ? "Drag the edges to crop the image"
+                        : "Click and drag to select crop area"
+                    );
                   }
                 }}
                 tooltip="Crop (C)"
@@ -3156,239 +4113,270 @@ export default function ScreenshotEditor() {
               </svg>
             </TooltipButton>
 
-            {/* Theme Selector - only when background enabled */}
-            {showBackground && (
+            {/* Theme Selector */}
+            <TooltipButton
+              onClick={() => {
+                if (!showBackground) {
+                  alert("Add background to use this feature");
+                  return;
+                }
+                setShowThemeSelector(!showThemeSelector);
+              }}
+              tooltip={
+                showBackground
+                  ? "Change Background Color"
+                  : "Add background to use this feature"
+              }
+              tooltipBg={colors.tooltipBg}
+              tooltipText={colors.textSecondary}
+              tooltipBorder={colors.border}
+              style={{
+                padding: "8px 14px",
+                cursor: showBackground ? "pointer" : "not-allowed",
+                backgroundColor: showThemeSelector
+                  ? "#3B82F6"
+                  : colors.buttonBg,
+                color: showThemeSelector
+                  ? "white"
+                  : showBackground
+                  ? colors.textSecondary
+                  : colors.textMuted,
+                border: "none",
+                borderRadius: "6px",
+                marginRight: "8px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                opacity: showBackground ? 1 : 0.5,
+              }}
+            >
+              {/* Paint palette icon */}
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="13.5" cy="6.5" r="0.5" fill="currentColor" />
+                <circle cx="17.5" cy="10.5" r="0.5" fill="currentColor" />
+                <circle cx="8.5" cy="7.5" r="0.5" fill="currentColor" />
+                <circle cx="6.5" cy="12.5" r="0.5" fill="currentColor" />
+                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.555C21.965 6.012 17.461 2 12 2z" />
+              </svg>
+              <span style={{ fontSize: "13px", fontWeight: 500 }}>Theme</span>
+            </TooltipButton>
+
+            {/* Width Control */}
+            <div style={{ position: "relative", marginRight: "8px" }} data-width-control>
               <TooltipButton
-                onClick={() => setShowThemeSelector(!showThemeSelector)}
-                tooltip="Change Background Color"
+                onClick={() => {
+                  if (!showBackground) {
+                    alert("Add background to use this feature");
+                    return;
+                  }
+                  setShowWidthControl(!showWidthControl);
+                }}
+                tooltip={
+                  showBackground
+                    ? `Width: ${Math.round(calculateCardWidth(cardWidth))}px`
+                    : "Add background to use this feature"
+                }
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
                 style={{
-                  padding: "8px 14px",
-                  cursor: "pointer",
-                  backgroundColor: showThemeSelector
+                  padding: "8px 12px",
+                  cursor: showBackground ? "pointer" : "not-allowed",
+                  backgroundColor: showWidthControl
                     ? "#3B82F6"
                     : colors.buttonBg,
-                  color: showThemeSelector ? "white" : colors.textSecondary,
+                  color: showWidthControl
+                    ? "white"
+                    : showBackground
+                    ? colors.textMuted
+                    : colors.textMuted,
                   border: "none",
                   borderRadius: "6px",
-                  marginRight: "8px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
+                  opacity: showBackground ? 1 : 0.5,
                 }}
               >
-                {/* Paint palette icon */}
                 <svg
                   width="16"
                   height="16"
-                  viewBox="0 0 24 24"
+                  viewBox="0 0 16 16"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                  strokeWidth="1.5"
                 >
-                  <circle cx="13.5" cy="6.5" r="0.5" fill="currentColor" />
-                  <circle cx="17.5" cy="10.5" r="0.5" fill="currentColor" />
-                  <circle cx="8.5" cy="7.5" r="0.5" fill="currentColor" />
-                  <circle cx="6.5" cy="12.5" r="0.5" fill="currentColor" />
-                  <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.555C21.965 6.012 17.461 2 12 2z" />
+                  <path d="M2 8h12M2 8l2-2M2 8l2 2M14 8l-2-2M14 8l-2 2" />
                 </svg>
-                <span style={{ fontSize: "13px", fontWeight: 500 }}>Theme</span>
               </TooltipButton>
-            )}
-
-            {/* Width Control - only when background enabled */}
-            {showBackground && (
-              <div style={{ position: "relative", marginRight: "8px" }}>
-                <TooltipButton
-                  onClick={() => setShowWidthControl(!showWidthControl)}
-                  tooltip={`Width: ${Math.round(
-                    calculateCardWidth(cardWidth)
-                  )}px`}
-                  tooltipBg={colors.tooltipBg}
-                  tooltipText={colors.textSecondary}
-                  tooltipBorder={colors.border}
+              {showWidthControl && (
+                <div
                   style={{
-                    padding: "8px 12px",
-                    cursor: "pointer",
-                    backgroundColor: showWidthControl
-                      ? "#3B82F6"
-                      : colors.buttonBg,
-                    color: showWidthControl ? "white" : colors.textMuted,
-                    border: "none",
-                    borderRadius: "6px",
+                    position: "absolute",
+                    top: "calc(100% + 8px)",
+                    left: "0",
+                    background: colors.toolbar,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "8px",
+                    padding: "12px",
+                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+                    zIndex: 1000,
+                    minWidth: "200px",
                   }}
                 >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
+                  <div
+                    style={{
+                      fontSize: "11px",
+                      color: colors.textMuted,
+                      marginBottom: "8px",
+                      fontWeight: 500,
+                    }}
+                  >
+                    Card Width
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={cardWidth}
+                      onChange={(e) => setCardWidth(Number(e.target.value))}
+                      style={{ flex: 1 }}
+                    />
+                    <span
+                      style={{
+                        fontSize: "11px",
+                        color: colors.textSecondary,
+                        fontWeight: 500,
+                      }}
+                    >
+                      {Math.round(calculateCardWidth(cardWidth))}px
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Padding Control */}
+            <div style={{ position: "relative", marginRight: "8px" }} data-padding-control>
+              <TooltipButton
+                onClick={() => {
+                  if (!showBackground) {
+                    alert("Add background to use this feature");
+                    return;
+                  }
+                  setShowPaddingControl(!showPaddingControl);
+                }}
+                tooltip={
+                  showBackground
+                    ? `Padding: ${Math.round(
+                        calculateCardPadding(cardPadding)
+                      )}px`
+                    : "Add background to use this feature"
+                }
+                tooltipBg={colors.tooltipBg}
+                tooltipText={colors.textSecondary}
+                tooltipBorder={colors.border}
+                style={{
+                  padding: "8px 12px",
+                  cursor: showBackground ? "pointer" : "not-allowed",
+                  backgroundColor: showPaddingControl
+                    ? "#3B82F6"
+                    : colors.buttonBg,
+                  color: showPaddingControl
+                    ? "white"
+                    : showBackground
+                    ? colors.textMuted
+                    : colors.textMuted,
+                  border: "none",
+                  borderRadius: "6px",
+                  opacity: showBackground ? 1 : 0.5,
+                }}
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                >
+                  <rect
+                    x="2"
+                    y="2"
+                    width="12"
+                    height="12"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="1.5"
-                  >
-                    <path d="M2 8h12M2 8l2-2M2 8l2 2M14 8l-2-2M14 8l-2 2" />
-                  </svg>
-                </TooltipButton>
-                {showWidthControl && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "calc(100% + 8px)",
-                      left: "0",
-                      background: colors.toolbar,
-                      border: `1px solid ${colors.border}`,
-                      borderRadius: "8px",
-                      padding: "12px",
-                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
-                      zIndex: 1000,
-                      minWidth: "200px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: "11px",
-                        color: colors.textMuted,
-                        marginBottom: "8px",
-                        fontWeight: 500,
-                      }}
-                    >
-                      Card Width
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                      }}
-                    >
-                      <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={cardWidth}
-                        onChange={(e) => setCardWidth(Number(e.target.value))}
-                        style={{ flex: 1 }}
-                      />
-                      <span
-                        style={{
-                          fontSize: "11px",
-                          color: colors.textSecondary,
-                          fontWeight: 500,
-                        }}
-                      >
-                        {Math.round(calculateCardWidth(cardWidth))}px
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Padding Control - only when background enabled */}
-            {showBackground && (
-              <div style={{ position: "relative", marginRight: "8px" }}>
-                <TooltipButton
-                  onClick={() => setShowPaddingControl(!showPaddingControl)}
-                  tooltip={`Padding: ${Math.round(
-                    calculateCardPadding(cardPadding)
-                  )}px`}
-                  tooltipBg={colors.tooltipBg}
-                  tooltipText={colors.textSecondary}
-                  tooltipBorder={colors.border}
+                    strokeDasharray="2 2"
+                  />
+                  <rect x="5" y="5" width="6" height="6" fill="currentColor" />
+                </svg>
+              </TooltipButton>
+              {showPaddingControl && (
+                <div
                   style={{
-                    padding: "8px 12px",
-                    cursor: "pointer",
-                    backgroundColor: showPaddingControl
-                      ? "#3B82F6"
-                      : colors.buttonBg,
-                    color: showPaddingControl ? "white" : colors.textMuted,
-                    border: "none",
-                    borderRadius: "6px",
+                    position: "absolute",
+                    top: "calc(100% + 8px)",
+                    left: "0",
+                    background: colors.toolbar,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "8px",
+                    padding: "12px",
+                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+                    zIndex: 1000,
+                    minWidth: "180px",
                   }}
                 >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="currentColor"
-                  >
-                    <rect
-                      x="2"
-                      y="2"
-                      width="12"
-                      height="12"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeDasharray="2 2"
-                    />
-                    <rect
-                      x="5"
-                      y="5"
-                      width="6"
-                      height="6"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </TooltipButton>
-                {showPaddingControl && (
                   <div
                     style={{
-                      position: "absolute",
-                      top: "calc(100% + 8px)",
-                      left: "0",
-                      background: colors.toolbar,
-                      border: `1px solid ${colors.border}`,
-                      borderRadius: "8px",
-                      padding: "12px",
-                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
-                      zIndex: 1000,
-                      minWidth: "180px",
+                      fontSize: "11px",
+                      color: colors.textMuted,
+                      marginBottom: "8px",
+                      fontWeight: 500,
                     }}
                   >
-                    <div
+                    Padding Size
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={cardPadding}
+                      onChange={(e) => setCardPadding(Number(e.target.value))}
+                      style={{ flex: 1 }}
+                    />
+                    <span
                       style={{
                         fontSize: "11px",
-                        color: colors.textMuted,
-                        marginBottom: "8px",
+                        color: colors.textSecondary,
                         fontWeight: 500,
                       }}
                     >
-                      Padding Size
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                      }}
-                    >
-                      <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={cardPadding}
-                        onChange={(e) => setCardPadding(Number(e.target.value))}
-                        style={{ flex: 1 }}
-                      />
-                      <span
-                        style={{
-                          fontSize: "11px",
-                          color: colors.textSecondary,
-                          fontWeight: 500,
-                        }}
-                      >
-                        {Math.round(calculateCardPadding(cardPadding))}px
-                      </span>
-                    </div>
+                      {Math.round(calculateCardPadding(cardPadding))}px
+                    </span>
                   </div>
-                )}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
 
             {/* Undo/Redo - pushes action buttons to right */}
             <div style={{ display: "flex", gap: "4px", marginRight: "auto" }}>
@@ -3775,6 +4763,19 @@ export default function ScreenshotEditor() {
           }}
           onClose={() => setShowThemeSelector(false)}
           editorTheme={editorTheme}
+          initialCustomColor={customColor}
+          initialCustomColor2={customColor2}
+          initialGradientType={gradientType}
+          initialGradientAngle={gradientAngle}
+          initialCustomMode={customMode}
+          onCustomChange={(color, settings) => {
+            setCustomColor(color);
+            setCustomColor2(settings.color2);
+            setGradientType(settings.type);
+            setGradientAngle(settings.angle);
+            setCustomMode(settings.mode);
+            setSelectedTheme("custom" as ThemeType);
+          }}
         />
       )}
 
@@ -4415,7 +5416,7 @@ export default function ScreenshotEditor() {
       <div
         style={{
           position: "absolute",
-          top: "68px",
+          top: "88px",
           left: "20px",
           zIndex: 1001,
           display: "flex",
@@ -4423,6 +5424,46 @@ export default function ScreenshotEditor() {
           gap: "12px",
         }}
       >
+        {/* Import New Image Button */}
+        <TooltipButton
+          onClick={() => fileInputRef.current?.click()}
+          tooltip="Import a new image"
+          tooltipBg={colors.tooltipBg}
+          tooltipText={colors.textSecondary}
+          tooltipBorder={colors.border}
+          style={{
+            padding: "10px 20px",
+            fontSize: "13px",
+            cursor: "pointer",
+            backgroundColor: "#10B981",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            fontWeight: 500,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+            boxShadow: "0 4px 12px rgba(16, 185, 129, 0.3)",
+          }}
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M14 10v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-3" />
+            <path d="M8 2v8" />
+            <path d="M5 7l3-3 3 3" />
+          </svg>
+          Import New Image
+        </TooltipButton>
+
         {/* Watch Demo Button */}
         <TooltipButton
           onClick={() => window.open("https://youtu.be/MaFE9Il0wC0", "_blank")}
@@ -4481,6 +5522,61 @@ export default function ScreenshotEditor() {
           </svg>
           Contact
         </TooltipButton>
+
+        {/* Extension Promotion Box */}
+        <div
+          style={{
+            padding: "16px",
+            backgroundColor: colors.buttonBg,
+            border: `1px solid ${colors.border}`,
+            borderRadius: "12px",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+            maxWidth: "280px",
+            marginTop: "8px",
+          }}
+        >
+          <p
+            style={{
+              fontSize: "13px",
+              lineHeight: "1.5",
+              color: colors.textSecondary,
+              marginBottom: "12px",
+              fontWeight: 400,
+            }}
+          >
+            You can directly take the screenshots of website pages and edit them
+            in the editor using our extension
+          </p>
+          <button
+            onClick={() =>
+              window.open(
+                "https://chromewebstore.google.com/detail/mnaeoccblgmbchggojbhijgeidlnnpmm?utm_source=item-share-cb",
+                "_blank"
+              )
+            }
+            style={{
+              width: "100%",
+              padding: "10px 20px",
+              fontSize: "13px",
+              cursor: "pointer",
+              backgroundColor: "#4285F4",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              fontWeight: 500,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              boxShadow: "0 2px 8px rgba(66, 133, 244, 0.3)",
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001h-.002l-5.344 9.257c.206.01.413.016.621.016 6.627 0 12-5.373 12-12 0-1.54-.29-3.011-.818-4.364zM12 16.364a4.364 4.364 0 1 1 0-8.728 4.364 4.364 0 0 1 0 8.728z" />
+            </svg>
+            Try Extension
+          </button>
+        </div>
       </div>
 
       {/* Main Canvas Area */}
@@ -4512,6 +5608,8 @@ export default function ScreenshotEditor() {
           background: editorTheme === "dark" ? "#262626" : "#E5E7EB",
           cursor: getCursor(),
           border: isDragOver ? "3px dashed #3B82F6" : "none",
+          touchAction: "none",
+          overscrollBehavior: "none",
         }}
       >
         {!imageUrl ? (
@@ -4623,9 +5721,9 @@ export default function ScreenshotEditor() {
                 pan.y / zoom
               }px)`,
               transformOrigin: "center center",
-              transition: isPanning ? "none" : "transform 0.05s ease-out",
+              transition: "none",
               willChange: isPanning ? "transform" : "auto",
-              background: THEMES[selectedTheme],
+              background: getThemeBackground(),
               padding: `${calculateCardPadding(cardPadding)}px`,
               borderRadius: "0",
               display: "block",
@@ -4767,7 +5865,7 @@ export default function ScreenshotEditor() {
                 pan.y / zoom
               }px)`,
               transformOrigin: "center center",
-              transition: isPanning ? "none" : "transform 0.05s ease-out",
+              transition: "none",
               willChange: isPanning ? "transform" : "auto",
               background: windowChromeTheme === "light" ? "#ffffff" : "#1a1a1a",
               borderRadius: "12px",
@@ -4882,6 +5980,7 @@ export default function ScreenshotEditor() {
                 onClick={() => {
                   setActiveTool("line");
                   setPanModeEnabled(false);
+                  showNotification("Click and drag to draw a straight line");
                 }}
                 tooltip="Line (L)"
                 tooltipPosition="left"
@@ -4919,6 +6018,7 @@ export default function ScreenshotEditor() {
                 onClick={() => {
                   setActiveTool("freehand");
                   setPanModeEnabled(false);
+                  showNotification("Click and drag to draw freehand");
                 }}
                 tooltip="Freehand (F)"
                 tooltipPosition="left"
@@ -4957,6 +6057,7 @@ export default function ScreenshotEditor() {
                 onClick={() => {
                   setActiveTool("arrow");
                   setPanModeEnabled(false);
+                  showNotification("Click and drag to draw an arrow");
                 }}
                 tooltip="Arrow (A)"
                 tooltipPosition="left"
@@ -4998,6 +6099,7 @@ export default function ScreenshotEditor() {
                 onClick={() => {
                   setActiveTool("circle");
                   setPanModeEnabled(false);
+                  showNotification("Click and drag to draw a circle");
                 }}
                 tooltip="Circle (C)"
                 tooltipPosition="left"
@@ -5036,6 +6138,7 @@ export default function ScreenshotEditor() {
                 onClick={() => {
                   setActiveTool("rectangle");
                   setPanModeEnabled(false);
+                  showNotification("Click and drag to draw a rectangle");
                 }}
                 tooltip="Rectangle (R)"
                 tooltipPosition="left"
@@ -5074,6 +6177,7 @@ export default function ScreenshotEditor() {
                 onClick={() => {
                   setActiveTool("blur");
                   setPanModeEnabled(false);
+                  showNotification("Click and drag to blur an area");
                 }}
                 tooltip="Blur (B)"
                 tooltipPosition="left"
@@ -5119,6 +6223,7 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => {
                   setActiveTool("highlight");
+                  showNotification("Click and drag to highlight an area");
                   setPanModeEnabled(false);
                 }}
                 tooltip="Highlight (H)"
@@ -5723,7 +6828,7 @@ export default function ScreenshotEditor() {
             {/* Row 1: Zoom Out, Percentage, Zoom In */}
             <div style={{ display: "flex", gap: "4px" }}>
               <TooltipButton
-                onClick={() => setZoom(Math.max(zoom / 1.2, 0.1))}
+                onClick={handleZoomOut}
                 tooltip="Zoom Out (Ctrl + -)"
                 tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
@@ -5748,10 +6853,7 @@ export default function ScreenshotEditor() {
               </TooltipButton>
 
               <TooltipButton
-                onClick={() => {
-                  setZoom(1);
-                  setPan({ x: 0, y: 0 });
-                }}
+                onClick={handleZoomReset}
                 tooltip="Reset Zoom (Ctrl + 0)"
                 tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
@@ -5777,7 +6879,7 @@ export default function ScreenshotEditor() {
               </TooltipButton>
 
               <TooltipButton
-                onClick={() => setZoom(Math.min(zoom * 1.2, 10))}
+                onClick={handleZoomIn}
                 tooltip="Zoom In (Ctrl + =)"
                 tooltipPosition="left"
                 tooltipBg={colors.tooltipBg}
@@ -5876,7 +6978,7 @@ export default function ScreenshotEditor() {
                   width: "100%",
                   height: "100%",
                   background: showBackground
-                    ? THEMES[selectedTheme]
+                    ? getThemeBackground()
                     : colors.buttonBg,
                   display: "flex",
                   alignItems: "center",
@@ -5934,6 +7036,46 @@ export default function ScreenshotEditor() {
           </div>
         )}
       </div>
+
+      {/* Tool Notification Toast */}
+      {showToolNotification && (
+        <div
+          style={{
+            position: "fixed",
+            top: "80px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: colors.toolbar,
+            padding: "12px 24px",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontWeight: 500,
+            color: colors.textSecondary,
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+            border: `1px solid ${colors.border}`,
+            zIndex: 10000,
+            animation: "slideDown 0.3s ease-out",
+          }}
+        >
+          {toolNotification}
+        </div>
+      )}
+
+      {/* CSS Animation */}
+      <style>
+        {`
+          @keyframes slideDown {
+            from {
+              opacity: 0;
+              transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(-50%) translateY(0);
+            }
+          }
+        `}
+      </style>
     </div>
   );
 }
