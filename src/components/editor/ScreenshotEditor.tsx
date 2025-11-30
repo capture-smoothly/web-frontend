@@ -429,6 +429,7 @@ function ThemeSelector({
     border: editorTheme === "dark" ? "#2D2D2D" : "#E0E0E0",
     text: editorTheme === "dark" ? "#E0E0E0" : "#2D2D2D",
     textMuted: editorTheme === "dark" ? "#A0A0A0" : "#6B7280",
+    buttonBg: editorTheme === "dark" ? "#2D2D2D" : "#F5F5F5",
   };
 
   useEffect(() => {
@@ -622,7 +623,25 @@ function ThemeSelector({
             Select Theme
           </button>
           <button
-            onClick={() => setShowCustom(true)}
+            onClick={() => {
+              setShowCustom(true);
+              // Apply default custom colors when switching to custom mode
+              const defaultColor1 = "#D8FF00";
+              const defaultColor2 = "#FF00FF";
+              const defaultType = "radial";
+              setCustomColor(defaultColor1);
+              setCustomColor2(defaultColor2);
+              setGradientType(defaultType);
+              setCustomMode("gradient");
+              if (onCustomChange) {
+                onCustomChange(defaultColor1, {
+                  color2: defaultColor2,
+                  type: defaultType,
+                  angle: gradientAngle,
+                  mode: "gradient",
+                });
+              }
+            }}
             style={{
               background: showCustom ? "#3B82F6" : "transparent",
               border: showCustom ? "none" : `1px solid ${colors.border}`,
@@ -752,7 +771,70 @@ function ThemeSelector({
         </div>
       ) : (
         /* Custom Color Picker */
-        <div style={{ marginBottom: "12px" }}>
+        <div
+          style={{
+            marginBottom: "12px",
+            overflowY: "auto",
+            maxHeight: "calc(70vh - 100px)",
+            paddingRight: "4px",
+          }}
+        >
+          {/* Tutorial Section */}
+          <div
+            style={{
+              marginBottom: "16px",
+              padding: "12px",
+              backgroundColor: colors.buttonBg,
+              border: `1px solid ${colors.border}`,
+              borderRadius: "8px",
+            }}
+          >
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "12px",
+                marginBottom: "8px",
+                lineHeight: "1.4",
+              }}
+            >
+              Watch custom tutorial to understand how to use it
+            </div>
+            <button
+              onClick={() =>
+                window.open(
+                  "https://youtu.be/_0s6b6V4Ybk?si=0p7_hbH6hd_5MIwV",
+                  "_blank"
+                )
+              }
+              style={{
+                width: "100%",
+                padding: "8px 16px",
+                fontSize: "12px",
+                cursor: "pointer",
+                backgroundColor: "#8B5CF6",
+                color: "white",
+                border: "none",
+                borderRadius: "6px",
+                fontWeight: 500,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+              }}
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+              >
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z" />
+              </svg>
+              Watch Tutorial
+            </button>
+          </div>
+
           {/* Solid Section */}
           <div style={{ marginBottom: "16px" }}>
             <div
@@ -5108,7 +5190,7 @@ export default function ScreenshotEditor() {
       <div
         style={{
           position: "absolute",
-          top: "68px",
+          top: "88px",
           left: "20px",
           zIndex: 1001,
           display: "flex",
@@ -5184,6 +5266,7 @@ export default function ScreenshotEditor() {
             borderRadius: "12px",
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
             maxWidth: "280px",
+            marginTop: "8px",
           }}
         >
           <p
