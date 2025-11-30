@@ -398,6 +398,32 @@ function ThemeSelector({
   const [customMode, setCustomMode] = useState(initialCustomMode);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Refs for smooth color updates without state lag
+  const colorUpdateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Debounced update function for parent state
+  const debouncedParentUpdate = useCallback((
+    color: string,
+    color2: string,
+    type: 'linear' | 'radial' | 'angular' | 'diamond',
+    angle: number,
+    mode: 'solid' | 'gradient'
+  ) => {
+    if (colorUpdateTimeoutRef.current) {
+      clearTimeout(colorUpdateTimeoutRef.current);
+    }
+    colorUpdateTimeoutRef.current = setTimeout(() => {
+      if (onCustomChange) {
+        onCustomChange(color, {
+          color2: color2,
+          type: type,
+          angle: angle,
+          mode: mode,
+        });
+      }
+    }, 0); // Update immediately but async to avoid blocking
+  }, [onCustomChange]);
+
   const colors = {
     background: editorTheme === "dark" ? "#1E1E1E" : "#FFFFFF",
     border: editorTheme === "dark" ? "#2D2D2D" : "#E0E0E0",
@@ -743,18 +769,11 @@ function ThemeSelector({
             <input
               type="color"
               value={customColor}
-              onChange={(e) => {
-                const newColor = e.target.value;
+              onInput={(e) => {
+                const newColor = (e.target as HTMLInputElement).value;
                 setCustomColor(newColor);
                 setCustomMode("solid");
-                if (onCustomChange) {
-                  onCustomChange(newColor, {
-                    color2: customColor2,
-                    type: gradientType,
-                    angle: gradientAngle,
-                    mode: "solid",
-                  });
-                }
+                debouncedParentUpdate(newColor, customColor2, gradientType, gradientAngle, "solid");
               }}
               style={{
                 width: "100%",
@@ -971,18 +990,11 @@ function ThemeSelector({
                 <input
                   type="color"
                   value={customColor}
-                  onChange={(e) => {
-                    const newColor = e.target.value;
+                  onInput={(e) => {
+                    const newColor = (e.target as HTMLInputElement).value;
                     setCustomColor(newColor);
                     setCustomMode("gradient");
-                    if (onCustomChange) {
-                      onCustomChange(newColor, {
-                        color2: customColor2,
-                        type: gradientType,
-                        angle: gradientAngle,
-                        mode: "gradient",
-                      });
-                    }
+                    debouncedParentUpdate(newColor, customColor2, gradientType, gradientAngle, "gradient");
                   }}
                   style={{
                     width: "100%",
@@ -1029,18 +1041,11 @@ function ThemeSelector({
                 <input
                   type="color"
                   value={customColor2}
-                  onChange={(e) => {
-                    const newColor = e.target.value;
+                  onInput={(e) => {
+                    const newColor = (e.target as HTMLInputElement).value;
                     setCustomColor2(newColor);
                     setCustomMode("gradient");
-                    if (onCustomChange) {
-                      onCustomChange(customColor, {
-                        color2: newColor,
-                        type: gradientType,
-                        angle: gradientAngle,
-                        mode: "gradient",
-                      });
-                    }
+                    debouncedParentUpdate(customColor, newColor, gradientType, gradientAngle, "gradient");
                   }}
                   style={{
                     width: "100%",
