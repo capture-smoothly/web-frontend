@@ -4041,83 +4041,108 @@ export default function ScreenshotEditor() {
               </svg>
             </TooltipButton>
 
-            {/* Theme Selector - only when background enabled */}
-            {showBackground && (
+            {/* Theme Selector */}
+            <TooltipButton
+              onClick={() => {
+                if (!showBackground) {
+                  alert("Add background to use this feature");
+                  return;
+                }
+                setShowThemeSelector(!showThemeSelector);
+              }}
+              tooltip={
+                showBackground
+                  ? "Change Background Color"
+                  : "Add background to use this feature"
+              }
+              tooltipBg={colors.tooltipBg}
+              tooltipText={colors.textSecondary}
+              tooltipBorder={colors.border}
+              style={{
+                padding: "8px 14px",
+                cursor: showBackground ? "pointer" : "not-allowed",
+                backgroundColor: showThemeSelector
+                  ? "#3B82F6"
+                  : colors.buttonBg,
+                color: showThemeSelector
+                  ? "white"
+                  : showBackground
+                  ? colors.textSecondary
+                  : colors.textMuted,
+                border: "none",
+                borderRadius: "6px",
+                marginRight: "8px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                opacity: showBackground ? 1 : 0.5,
+              }}
+            >
+              {/* Paint palette icon */}
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="13.5" cy="6.5" r="0.5" fill="currentColor" />
+                <circle cx="17.5" cy="10.5" r="0.5" fill="currentColor" />
+                <circle cx="8.5" cy="7.5" r="0.5" fill="currentColor" />
+                <circle cx="6.5" cy="12.5" r="0.5" fill="currentColor" />
+                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.555C21.965 6.012 17.461 2 12 2z" />
+              </svg>
+              <span style={{ fontSize: "13px", fontWeight: 500 }}>Theme</span>
+            </TooltipButton>
+
+            {/* Width Control */}
+            <div style={{ position: "relative", marginRight: "8px" }}>
               <TooltipButton
-                onClick={() => setShowThemeSelector(!showThemeSelector)}
-                tooltip="Change Background Color"
+                onClick={() => {
+                  if (!showBackground) {
+                    alert("Add background to use this feature");
+                    return;
+                  }
+                  setShowWidthControl(!showWidthControl);
+                }}
+                tooltip={
+                  showBackground
+                    ? `Width: ${Math.round(calculateCardWidth(cardWidth))}px`
+                    : "Add background to use this feature"
+                }
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
                 style={{
-                  padding: "8px 14px",
-                  cursor: "pointer",
-                  backgroundColor: showThemeSelector
+                  padding: "8px 12px",
+                  cursor: showBackground ? "pointer" : "not-allowed",
+                  backgroundColor: showWidthControl
                     ? "#3B82F6"
                     : colors.buttonBg,
-                  color: showThemeSelector ? "white" : colors.textSecondary,
+                  color: showWidthControl
+                    ? "white"
+                    : showBackground
+                    ? colors.textMuted
+                    : colors.textMuted,
                   border: "none",
                   borderRadius: "6px",
-                  marginRight: "8px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
+                  opacity: showBackground ? 1 : 0.5,
                 }}
               >
-                {/* Paint palette icon */}
                 <svg
                   width="16"
                   height="16"
-                  viewBox="0 0 24 24"
+                  viewBox="0 0 16 16"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                  strokeWidth="1.5"
                 >
-                  <circle cx="13.5" cy="6.5" r="0.5" fill="currentColor" />
-                  <circle cx="17.5" cy="10.5" r="0.5" fill="currentColor" />
-                  <circle cx="8.5" cy="7.5" r="0.5" fill="currentColor" />
-                  <circle cx="6.5" cy="12.5" r="0.5" fill="currentColor" />
-                  <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.555C21.965 6.012 17.461 2 12 2z" />
+                  <path d="M2 8h12M2 8l2-2M2 8l2 2M14 8l-2-2M14 8l-2 2" />
                 </svg>
-                <span style={{ fontSize: "13px", fontWeight: 500 }}>Theme</span>
               </TooltipButton>
-            )}
-
-            {/* Width Control - only when background enabled */}
-            {showBackground && (
-              <div style={{ position: "relative", marginRight: "8px" }}>
-                <TooltipButton
-                  onClick={() => setShowWidthControl(!showWidthControl)}
-                  tooltip={`Width: ${Math.round(
-                    calculateCardWidth(cardWidth)
-                  )}px`}
-                  tooltipBg={colors.tooltipBg}
-                  tooltipText={colors.textSecondary}
-                  tooltipBorder={colors.border}
-                  style={{
-                    padding: "8px 12px",
-                    cursor: "pointer",
-                    backgroundColor: showWidthControl
-                      ? "#3B82F6"
-                      : colors.buttonBg,
-                    color: showWidthControl ? "white" : colors.textMuted,
-                    border: "none",
-                    borderRadius: "6px",
-                  }}
-                >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  >
-                    <path d="M2 8h12M2 8l2-2M2 8l2 2M14 8l-2-2M14 8l-2 2" />
-                  </svg>
-                </TooltipButton>
                 {showWidthControl && (
                   <div
                     style={{
@@ -4170,56 +4195,67 @@ export default function ScreenshotEditor() {
                     </div>
                   </div>
                 )}
-              </div>
-            )}
+            </div>
 
-            {/* Padding Control - only when background enabled */}
-            {showBackground && (
-              <div style={{ position: "relative", marginRight: "8px" }}>
-                <TooltipButton
-                  onClick={() => setShowPaddingControl(!showPaddingControl)}
-                  tooltip={`Padding: ${Math.round(
-                    calculateCardPadding(cardPadding)
-                  )}px`}
-                  tooltipBg={colors.tooltipBg}
-                  tooltipText={colors.textSecondary}
-                  tooltipBorder={colors.border}
-                  style={{
-                    padding: "8px 12px",
-                    cursor: "pointer",
-                    backgroundColor: showPaddingControl
-                      ? "#3B82F6"
-                      : colors.buttonBg,
-                    color: showPaddingControl ? "white" : colors.textMuted,
-                    border: "none",
-                    borderRadius: "6px",
-                  }}
+            {/* Padding Control */}
+            <div style={{ position: "relative", marginRight: "8px" }}>
+              <TooltipButton
+                onClick={() => {
+                  if (!showBackground) {
+                    alert("Add background to use this feature");
+                    return;
+                  }
+                  setShowPaddingControl(!showPaddingControl);
+                }}
+                tooltip={
+                  showBackground
+                    ? `Padding: ${Math.round(calculateCardPadding(cardPadding))}px`
+                    : "Add background to use this feature"
+                }
+                tooltipBg={colors.tooltipBg}
+                tooltipText={colors.textSecondary}
+                tooltipBorder={colors.border}
+                style={{
+                  padding: "8px 12px",
+                  cursor: showBackground ? "pointer" : "not-allowed",
+                  backgroundColor: showPaddingControl
+                    ? "#3B82F6"
+                    : colors.buttonBg,
+                  color: showPaddingControl
+                    ? "white"
+                    : showBackground
+                    ? colors.textMuted
+                    : colors.textMuted,
+                  border: "none",
+                  borderRadius: "6px",
+                  opacity: showBackground ? 1 : 0.5,
+                }}
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
                 >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
+                  <rect
+                    x="2"
+                    y="2"
+                    width="12"
+                    height="12"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeDasharray="2 2"
+                  />
+                  <rect
+                    x="5"
+                    y="5"
+                    width="6"
+                    height="6"
                     fill="currentColor"
-                  >
-                    <rect
-                      x="2"
-                      y="2"
-                      width="12"
-                      height="12"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeDasharray="2 2"
-                    />
-                    <rect
-                      x="5"
-                      y="5"
-                      width="6"
-                      height="6"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </TooltipButton>
+                  />
+                </svg>
+              </TooltipButton>
                 {showPaddingControl && (
                   <div
                     style={{
@@ -4272,8 +4308,7 @@ export default function ScreenshotEditor() {
                     </div>
                   </div>
                 )}
-              </div>
-            )}
+            </div>
 
             {/* Undo/Redo - pushes action buttons to right */}
             <div style={{ display: "flex", gap: "4px", marginRight: "auto" }}>
