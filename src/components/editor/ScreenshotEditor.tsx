@@ -1389,10 +1389,25 @@ export default function ScreenshotEditor() {
     const originalOverflow = document.body.style.overflow;
     const originalTouchAction = document.body.style.touchAction;
     const originalOverscrollBehavior = document.body.style.overscrollBehavior;
+    const originalOverscrollBehaviorX = document.body.style.overscrollBehaviorX;
 
+    // Also save HTML element styles
+    const htmlElement = document.documentElement;
+    const originalHtmlOverflow = htmlElement.style.overflow;
+    const originalHtmlTouchAction = htmlElement.style.touchAction;
+    const originalHtmlOverscrollBehavior = htmlElement.style.overscrollBehavior;
+    const originalHtmlOverscrollBehaviorX = htmlElement.style.overscrollBehaviorX;
+
+    // Apply to both body and html
     document.body.style.overflow = "hidden";
     document.body.style.touchAction = "none";
     document.body.style.overscrollBehavior = "none";
+    document.body.style.overscrollBehaviorX = "none";
+
+    htmlElement.style.overflow = "hidden";
+    htmlElement.style.touchAction = "none";
+    htmlElement.style.overscrollBehavior = "none";
+    htmlElement.style.overscrollBehaviorX = "none";
 
     const preventBrowserZoom = (e: WheelEvent) => {
       // Detect Ctrl+wheel (trackpad pinch) or Meta+wheel
@@ -1421,6 +1436,15 @@ export default function ScreenshotEditor() {
       }
     };
 
+    // Prevent browser back/forward swipe navigation
+    const preventSwipeNavigation = (e: TouchEvent) => {
+      // Prevent two-finger horizontal swipes from triggering browser navigation
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+
     // Add listeners with passive: false to allow preventDefault
     document.addEventListener("wheel", preventBrowserZoom, {
       passive: false,
@@ -1438,12 +1462,27 @@ export default function ScreenshotEditor() {
     document.addEventListener("keydown", preventKeyboardZoom, {
       capture: true,
     });
+    document.addEventListener("touchstart", preventSwipeNavigation, {
+      passive: false,
+      capture: true,
+    });
+    document.addEventListener("touchmove", preventSwipeNavigation, {
+      passive: false,
+      capture: true,
+    });
 
     return () => {
       // Restore original body styles
       document.body.style.overflow = originalOverflow;
       document.body.style.touchAction = originalTouchAction;
       document.body.style.overscrollBehavior = originalOverscrollBehavior;
+      document.body.style.overscrollBehaviorX = originalOverscrollBehaviorX;
+
+      // Restore original html styles
+      htmlElement.style.overflow = originalHtmlOverflow;
+      htmlElement.style.touchAction = originalHtmlTouchAction;
+      htmlElement.style.overscrollBehavior = originalHtmlOverscrollBehavior;
+      htmlElement.style.overscrollBehaviorX = originalHtmlOverscrollBehaviorX;
 
       document.removeEventListener("wheel", preventBrowserZoom, {
         capture: true,
@@ -1452,6 +1491,12 @@ export default function ScreenshotEditor() {
       document.removeEventListener("gesturechange", preventGestureZoom);
       document.removeEventListener("gestureend", preventGestureZoom);
       document.removeEventListener("keydown", preventKeyboardZoom, {
+        capture: true,
+      } as EventListenerOptions);
+      document.removeEventListener("touchstart", preventSwipeNavigation, {
+        capture: true,
+      } as EventListenerOptions);
+      document.removeEventListener("touchmove", preventSwipeNavigation, {
         capture: true,
       } as EventListenerOptions);
     };
