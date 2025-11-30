@@ -5354,6 +5354,46 @@ export default function ScreenshotEditor() {
           gap: "12px",
         }}
       >
+        {/* Import New Image Button */}
+        <TooltipButton
+          onClick={() => fileInputRef.current?.click()}
+          tooltip="Import a new image"
+          tooltipBg={colors.tooltipBg}
+          tooltipText={colors.textSecondary}
+          tooltipBorder={colors.border}
+          style={{
+            padding: "10px 20px",
+            fontSize: "13px",
+            cursor: "pointer",
+            backgroundColor: "#10B981",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            fontWeight: 500,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+            boxShadow: "0 4px 12px rgba(16, 185, 129, 0.3)",
+          }}
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M14 10v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-3" />
+            <path d="M8 2v8" />
+            <path d="M5 7l3-3 3 3" />
+          </svg>
+          Import New Image
+        </TooltipButton>
+
         {/* Watch Demo Button */}
         <TooltipButton
           onClick={() => window.open("https://youtu.be/MaFE9Il0wC0", "_blank")}
