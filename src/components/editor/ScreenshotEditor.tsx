@@ -2961,6 +2961,40 @@ export default function ScreenshotEditor() {
     }, 4000); // Hide after 4 seconds
   };
 
+  // Close width/padding controls on click outside or Escape key
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      // Check if click is outside width/padding control dropdowns
+      const isClickInsideWidthControl = target.closest('[data-width-control]');
+      const isClickInsidePaddingControl = target.closest('[data-padding-control]');
+
+      if (!isClickInsideWidthControl && showWidthControl) {
+        setShowWidthControl(false);
+      }
+      if (!isClickInsidePaddingControl && showPaddingControl) {
+        setShowPaddingControl(false);
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setShowWidthControl(false);
+        setShowPaddingControl(false);
+      }
+    };
+
+    if (showWidthControl || showPaddingControl) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [showWidthControl, showPaddingControl]);
+
   // Save editor state to localStorage for persistence after login
   const saveEditorStateForLogin = useCallback(() => {
     if (imageUrl) {
@@ -4137,7 +4171,7 @@ export default function ScreenshotEditor() {
             </TooltipButton>
 
             {/* Width Control */}
-            <div style={{ position: "relative", marginRight: "8px" }}>
+            <div style={{ position: "relative", marginRight: "8px" }} data-width-control>
               <TooltipButton
                 onClick={() => {
                   if (!showBackground) {
@@ -4236,7 +4270,7 @@ export default function ScreenshotEditor() {
             </div>
 
             {/* Padding Control */}
-            <div style={{ position: "relative", marginRight: "8px" }}>
+            <div style={{ position: "relative", marginRight: "8px" }} data-padding-control>
               <TooltipButton
                 onClick={() => {
                   if (!showBackground) {
