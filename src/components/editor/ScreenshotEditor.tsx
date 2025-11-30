@@ -649,22 +649,20 @@ function ThemeSelector({
           <button
             onClick={() => {
               setShowCustom(true);
-              // Apply default custom colors when switching to custom mode
-              const defaultColor1 = "#D8FF00";
-              const defaultColor2 = "#FF00FF";
-              const defaultType = "linear";
-              setCustomColor(defaultColor1);
-              setCustomColor2(defaultColor2);
-              setGradientType(defaultType);
-              setCustomMode("gradient");
-              if (onCustomChange) {
-                onCustomChange(defaultColor1, {
-                  color2: defaultColor2,
-                  type: defaultType,
-                  angle: gradientAngle,
-                  mode: "gradient",
-                });
+              // Only apply default custom colors if user hasn't customized yet
+              // Check if colors are still at their initial state
+              if (customColor === "#D8FF00" && customColor2 === "#FF00FF") {
+                // Already at default, just show the custom panel
+                if (onCustomChange) {
+                  onCustomChange(customColor, {
+                    color2: customColor2,
+                    type: gradientType,
+                    angle: gradientAngle,
+                    mode: customMode,
+                  });
+                }
               }
+              // If user has customized, keep their custom colors and just show the panel
             }}
             style={{
               background: showCustom ? "#3B82F6" : "transparent",
