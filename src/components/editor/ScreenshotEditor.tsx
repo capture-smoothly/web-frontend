@@ -185,6 +185,9 @@ const THEMES = {
   lead: "linear-gradient(135deg, #3a3a3a 0%, #4d4d4d 40%, #606060 70%, #737373 100%)",
   gunmetal:
     "linear-gradient(145deg, #2a3439 0%, #3d4a50 40%, #536872 70%, #6b8693 100%)",
+
+  // Custom theme
+  custom: "#D8FF00",
 } as const;
 
 type ThemeType = keyof typeof THEMES;
@@ -329,19 +332,70 @@ function TooltipButton({
   );
 }
 
+// Helper function to generate gradient CSS
+function generateGradient(
+  type: 'linear' | 'radial' | 'angular' | 'diamond',
+  color1: string,
+  color2: string,
+  angle: number = 135
+): string {
+  switch (type) {
+    case 'linear':
+      return `linear-gradient(${angle}deg, ${color1} 0%, ${color2} 100%)`;
+    case 'radial':
+      const positions = ['center', 'top', 'right', 'bottom', 'left', 'top right', 'bottom right', 'bottom left', 'top left'];
+      const posIndex = Math.floor((angle % 360) / 40) % positions.length;
+      return `radial-gradient(circle at ${positions[posIndex]}, ${color1} 0%, ${color2} 100%)`;
+    case 'angular':
+      return `conic-gradient(from ${angle}deg, ${color1}, ${color2}, ${color1})`;
+    case 'diamond':
+      const diamondPositions = ['center', 'top', 'right', 'bottom', 'left', 'top right', 'bottom right', 'bottom left', 'top left'];
+      const diamondIndex = Math.floor((angle % 360) / 40) % diamondPositions.length;
+      return `radial-gradient(ellipse at ${diamondPositions[diamondIndex]}, ${color1} 0%, ${color2} 100%)`;
+    default:
+      return `linear-gradient(${angle}deg, ${color1} 0%, ${color2} 100%)`;
+  }
+}
+
 // Theme Selector Component
 function ThemeSelector({
   selectedTheme,
   onThemeSelect,
   onClose,
   editorTheme,
+  initialCustomColor = '#D8FF00',
+  initialCustomColor2 = '#FF00FF',
+  initialGradientType = 'linear',
+  initialGradientAngle = 135,
+  initialCustomMode = 'solid',
+  onCustomChange,
 }: {
   selectedTheme: ThemeType;
   onThemeSelect: (theme: ThemeType) => void;
   onClose: () => void;
   editorTheme: "light" | "dark";
+  initialCustomColor?: string;
+  initialCustomColor2?: string;
+  initialGradientType?: 'linear' | 'radial' | 'angular' | 'diamond';
+  initialGradientAngle?: number;
+  initialCustomMode?: 'solid' | 'gradient';
+  onCustomChange?: (
+    color: string,
+    settings: {
+      color2: string;
+      type: 'linear' | 'radial' | 'angular' | 'diamond';
+      angle: number;
+      mode: 'solid' | 'gradient';
+    }
+  ) => void;
 }) {
   const [hoveredTheme, setHoveredTheme] = useState<ThemeType | null>(null);
+  const [showCustom, setShowCustom] = useState(false);
+  const [customColor, setCustomColor] = useState(initialCustomColor);
+  const [customColor2, setCustomColor2] = useState(initialCustomColor2);
+  const [gradientType, setGradientType] = useState(initialGradientType);
+  const [gradientAngle, setGradientAngle] = useState(initialGradientAngle);
+  const [customMode, setCustomMode] = useState(initialCustomMode);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const colors = {
@@ -492,6 +546,8 @@ function ThemeSelector({
     zinc: "Zinc",
     lead: "Lead",
     gunmetal: "Gunmetal",
+    // Custom
+    custom: "Custom",
   };
 
   return (
@@ -519,23 +575,42 @@ function ThemeSelector({
           justifyContent: "space-between",
           alignItems: "center",
           marginBottom: "12px",
+          gap: "8px",
         }}
       >
-        <div>
-          <span
-            style={{ color: colors.text, fontSize: "14px", fontWeight: 600 }}
-          >
-            Select Theme
-          </span>
-          <span
+        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          <button
+            onClick={() => setShowCustom(false)}
             style={{
-              color: colors.textMuted,
-              fontSize: "11px",
-              marginLeft: "8px",
+              background: !showCustom ? "#3B82F6" : "transparent",
+              border: !showCustom ? "none" : `1px solid ${colors.border}`,
+              color: !showCustom ? "white" : colors.text,
+              fontSize: "13px",
+              fontWeight: 500,
+              padding: "6px 12px",
+              borderRadius: "6px",
+              cursor: "pointer",
+              transition: "all 0.2s",
             }}
           >
-            {Object.keys(THEMES).length} premium themes
-          </span>
+            Select Theme
+          </button>
+          <button
+            onClick={() => setShowCustom(true)}
+            style={{
+              background: showCustom ? "#3B82F6" : "transparent",
+              border: showCustom ? "none" : `1px solid ${colors.border}`,
+              color: showCustom ? "white" : colors.text,
+              fontSize: "13px",
+              fontWeight: 500,
+              padding: "6px 12px",
+              borderRadius: "6px",
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+          >
+            Custom
+          </button>
         </div>
         <button
           onClick={onClose}
@@ -548,23 +623,27 @@ function ThemeSelector({
             padding: "0",
             width: "24px",
             height: "24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           ×
         </button>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(6, 1fr)",
-          gap: "8px",
-          marginBottom: "12px",
-          overflowY: "auto",
-          maxHeight: "calc(70vh - 100px)",
-          paddingRight: "4px",
-        }}
-      >
+      {!showCustom ? (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(6, 1fr)",
+            gap: "8px",
+            marginBottom: "12px",
+            overflowY: "auto",
+            maxHeight: "calc(70vh - 100px)",
+            paddingRight: "4px",
+          }}
+        >
         {(Object.keys(THEMES) as ThemeType[]).map((themeKey) => {
           const isSelected = selectedTheme === themeKey;
           const isHovered = hoveredTheme === themeKey;
@@ -645,7 +724,369 @@ function ThemeSelector({
             </div>
           );
         })}
-      </div>
+        </div>
+      ) : (
+        /* Custom Color Picker */
+        <div style={{ marginBottom: "12px" }}>
+          {/* Solid Section */}
+          <div style={{ marginBottom: "16px" }}>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 500,
+                marginBottom: "8px",
+              }}
+            >
+              Solid
+            </div>
+            <input
+              type="color"
+              value={customColor}
+              onChange={(e) => {
+                const newColor = e.target.value;
+                setCustomColor(newColor);
+                setCustomMode("solid");
+                if (onCustomChange) {
+                  onCustomChange(newColor, {
+                    color2: customColor2,
+                    type: gradientType,
+                    angle: gradientAngle,
+                    mode: "solid",
+                  });
+                }
+              }}
+              style={{
+                width: "100%",
+                height: "120px",
+                border: `1px solid ${colors.border}`,
+                borderRadius: "8px",
+                cursor: "pointer",
+              }}
+            />
+            <div
+              style={{
+                marginTop: "8px",
+                display: "flex",
+                gap: "8px",
+                alignItems: "center",
+              }}
+            >
+              <span
+                style={{ color: colors.text, fontSize: "12px", fontWeight: 500 }}
+              >
+                Hex:
+              </span>
+              <input
+                type="text"
+                value={customColor}
+                onChange={(e) => {
+                  const newValue = e.target.value;
+                  if (newValue.startsWith("#")) {
+                    setCustomColor(newValue);
+                    if (/^#[0-9A-F]{6}$/i.test(newValue)) {
+                      setCustomMode("solid");
+                      if (onCustomChange) {
+                        onCustomChange(newValue, {
+                          color2: customColor2,
+                          type: gradientType,
+                          angle: gradientAngle,
+                          mode: "solid",
+                        });
+                      }
+                    }
+                  }
+                }}
+                style={{
+                  flex: 1,
+                  padding: "6px 12px",
+                  background: colors.background,
+                  border: `1px solid ${colors.border}`,
+                  borderRadius: "6px",
+                  color: colors.text,
+                  fontSize: "12px",
+                  fontFamily: "monospace",
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Gradient Section */}
+          <div>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 500,
+                marginBottom: "8px",
+              }}
+            >
+              Gradient
+            </div>
+
+            {/* Gradient Type Selector */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(4, 1fr)",
+                gap: "6px",
+                marginBottom: "12px",
+              }}
+            >
+              {(["linear", "radial", "angular", "diamond"] as const).map(
+                (type) => (
+                  <button
+                    key={type}
+                    onClick={() => {
+                      setGradientType(type);
+                      setCustomMode("gradient");
+                      if (onCustomChange) {
+                        onCustomChange(customColor, {
+                          color2: customColor2,
+                          type: type,
+                          angle: gradientAngle,
+                          mode: "gradient",
+                        });
+                      }
+                    }}
+                    style={{
+                      padding: "8px",
+                      background:
+                        gradientType === type && customMode === "gradient"
+                          ? "#3B82F6"
+                          : colors.background,
+                      border: `1px solid ${colors.border}`,
+                      borderRadius: "6px",
+                      color:
+                        gradientType === type && customMode === "gradient"
+                          ? "white"
+                          : colors.text,
+                      fontSize: "11px",
+                      fontWeight: 500,
+                      cursor: "pointer",
+                      textTransform: "capitalize",
+                      transition: "all 0.2s",
+                    }}
+                  >
+                    {type}
+                  </button>
+                )
+              )}
+            </div>
+
+            {/* Angle/Direction Control */}
+            <div
+              style={{
+                marginBottom: "12px",
+                padding: "12px",
+                background: colors.background,
+                borderRadius: "6px",
+                border: `1px solid ${colors.border}`,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "8px",
+                }}
+              >
+                <span
+                  style={{ color: colors.text, fontSize: "12px", fontWeight: 500 }}
+                >
+                  Direction
+                </span>
+                <span
+                  style={{
+                    color: colors.textMuted,
+                    fontSize: "11px",
+                    fontFamily: "monospace",
+                  }}
+                >
+                  {gradientAngle}°
+                </span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="360"
+                value={gradientAngle}
+                onChange={(e) => {
+                  const newAngle = parseInt(e.target.value);
+                  setGradientAngle(newAngle);
+                  setCustomMode("gradient");
+                  if (onCustomChange) {
+                    onCustomChange(customColor, {
+                      color2: customColor2,
+                      type: gradientType,
+                      angle: newAngle,
+                      mode: "gradient",
+                    });
+                  }
+                }}
+                style={{
+                  width: "100%",
+                  height: "4px",
+                  borderRadius: "2px",
+                  background: `linear-gradient(90deg, ${customColor} 0%, ${customColor2} 100%)`,
+                  outline: "none",
+                  cursor: "pointer",
+                }}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginTop: "4px",
+                }}
+              >
+                <span style={{ color: colors.textMuted, fontSize: "10px" }}>
+                  0°
+                </span>
+                <span style={{ color: colors.textMuted, fontSize: "10px" }}>
+                  90°
+                </span>
+                <span style={{ color: colors.textMuted, fontSize: "10px" }}>
+                  180°
+                </span>
+                <span style={{ color: colors.textMuted, fontSize: "10px" }}>
+                  270°
+                </span>
+                <span style={{ color: colors.textMuted, fontSize: "10px" }}>
+                  360°
+                </span>
+              </div>
+            </div>
+
+            {/* Color Pickers for Gradient */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "8px",
+              }}
+            >
+              <div>
+                <input
+                  type="color"
+                  value={customColor}
+                  onChange={(e) => {
+                    const newColor = e.target.value;
+                    setCustomColor(newColor);
+                    setCustomMode("gradient");
+                    if (onCustomChange) {
+                      onCustomChange(newColor, {
+                        color2: customColor2,
+                        type: gradientType,
+                        angle: gradientAngle,
+                        mode: "gradient",
+                      });
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    height: "60px",
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                  }}
+                />
+                <input
+                  type="text"
+                  value={customColor}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    if (newValue.startsWith("#")) {
+                      setCustomColor(newValue);
+                      if (/^#[0-9A-F]{6}$/i.test(newValue)) {
+                        setCustomMode("gradient");
+                        if (onCustomChange) {
+                          onCustomChange(newValue, {
+                            color2: customColor2,
+                            type: gradientType,
+                            angle: gradientAngle,
+                            mode: "gradient",
+                          });
+                        }
+                      }
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    marginTop: "4px",
+                    padding: "4px 8px",
+                    background: colors.background,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "4px",
+                    color: colors.text,
+                    fontSize: "11px",
+                    fontFamily: "monospace",
+                  }}
+                />
+              </div>
+              <div>
+                <input
+                  type="color"
+                  value={customColor2}
+                  onChange={(e) => {
+                    const newColor = e.target.value;
+                    setCustomColor2(newColor);
+                    setCustomMode("gradient");
+                    if (onCustomChange) {
+                      onCustomChange(customColor, {
+                        color2: newColor,
+                        type: gradientType,
+                        angle: gradientAngle,
+                        mode: "gradient",
+                      });
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    height: "60px",
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                  }}
+                />
+                <input
+                  type="text"
+                  value={customColor2}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    if (newValue.startsWith("#")) {
+                      setCustomColor2(newValue);
+                      if (/^#[0-9A-F]{6}$/i.test(newValue)) {
+                        setCustomMode("gradient");
+                        if (onCustomChange) {
+                          onCustomChange(customColor, {
+                            color2: newValue,
+                            type: gradientType,
+                            angle: gradientAngle,
+                            mode: "gradient",
+                          });
+                        }
+                      }
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    marginTop: "4px",
+                    padding: "4px 8px",
+                    background: colors.background,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "4px",
+                    color: colors.text,
+                    fontSize: "11px",
+                    fontFamily: "monospace",
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -694,6 +1135,11 @@ export default function ScreenshotEditor() {
   const [editorTheme, setEditorTheme] = useState<"light" | "dark">("dark");
   const [selectedTheme, setSelectedTheme] = useState<ThemeType>("figma");
   const [showThemeSelector, setShowThemeSelector] = useState(false);
+  const [customColor, setCustomColor] = useState("#D8FF00");
+  const [customColor2, setCustomColor2] = useState("#FF00FF");
+  const [gradientType, setGradientType] = useState<'linear' | 'radial' | 'angular' | 'diamond'>('linear');
+  const [gradientAngle, setGradientAngle] = useState(135);
+  const [customMode, setCustomMode] = useState<'solid' | 'gradient'>('solid');
 
   // Width and padding
   const [cardWidth, setCardWidth] = useState(50);
@@ -750,6 +1196,18 @@ export default function ScreenshotEditor() {
   const containerRef = useRef<HTMLDivElement>(null);
   const windowChromeRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Helper function to get the background
+  const getThemeBackground = () => {
+    if (selectedTheme === 'custom') {
+      if (customMode === 'solid') {
+        return customColor;
+      } else {
+        return generateGradient(gradientType, customColor, customColor2, gradientAngle);
+      }
+    }
+    return THEMES[selectedTheme];
+  };
 
   // Theme colors
   const themeColors = {
@@ -3934,6 +4392,19 @@ export default function ScreenshotEditor() {
           }}
           onClose={() => setShowThemeSelector(false)}
           editorTheme={editorTheme}
+          initialCustomColor={customColor}
+          initialCustomColor2={customColor2}
+          initialGradientType={gradientType}
+          initialGradientAngle={gradientAngle}
+          initialCustomMode={customMode}
+          onCustomChange={(color, settings) => {
+            setCustomColor(color);
+            setCustomColor2(settings.color2);
+            setGradientType(settings.type);
+            setGradientAngle(settings.angle);
+            setCustomMode(settings.mode);
+            setSelectedTheme('custom' as ThemeType);
+          }}
         />
       )}
 
@@ -4786,7 +5257,7 @@ export default function ScreenshotEditor() {
               transformOrigin: "center center",
               transition: isPanning ? "none" : "transform 0.05s ease-out",
               willChange: isPanning ? "transform" : "auto",
-              background: THEMES[selectedTheme],
+              background: getThemeBackground(),
               padding: `${calculateCardPadding(cardPadding)}px`,
               borderRadius: "0",
               display: "block",
@@ -6034,7 +6505,7 @@ export default function ScreenshotEditor() {
                   width: "100%",
                   height: "100%",
                   background: showBackground
-                    ? THEMES[selectedTheme]
+                    ? getThemeBackground()
                     : colors.buttonBg,
                   display: "flex",
                   alignItems: "center",
