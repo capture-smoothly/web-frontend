@@ -332,16 +332,23 @@ function TooltipButton({
   );
 }
 
-// Helper function to generate gradient CSS
+// Helper function to generate gradient CSS with multiple colors
 function generateGradient(
   type: "linear" | "radial" | "angular" | "diamond",
-  color1: string,
-  color2: string,
+  colors: string[],
   angle: number = 135
 ): string {
+  // Create color stops evenly distributed
+  const colorStops = colors
+    .map((color, index) => {
+      const percentage = (index / (colors.length - 1)) * 100;
+      return `${color} ${percentage}%`;
+    })
+    .join(", ");
+
   switch (type) {
     case "linear":
-      return `linear-gradient(${angle}deg, ${color1} 0%, ${color2} 100%)`;
+      return `linear-gradient(${angle}deg, ${colorStops})`;
     case "radial":
       const positions = [
         "center",
@@ -355,9 +362,9 @@ function generateGradient(
         "top left",
       ];
       const posIndex = Math.floor((angle % 360) / 40) % positions.length;
-      return `radial-gradient(circle at ${positions[posIndex]}, ${color1} 0%, ${color2} 100%)`;
+      return `radial-gradient(circle at ${positions[posIndex]}, ${colorStops})`;
     case "angular":
-      return `conic-gradient(from ${angle}deg, ${color1}, ${color2}, ${color1})`;
+      return `conic-gradient(from ${angle}deg, ${colorStops}, ${colors[0]})`;
     case "diamond":
       const diamondPositions = [
         "center",
@@ -372,9 +379,9 @@ function generateGradient(
       ];
       const diamondIndex =
         Math.floor((angle % 360) / 40) % diamondPositions.length;
-      return `radial-gradient(ellipse at ${diamondPositions[diamondIndex]}, ${color1} 0%, ${color2} 100%)`;
+      return `radial-gradient(ellipse at ${diamondPositions[diamondIndex]}, ${colorStops})`;
     default:
-      return `linear-gradient(${angle}deg, ${color1} 0%, ${color2} 100%)`;
+      return `linear-gradient(${angle}deg, ${colorStops})`;
   }
 }
 
@@ -384,11 +391,16 @@ function ThemeSelector({
   onThemeSelect,
   onClose,
   editorTheme,
-  initialCustomColor = "#D8FF00",
-  initialCustomColor2 = "#FF00FF",
+  initialCustomColor = "#ededed",
+  initialCustomColor2 = "#eb00eb",
+  initialCustomColor3 = "#731ec8",
+  initialCustomColor4 = "#1818dc",
   initialGradientType = "linear",
-  initialGradientAngle = 135,
-  initialCustomMode = "solid",
+  initialGradientAngle = 133,
+  initialCustomMode = "gradient",
+  initialShowColor2 = true,
+  initialShowColor3 = true,
+  initialShowColor4 = true,
   onCustomChange,
 }: {
   selectedTheme: ThemeType;
@@ -397,16 +409,26 @@ function ThemeSelector({
   editorTheme: "light" | "dark";
   initialCustomColor?: string;
   initialCustomColor2?: string;
+  initialCustomColor3?: string;
+  initialCustomColor4?: string;
   initialGradientType?: "linear" | "radial" | "angular" | "diamond";
   initialGradientAngle?: number;
   initialCustomMode?: "solid" | "gradient";
+  initialShowColor2?: boolean;
+  initialShowColor3?: boolean;
+  initialShowColor4?: boolean;
   onCustomChange?: (
     color: string,
     settings: {
       color2: string;
+      color3: string;
+      color4: string;
       type: "linear" | "radial" | "angular" | "diamond";
       angle: number;
       mode: "solid" | "gradient";
+      showColor2: boolean;
+      showColor3: boolean;
+      showColor4: boolean;
     }
   ) => void;
 }) {
@@ -414,9 +436,14 @@ function ThemeSelector({
   const [showCustom, setShowCustom] = useState(false);
   const [customColor, setCustomColor] = useState(initialCustomColor);
   const [customColor2, setCustomColor2] = useState(initialCustomColor2);
+  const [customColor3, setCustomColor3] = useState(initialCustomColor3);
+  const [customColor4, setCustomColor4] = useState(initialCustomColor4);
   const [gradientType, setGradientType] = useState(initialGradientType);
   const [gradientAngle, setGradientAngle] = useState(initialGradientAngle);
   const [customMode, setCustomMode] = useState(initialCustomMode);
+  const [showColor2, setShowColor2] = useState(initialShowColor2);
+  const [showColor3, setShowColor3] = useState(initialShowColor3);
+  const [showColor4, setShowColor4] = useState(initialShowColor4);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Refs for smooth color updates without state lag
@@ -427,9 +454,14 @@ function ThemeSelector({
     (
       color: string,
       color2: string,
+      color3: string,
+      color4: string,
       type: "linear" | "radial" | "angular" | "diamond",
       angle: number,
-      mode: "solid" | "gradient"
+      mode: "solid" | "gradient",
+      show2: boolean,
+      show3: boolean,
+      show4: boolean
     ) => {
       if (colorUpdateTimeoutRef.current) {
         clearTimeout(colorUpdateTimeoutRef.current);
@@ -438,9 +470,14 @@ function ThemeSelector({
         if (onCustomChange) {
           onCustomChange(color, {
             color2: color2,
+            color3: color3,
+            color4: color4,
             type: type,
             angle: angle,
             mode: mode,
+            showColor2: show2,
+            showColor3: show3,
+            showColor4: show4,
           });
         }
       }, 0); // Update immediately but async to avoid blocking
@@ -649,20 +686,20 @@ function ThemeSelector({
           <button
             onClick={() => {
               setShowCustom(true);
-              // Only apply default custom colors if user hasn't customized yet
-              // Check if colors are still at their initial state
-              if (customColor === "#D8FF00" && customColor2 === "#FF00FF") {
-                // Already at default, just show the custom panel
-                if (onCustomChange) {
-                  onCustomChange(customColor, {
-                    color2: customColor2,
-                    type: gradientType,
-                    angle: gradientAngle,
-                    mode: customMode,
-                  });
-                }
+              // Apply custom theme with all settings
+              if (onCustomChange) {
+                onCustomChange(customColor, {
+                  color2: customColor2,
+                  color3: customColor3,
+                  color4: customColor4,
+                  type: gradientType,
+                  angle: gradientAngle,
+                  mode: customMode,
+                  showColor2,
+                  showColor3,
+                  showColor4,
+                });
               }
-              // If user has customized, keep their custom colors and just show the panel
             }}
             style={{
               background: showCustom ? "#3B82F6" : "transparent",
@@ -858,94 +895,8 @@ function ThemeSelector({
             </button>
           </div>
 
-          {/* Solid Section */}
-          <div style={{ marginBottom: "16px" }}>
-            <div
-              style={{
-                color: colors.text,
-                fontSize: "13px",
-                fontWeight: 500,
-                marginBottom: "8px",
-              }}
-            >
-              Solid
-            </div>
-            <input
-              type="color"
-              value={customColor}
-              onInput={(e) => {
-                const newColor = (e.target as HTMLInputElement).value;
-                setCustomColor(newColor);
-                setCustomMode("solid");
-                debouncedParentUpdate(
-                  newColor,
-                  customColor2,
-                  gradientType,
-                  gradientAngle,
-                  "solid"
-                );
-              }}
-              style={{
-                width: "100%",
-                height: "120px",
-                border: `1px solid ${colors.border}`,
-                borderRadius: "8px",
-                cursor: "pointer",
-              }}
-            />
-            <div
-              style={{
-                marginTop: "8px",
-                display: "flex",
-                gap: "8px",
-                alignItems: "center",
-              }}
-            >
-              <span
-                style={{
-                  color: colors.text,
-                  fontSize: "12px",
-                  fontWeight: 500,
-                }}
-              >
-                Hex:
-              </span>
-              <input
-                type="text"
-                value={customColor}
-                onChange={(e) => {
-                  const newValue = e.target.value;
-                  if (newValue.startsWith("#")) {
-                    setCustomColor(newValue);
-                    if (/^#[0-9A-F]{6}$/i.test(newValue)) {
-                      setCustomMode("solid");
-                      if (onCustomChange) {
-                        onCustomChange(newValue, {
-                          color2: customColor2,
-                          type: gradientType,
-                          angle: gradientAngle,
-                          mode: "solid",
-                        });
-                      }
-                    }
-                  }
-                }}
-                style={{
-                  flex: 1,
-                  padding: "6px 12px",
-                  background: colors.background,
-                  border: `1px solid ${colors.border}`,
-                  borderRadius: "6px",
-                  color: colors.text,
-                  fontSize: "12px",
-                  fontFamily: "monospace",
-                }}
-              />
-            </div>
-          </div>
-
           {/* Gradient Section */}
-          <div>
+          <div style={{ marginBottom: "16px" }}>
             <div
               style={{
                 color: colors.text,
@@ -976,9 +927,14 @@ function ThemeSelector({
                       if (onCustomChange) {
                         onCustomChange(customColor, {
                           color2: customColor2,
+                          color3: customColor3,
+                          color4: customColor4,
                           type: type,
                           angle: gradientAngle,
                           mode: "gradient",
+                          showColor2,
+                          showColor3,
+                          showColor4,
                         });
                       }
                     }}
@@ -1056,9 +1012,14 @@ function ThemeSelector({
                   if (onCustomChange) {
                     onCustomChange(customColor, {
                       color2: customColor2,
+                      color3: customColor3,
+                      color4: customColor4,
                       type: gradientType,
                       angle: newAngle,
                       mode: "gradient",
+                      showColor2,
+                      showColor3,
+                      showColor4,
                     });
                   }
                 }}
@@ -1066,7 +1027,20 @@ function ThemeSelector({
                   width: "100%",
                   height: "4px",
                   borderRadius: "2px",
-                  background: `linear-gradient(90deg, ${customColor} 0%, ${customColor2} 100%)`,
+                  background: (() => {
+                    const activeColors = [customColor];
+                    if (showColor2) activeColors.push(customColor2);
+                    if (showColor3) activeColors.push(customColor3);
+                    if (showColor4) activeColors.push(customColor4);
+                    const colorStops = activeColors
+                      .map((color, index) => {
+                        const percentage =
+                          (index / (activeColors.length - 1)) * 100;
+                        return `${color} ${percentage}%`;
+                      })
+                      .join(", ");
+                    return `linear-gradient(90deg, ${colorStops})`;
+                  })(),
                   outline: "none",
                   cursor: "pointer",
                 }}
@@ -1096,15 +1070,26 @@ function ThemeSelector({
               </div>
             </div>
 
-            {/* Color Pickers for Gradient */}
+            {/* Color Pickers for Gradient - 4 colors with show/hide toggles */}
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "8px",
+                gridTemplateColumns: "repeat(4, 1fr)",
+                gap: "6px",
               }}
             >
+              {/* Color 1 - Always visible */}
               <div>
+                <div
+                  style={{
+                    color: colors.textMuted,
+                    fontSize: "10px",
+                    marginBottom: "4px",
+                    textAlign: "center",
+                  }}
+                >
+                  Color 1
+                </div>
                 <input
                   type="color"
                   value={customColor}
@@ -1115,14 +1100,19 @@ function ThemeSelector({
                     debouncedParentUpdate(
                       newColor,
                       customColor2,
+                      customColor3,
+                      customColor4,
                       gradientType,
                       gradientAngle,
-                      "gradient"
+                      "gradient",
+                      showColor2,
+                      showColor3,
+                      showColor4
                     );
                   }}
                   style={{
                     width: "100%",
-                    height: "60px",
+                    height: "50px",
                     border: `1px solid ${colors.border}`,
                     borderRadius: "6px",
                     cursor: "pointer",
@@ -1140,9 +1130,14 @@ function ThemeSelector({
                         if (onCustomChange) {
                           onCustomChange(newValue, {
                             color2: customColor2,
+                            color3: customColor3,
+                            color4: customColor4,
                             type: gradientType,
                             angle: gradientAngle,
                             mode: "gradient",
+                            showColor2,
+                            showColor3,
+                            showColor4,
                           });
                         }
                       }
@@ -1161,10 +1156,57 @@ function ThemeSelector({
                   }}
                 />
               </div>
+
+              {/* Color 2 with toggle */}
               <div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "4px",
+                  }}
+                >
+                  <span style={{ color: colors.textMuted, fontSize: "10px" }}>
+                    Color 2
+                  </span>
+                  <button
+                    onClick={() => {
+                      const newShowColor2 = !showColor2;
+                      setShowColor2(newShowColor2);
+                      setCustomMode("gradient");
+                      if (onCustomChange) {
+                        onCustomChange(customColor, {
+                          color2: customColor2,
+                          color3: customColor3,
+                          color4: customColor4,
+                          type: gradientType,
+                          angle: gradientAngle,
+                          mode: "gradient",
+                          showColor2: newShowColor2,
+                          showColor3,
+                          showColor4,
+                        });
+                      }
+                    }}
+                    style={{
+                      background: showColor2 ? "#3B82F6" : colors.border,
+                      color: showColor2 ? "white" : colors.textMuted,
+                      border: "none",
+                      borderRadius: "3px",
+                      padding: "2px 6px",
+                      fontSize: "9px",
+                      cursor: "pointer",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {showColor2 ? "Hide" : "Show"}
+                  </button>
+                </div>
                 <input
                   type="color"
                   value={customColor2}
+                  disabled={!showColor2}
                   onInput={(e) => {
                     const newColor = (e.target as HTMLInputElement).value;
                     setCustomColor2(newColor);
@@ -1172,22 +1214,29 @@ function ThemeSelector({
                     debouncedParentUpdate(
                       customColor,
                       newColor,
+                      customColor3,
+                      customColor4,
                       gradientType,
                       gradientAngle,
-                      "gradient"
+                      "gradient",
+                      showColor2,
+                      showColor3,
+                      showColor4
                     );
                   }}
                   style={{
                     width: "100%",
-                    height: "60px",
+                    height: "50px",
                     border: `1px solid ${colors.border}`,
                     borderRadius: "6px",
-                    cursor: "pointer",
+                    cursor: showColor2 ? "pointer" : "not-allowed",
+                    opacity: showColor2 ? 1 : 0.5,
                   }}
                 />
                 <input
                   type="text"
                   value={customColor2}
+                  disabled={!showColor2}
                   onChange={(e) => {
                     const newValue = e.target.value;
                     if (newValue.startsWith("#")) {
@@ -1197,9 +1246,14 @@ function ThemeSelector({
                         if (onCustomChange) {
                           onCustomChange(customColor, {
                             color2: newValue,
+                            color3: customColor3,
+                            color4: customColor4,
                             type: gradientType,
                             angle: gradientAngle,
                             mode: "gradient",
+                            showColor2,
+                            showColor3,
+                            showColor4,
                           });
                         }
                       }
@@ -1208,16 +1262,347 @@ function ThemeSelector({
                   style={{
                     width: "100%",
                     marginTop: "4px",
-                    padding: "4px 8px",
+                    padding: "4px 6px",
                     background: colors.background,
                     border: `1px solid ${colors.border}`,
                     borderRadius: "4px",
                     color: colors.text,
-                    fontSize: "11px",
+                    fontSize: "10px",
                     fontFamily: "monospace",
+                    opacity: showColor2 ? 1 : 0.5,
                   }}
                 />
               </div>
+
+              {/* Color 3 with toggle */}
+              <div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "4px",
+                  }}
+                >
+                  <span style={{ color: colors.textMuted, fontSize: "10px" }}>
+                    Color 3
+                  </span>
+                  <button
+                    onClick={() => {
+                      const newShowColor3 = !showColor3;
+                      setShowColor3(newShowColor3);
+                      setCustomMode("gradient");
+                      if (onCustomChange) {
+                        onCustomChange(customColor, {
+                          color2: customColor2,
+                          color3: customColor3,
+                          color4: customColor4,
+                          type: gradientType,
+                          angle: gradientAngle,
+                          mode: "gradient",
+                          showColor2,
+                          showColor3: newShowColor3,
+                          showColor4,
+                        });
+                      }
+                    }}
+                    style={{
+                      background: showColor3 ? "#3B82F6" : colors.border,
+                      color: showColor3 ? "white" : colors.textMuted,
+                      border: "none",
+                      borderRadius: "3px",
+                      padding: "2px 6px",
+                      fontSize: "9px",
+                      cursor: "pointer",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {showColor3 ? "Hide" : "Show"}
+                  </button>
+                </div>
+                <input
+                  type="color"
+                  value={customColor3}
+                  disabled={!showColor3}
+                  onInput={(e) => {
+                    const newColor = (e.target as HTMLInputElement).value;
+                    setCustomColor3(newColor);
+                    setCustomMode("gradient");
+                    debouncedParentUpdate(
+                      customColor,
+                      customColor2,
+                      newColor,
+                      customColor4,
+                      gradientType,
+                      gradientAngle,
+                      "gradient",
+                      showColor2,
+                      showColor3,
+                      showColor4
+                    );
+                  }}
+                  style={{
+                    width: "100%",
+                    height: "50px",
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "6px",
+                    cursor: showColor3 ? "pointer" : "not-allowed",
+                    opacity: showColor3 ? 1 : 0.5,
+                  }}
+                />
+                <input
+                  type="text"
+                  value={customColor3}
+                  disabled={!showColor3}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    if (newValue.startsWith("#")) {
+                      setCustomColor3(newValue);
+                      if (/^#[0-9A-F]{6}$/i.test(newValue)) {
+                        setCustomMode("gradient");
+                        if (onCustomChange) {
+                          onCustomChange(customColor, {
+                            color2: customColor2,
+                            color3: newValue,
+                            color4: customColor4,
+                            type: gradientType,
+                            angle: gradientAngle,
+                            mode: "gradient",
+                            showColor2,
+                            showColor3,
+                            showColor4,
+                          });
+                        }
+                      }
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    marginTop: "4px",
+                    padding: "4px 6px",
+                    background: colors.background,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "4px",
+                    color: colors.text,
+                    fontSize: "10px",
+                    fontFamily: "monospace",
+                    opacity: showColor3 ? 1 : 0.5,
+                  }}
+                />
+              </div>
+
+              {/* Color 4 with toggle */}
+              <div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "4px",
+                  }}
+                >
+                  <span style={{ color: colors.textMuted, fontSize: "10px" }}>
+                    Color 4
+                  </span>
+                  <button
+                    onClick={() => {
+                      const newShowColor4 = !showColor4;
+                      setShowColor4(newShowColor4);
+                      setCustomMode("gradient");
+                      if (onCustomChange) {
+                        onCustomChange(customColor, {
+                          color2: customColor2,
+                          color3: customColor3,
+                          color4: customColor4,
+                          type: gradientType,
+                          angle: gradientAngle,
+                          mode: "gradient",
+                          showColor2,
+                          showColor3,
+                          showColor4: newShowColor4,
+                        });
+                      }
+                    }}
+                    style={{
+                      background: showColor4 ? "#3B82F6" : colors.border,
+                      color: showColor4 ? "white" : colors.textMuted,
+                      border: "none",
+                      borderRadius: "3px",
+                      padding: "2px 6px",
+                      fontSize: "9px",
+                      cursor: "pointer",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {showColor4 ? "Hide" : "Show"}
+                  </button>
+                </div>
+                <input
+                  type="color"
+                  value={customColor4}
+                  disabled={!showColor4}
+                  onInput={(e) => {
+                    const newColor = (e.target as HTMLInputElement).value;
+                    setCustomColor4(newColor);
+                    setCustomMode("gradient");
+                    debouncedParentUpdate(
+                      customColor,
+                      customColor2,
+                      customColor3,
+                      newColor,
+                      gradientType,
+                      gradientAngle,
+                      "gradient",
+                      showColor2,
+                      showColor3,
+                      showColor4
+                    );
+                  }}
+                  style={{
+                    width: "100%",
+                    height: "50px",
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "6px",
+                    cursor: showColor4 ? "pointer" : "not-allowed",
+                    opacity: showColor4 ? 1 : 0.5,
+                  }}
+                />
+                <input
+                  type="text"
+                  value={customColor4}
+                  disabled={!showColor4}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    if (newValue.startsWith("#")) {
+                      setCustomColor4(newValue);
+                      if (/^#[0-9A-F]{6}$/i.test(newValue)) {
+                        setCustomMode("gradient");
+                        if (onCustomChange) {
+                          onCustomChange(customColor, {
+                            color2: customColor2,
+                            color3: customColor3,
+                            color4: newValue,
+                            type: gradientType,
+                            angle: gradientAngle,
+                            mode: "gradient",
+                            showColor2,
+                            showColor3,
+                            showColor4,
+                          });
+                        }
+                      }
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    marginTop: "4px",
+                    padding: "4px 6px",
+                    background: colors.background,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "4px",
+                    color: colors.text,
+                    fontSize: "10px",
+                    fontFamily: "monospace",
+                    opacity: showColor4 ? 1 : 0.5,
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Solid Section */}
+          <div>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 500,
+                marginBottom: "8px",
+              }}
+            >
+              Solid
+            </div>
+            <input
+              type="color"
+              value={customColor}
+              onInput={(e) => {
+                const newColor = (e.target as HTMLInputElement).value;
+                setCustomColor(newColor);
+                setCustomMode("solid");
+                debouncedParentUpdate(
+                  newColor,
+                  customColor2,
+                  customColor3,
+                  customColor4,
+                  gradientType,
+                  gradientAngle,
+                  "solid",
+                  showColor2,
+                  showColor3,
+                  showColor4
+                );
+              }}
+              style={{
+                width: "100%",
+                height: "120px",
+                border: `1px solid ${colors.border}`,
+                borderRadius: "8px",
+                cursor: "pointer",
+              }}
+            />
+            <div
+              style={{
+                marginTop: "8px",
+                display: "flex",
+                gap: "8px",
+                alignItems: "center",
+              }}
+            >
+              <span
+                style={{
+                  color: colors.text,
+                  fontSize: "12px",
+                  fontWeight: 500,
+                }}
+              >
+                Hex:
+              </span>
+              <input
+                type="text"
+                value={customColor}
+                onChange={(e) => {
+                  const newValue = e.target.value;
+                  if (newValue.startsWith("#")) {
+                    setCustomColor(newValue);
+                    if (/^#[0-9A-F]{6}$/i.test(newValue)) {
+                      setCustomMode("solid");
+                      if (onCustomChange) {
+                        onCustomChange(newValue, {
+                          color2: customColor2,
+                          color3: customColor3,
+                          color4: customColor4,
+                          type: gradientType,
+                          angle: gradientAngle,
+                          mode: "solid",
+                          showColor2,
+                          showColor3,
+                          showColor4,
+                        });
+                      }
+                    }
+                  }
+                }}
+                style={{
+                  flex: 1,
+                  padding: "6px 12px",
+                  background: colors.background,
+                  border: `1px solid ${colors.border}`,
+                  borderRadius: "6px",
+                  color: colors.text,
+                  fontSize: "12px",
+                  fontFamily: "monospace",
+                }}
+              />
             </div>
           </div>
         </div>
@@ -1272,11 +1657,16 @@ export default function ScreenshotEditor() {
   const [showThemeSelector, setShowThemeSelector] = useState(false);
   const [customColor, setCustomColor] = useState("#D8FF00");
   const [customColor2, setCustomColor2] = useState("#FF00FF");
+  const [customColor3, setCustomColor3] = useState("#731ec8");
+  const [customColor4, setCustomColor4] = useState("#1818dc");
   const [gradientType, setGradientType] = useState<
     "linear" | "radial" | "angular" | "diamond"
   >("linear");
   const [gradientAngle, setGradientAngle] = useState(135);
-  const [customMode, setCustomMode] = useState<"solid" | "gradient">("solid");
+  const [customMode, setCustomMode] = useState<"solid" | "gradient">("gradient");
+  const [showColor2, setShowColor2] = useState(true);
+  const [showColor3, setShowColor3] = useState(true);
+  const [showColor4, setShowColor4] = useState(true);
 
   // Width and padding
   const [cardWidth, setCardWidth] = useState(50);
@@ -1345,10 +1735,14 @@ export default function ScreenshotEditor() {
       if (customMode === "solid") {
         return customColor;
       } else {
+        // Build array of active colors based on show/hide toggles
+        const activeColors = [customColor];
+        if (showColor2) activeColors.push(customColor2);
+        if (showColor3) activeColors.push(customColor3);
+        if (showColor4) activeColors.push(customColor4);
         return generateGradient(
           gradientType,
-          customColor,
-          customColor2,
+          activeColors,
           gradientAngle
         );
       }
@@ -4765,15 +5159,25 @@ export default function ScreenshotEditor() {
           editorTheme={editorTheme}
           initialCustomColor={customColor}
           initialCustomColor2={customColor2}
+          initialCustomColor3={customColor3}
+          initialCustomColor4={customColor4}
           initialGradientType={gradientType}
           initialGradientAngle={gradientAngle}
           initialCustomMode={customMode}
+          initialShowColor2={showColor2}
+          initialShowColor3={showColor3}
+          initialShowColor4={showColor4}
           onCustomChange={(color, settings) => {
             setCustomColor(color);
             setCustomColor2(settings.color2);
+            setCustomColor3(settings.color3);
+            setCustomColor4(settings.color4);
             setGradientType(settings.type);
             setGradientAngle(settings.angle);
             setCustomMode(settings.mode);
+            setShowColor2(settings.showColor2);
+            setShowColor3(settings.showColor3);
+            setShowColor4(settings.showColor4);
             setSelectedTheme("custom" as ThemeType);
           }}
         />
