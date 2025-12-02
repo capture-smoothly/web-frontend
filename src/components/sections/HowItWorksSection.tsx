@@ -76,7 +76,7 @@ const VideoPlayer: React.FC<{ videoUrl: string; title: string }> = ({ videoUrl, 
     <div ref={videoRef} className="relative w-full max-w-5xl aspect-video rounded-xl overflow-hidden shadow-2xl">
       {isVisible ? (
         <iframe
-          src={`${videoUrl}?autoplay=1&mute=1`}
+          src={`${videoUrl}?autoplay=1&mute=1&loop=1&playlist=${videoUrl.split('/').pop()}`}
           title={title}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
