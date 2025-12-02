@@ -17,11 +17,14 @@ interface PricingPlan {
   monthlyPrice: number;
   yearlyPrice: number;
   yearlyTotal: number;
+  originalMonthlyPrice?: number;
+  originalYearlyTotal?: number;
   features: { text: string; included: boolean; highlight?: boolean }[];
   cta: string;
   ctaVariant: "primary" | "secondary" | "outline";
   popular?: boolean;
   badge?: string;
+  limitedOffer?: boolean;
 }
 
 const pricingPlans: PricingPlan[] = [
@@ -58,10 +61,13 @@ const pricingPlans: PricingPlan[] = [
     name: "Pro",
     icon: <Crown className="w-6 h-6" />,
     description: "Full power for professionals",
-    monthlyPrice: 3,
-    yearlyPrice: 2,
-    yearlyTotal: 24,
+    monthlyPrice: 2,
+    yearlyPrice: 1,
+    yearlyTotal: 12,
+    originalMonthlyPrice: 3,
+    originalYearlyTotal: 24,
     popular: true,
+    limitedOffer: true,
     features: [
       { text: "Everything in Free, plus:", included: true, highlight: true },
       { text: "Annotations tools", included: true },
@@ -151,7 +157,7 @@ export const PricingSection: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-dark mb-4">
             Pick Your Plan
@@ -159,6 +165,28 @@ export const PricingSection: React.FC = () => {
           <p className="text-xl text-dark-lighter max-w-2xl mx-auto">
             Start free, upgrade when you need more. No hidden fees, cancel anytime.
           </p>
+        </motion.div>
+
+        {/* Limited Offer Banner */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="max-w-3xl mx-auto mb-8"
+        >
+          <div className="bg-gradient-to-r from-teal/10 via-coral/10 to-teal/10 border-2 border-teal/30 rounded-2xl p-6 text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <PartyPopper className="w-5 h-5 text-coral" />
+              <h3 className="text-lg md:text-xl font-bold text-dark">
+                Launch Special: First 100 Users Only!
+              </h3>
+              <PartyPopper className="w-5 h-5 text-coral" />
+            </div>
+            <p className="text-dark-lighter text-sm md:text-base">
+              Get <span className="font-bold text-teal">50% OFF</span> Pro plan forever - Lock in your discount now before we reach capacity!
+            </p>
+          </div>
         </motion.div>
 
         {/* Billing Toggle */}
@@ -231,7 +259,15 @@ export const PricingSection: React.FC = () => {
                 </div>
               )}
 
-              {plan.badge && !plan.popular && (
+              {plan.limitedOffer && (
+                <div className="absolute -top-4 right-4">
+                  <Badge variant="success" className="text-xs px-3 py-1.5 shadow-lg animate-pulse">
+                    🎉 FIRST 100 USERS
+                  </Badge>
+                </div>
+              )}
+
+              {plan.badge && !plan.popular && !plan.limitedOffer && (
                 <div className="absolute -top-3 right-4">
                   <Badge variant="info" className="text-xs px-3 py-1">
                     {plan.badge}
@@ -253,10 +289,21 @@ export const PricingSection: React.FC = () => {
 
               {/* Price */}
               <div className="text-center mb-6">
+                {plan.limitedOffer && typeof getPrice(plan) === "number" && (
+                  <div className="mb-2">
+                    <span className="text-2xl text-gray-400 line-through">
+                      ${billingPeriod === "monthly" ? plan.originalMonthlyPrice : plan.originalYearlyTotal && billingPeriod === "yearly" ? Math.round(plan.originalYearlyTotal / 12) : getPrice(plan)}
+                    </span>
+                    <span className="text-dark-lighter text-sm ml-1">/month</span>
+                  </div>
+                )}
                 <div className="flex items-end justify-center gap-1">
                   {typeof getPrice(plan) === "number" ? (
                     <>
-                      <span className="text-5xl font-bold text-dark">${getPrice(plan)}</span>
+                      <span className={clsx(
+                        "text-5xl font-bold",
+                        plan.limitedOffer ? "text-teal" : "text-dark"
+                      )}>${getPrice(plan)}</span>
                       <span className="text-dark-lighter mb-2">/month</span>
                     </>
                   ) : (
@@ -264,13 +311,28 @@ export const PricingSection: React.FC = () => {
                   )}
                 </div>
                 {billingPeriod === "yearly" && plan.yearlyTotal > 0 && (
-                  <p className="text-sm text-teal font-medium mt-2">
-                    ${plan.yearlyTotal}/year (Save ${getSavings(plan)})
-                  </p>
+                  <>
+                    {plan.limitedOffer && plan.originalYearlyTotal && (
+                      <p className="text-sm text-gray-400 line-through mt-1">
+                        Was ${plan.originalYearlyTotal}/year
+                      </p>
+                    )}
+                    <p className={clsx(
+                      "text-sm font-medium mt-2",
+                      plan.limitedOffer ? "text-teal" : "text-teal"
+                    )}>
+                      ${plan.yearlyTotal}/year {plan.limitedOffer ? `(Save $${plan.originalYearlyTotal ? plan.originalYearlyTotal - plan.yearlyTotal : getSavings(plan)})` : `(Save $${getSavings(plan)})`}
+                    </p>
+                  </>
                 )}
-                {billingPeriod === "monthly" && plan.monthlyPrice > 0 && (
+                {billingPeriod === "monthly" && plan.monthlyPrice > 0 && !plan.limitedOffer && (
                   <p className="text-xs text-dark-lighter mt-2">
                     or ${plan.yearlyTotal}/year if billed annually
+                  </p>
+                )}
+                {billingPeriod === "monthly" && plan.limitedOffer && (
+                  <p className="text-xs text-teal font-medium mt-2">
+                    Only ${plan.yearlyTotal}/year if billed annually
                   </p>
                 )}
               </div>
