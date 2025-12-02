@@ -186,11 +186,129 @@ const THEMES = {
   gunmetal:
     "linear-gradient(145deg, #2a3439 0%, #3d4a50 40%, #536872 70%, #6b8693 100%)",
 
+  // Cosmic Themes - 4-color gradient combinations
+  cosmic1:
+    "linear-gradient(133deg, #ededed 0%, #eb00eb 33%, #731ec8 67%, #1818dc 100%)",
+  cosmic2:
+    "linear-gradient(180deg, #f1c6e4 0%, #c329ae 33%, #44058d 67%, #170637 100%)",
+  cosmic3:
+    "linear-gradient(133deg, #f9d223 0%, #f6a11a 33%, #ef620d 67%, #eb3f06 100%)",
+  cosmic4:
+    "linear-gradient(133deg, #f0f045 0%, #b8e648 33%, #74e24b 67%, #19d84e 100%)",
+  cosmic5:
+    "linear-gradient(133deg, #17c8fe 0%, #21aafe 33%, #347ef9 67%, #485cfe 100%)",
+  cosmic6:
+    "linear-gradient(133deg, #c9fdd9 0%, #e5e4a4 33%, #f4b37f 67%, #f3817c 100%)",
+  cosmic7:
+    "linear-gradient(133deg, #dae4eb 0%, #e9bfe6 33%, #cc99e8 67%, #9e7ff1 100%)",
+  cosmic8:
+    "linear-gradient(133deg, #2f2f2f 0%, #262626 33%, #1d1d1d 67%, #0e0e0e 100%)",
+  cosmic9:
+    "linear-gradient(143deg, #000000 0%, #0e060d 33%, #9d07bb 67%, #5017ee 100%)",
+  cosmic10:
+    "linear-gradient(180deg, #000000 0%, #000000 33%, #0fffff 67%, #1caeb9 100%)",
+  cosmic11:
+    "linear-gradient(167deg, #3d44d4 0%, #0d0c18 33%, #000000 67%, #3ba7be 100%)",
+  cosmic12:
+    "linear-gradient(133deg, #1e0129 0%, #5702a4 33%, #ae55f7 67%, #ddc4ee 100%)",
+  cosmic13:
+    "linear-gradient(133deg, #181c21 0%, #5c666c 33%, #7e888f 67%, #7e888f 100%)",
+  cosmic14:
+    "linear-gradient(133deg, #c183b7 0%, #4da7d0 33%, #6711ba 67%, #3306a4 100%)",
+  cosmic15:
+    "linear-gradient(119deg, #ededed 0%, #fefdfd 33%, #fc9479 67%, #f9523d 100%)",
+  cosmic16:
+    "linear-gradient(68deg, #f7f7f7 0%, #cc0f8a 33%, #f05000 67%, #ddb9a6 100%)",
+  cosmic17: "linear-gradient(68deg, #f7f7f7 0%, #cc0f8a 50%, #f05000 100%)",
+  cosmic18: "linear-gradient(68deg, #f7f7f7 0%, #f05000 50%, #ddb9a6 100%)",
+  cosmic19:
+    "radial-gradient(circle at center, #917054 0%, #d18923 33%, #000000 67%, #242223 100%)",
+  cosmic20:
+    "radial-gradient(circle at center, #fef3fe 0%, #ce03a9 33%, #fbf1fe 67%, #fcf1fc 100%)",
+  cosmic21:
+    "radial-gradient(circle at center, #fcfcfc 0%, #f0f0f0 33%, #60a0bc 67%, #479879 100%)",
+
+  // Solid Color Themes
+  solid1: "#ffc7ec",
+  solid2: "#fe585e",
+  solid3: "#f9f8fa",
+  solid4: "#dfe1e5",
+  solid5: "#151717",
+  solid6: "#fe934c",
+  solid7: "#ffc93c",
+  solid8: "#8ac827",
+  solid9: "#40c85f",
+  solid10: "#feafad",
+  solid11: "#fec3a9",
+  solid12: "#ffd6a5",
+  solid13: "#fefeb7",
+  solid14: "#caffbe",
+  solid15: "#37959d",
+  solid16: "#1b82c4",
+  solid17: "#4366aa",
+  solid18: "#684d92",
+  solid19: "#ee4c85",
+  solid20: "#b3fbde",
+  solid21: "#abe0ee",
+  solid22: "#9ec3fe",
+  solid23: "#bdb2ff",
+  solid24: "#ffc5fe",
+  solid25: "#ffc7eb",
+
   // Custom theme
   custom: "#D8FF00",
 } as const;
 
 type ThemeType = keyof typeof THEMES;
+
+// Categorized theme lists for organized display
+const COSMIC_THEME_KEYS: ThemeType[] = [
+  "cosmic1", "cosmic2", "cosmic3", "cosmic4", "cosmic5", "cosmic6", "cosmic7",
+  "cosmic8", "cosmic9", "cosmic10", "cosmic11", "cosmic12", "cosmic13", "cosmic14",
+  "cosmic15", "cosmic16", "cosmic17", "cosmic18", "cosmic19", "cosmic20", "cosmic21",
+];
+
+const POPULAR_THEME_KEYS: ThemeType[] = [
+  "midnight", "sunset", "ocean", "forest", "lavender", "golden",
+  "coral", "sky", "slate", "rose", "pearl", "carbon",
+];
+
+const DARK_PREMIUM_THEME_KEYS: ThemeType[] = [
+  "obsidian", "graphite", "onyx", "noir", "charcoal", "abyss",
+  "eclipse", "void", "stellar", "darkstar", "blackhole", "supernova",
+  "smoke", "ash", "storm", "thunder", "haze", "cosmos",
+  "nebula", "vercel", "executive", "concrete", "iron", "zinc",
+  "lead", "gunmetal",
+];
+
+const BRIGHT_COLORFUL_THEME_KEYS: ThemeType[] = [
+  "aurora", "crimson", "emerald", "sapphire", "amethyst", "sunshine",
+  "lime", "fuchsia", "bubblegum", "tropical", "peacock", "berry",
+  "citrus", "candy", "mango", "unicorn", "prism", "hologram",
+  "linear", "stripe", "figma",
+];
+
+const NATURE_EARTH_THEME_KEYS: ThemeType[] = [
+  "evergreen", "moss", "fern", "pine", "sage", "jade",
+  "mariana", "pacific", "arctic", "depths", "tidal", "tourmaline",
+  "sahara", "terracotta", "clay", "sandstone", "dune", "chocolate",
+  "caramel", "mahogany", "walnut", "prestige",
+];
+
+const LUXURY_METALLIC_THEME_KEYS: ThemeType[] = [
+  "bronze", "goldbar", "copper", "brass", "steel", "pewter",
+  "platinum", "titanium", "champagne", "rosegold", "blackgold", "ruby",
+  "garnet", "topaz", "citrine", "peridot", "velvet", "burgundy",
+  "wine", "plum", "mulberry", "mercury", "corporate", "mist",
+  "frost", "cloud", "silk", "cream", "notion",
+];
+
+const SOLID_THEME_KEYS: ThemeType[] = [
+  "solid1", "solid2", "solid3", "solid4", "solid5", "solid6", "solid7",
+  "solid8", "solid9", "solid10", "solid11", "solid12", "solid13", "solid14",
+  "solid15", "solid16", "solid17", "solid18", "solid19", "solid20", "solid21",
+  "solid22", "solid23", "solid24", "solid25",
+];
 
 type Tool =
   | "select"
@@ -634,6 +752,54 @@ function ThemeSelector({
     zinc: "Zinc",
     lead: "Lead",
     gunmetal: "Gunmetal",
+    // Cosmic
+    cosmic1: "Cosmic Dream",
+    cosmic2: "Purple Haze",
+    cosmic3: "Sunset Fire",
+    cosmic4: "Neon Green",
+    cosmic5: "Electric Blue",
+    cosmic6: "Pastel Rainbow",
+    cosmic7: "Lavender Dream",
+    cosmic8: "Dark Fade",
+    cosmic9: "Purple Noir",
+    cosmic10: "Cyan Flash",
+    cosmic11: "Ocean Depth",
+    cosmic12: "Violet Night",
+    cosmic13: "Steel Gray",
+    cosmic14: "Mystic Purple",
+    cosmic15: "Coral Blush",
+    cosmic16: "Pink Flame",
+    cosmic17: "Rose Fire",
+    cosmic18: "Warm Glow",
+    cosmic19: "Bronze Shadow",
+    cosmic20: "Pink Radiance",
+    cosmic21: "Ocean Breeze",
+    // Solid
+    solid1: "Pink Blush",
+    solid2: "Crimson Red",
+    solid3: "Cloud White",
+    solid4: "Light Gray",
+    solid5: "Charcoal",
+    solid6: "Tangerine",
+    solid7: "Golden Yellow",
+    solid8: "Lime Green",
+    solid9: "Emerald",
+    solid10: "Peach Pink",
+    solid11: "Apricot",
+    solid12: "Cream",
+    solid13: "Lemon",
+    solid14: "Mint",
+    solid15: "Teal",
+    solid16: "Ocean Blue",
+    solid17: "Royal Blue",
+    solid18: "Deep Purple",
+    solid19: "Magenta",
+    solid20: "Aqua Mint",
+    solid21: "Sky Blue",
+    solid22: "Periwinkle",
+    solid23: "Lavender",
+    solid24: "Pink Purple",
+    solid25: "Rose Pink",
     // Custom
     custom: "Custom",
   };
@@ -739,94 +905,844 @@ function ThemeSelector({
       {!showCustom ? (
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(6, 1fr)",
-            gap: "8px",
-            marginBottom: "12px",
             overflowY: "auto",
             maxHeight: "calc(70vh - 100px)",
             paddingRight: "4px",
           }}
         >
-          {(Object.keys(THEMES) as ThemeType[]).map((themeKey) => {
-            const isSelected = selectedTheme === themeKey;
-            const isHovered = hoveredTheme === themeKey;
+          {/* Cosmic Section */}
+          <div style={{ marginBottom: "16px" }}>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 600,
+                marginBottom: "8px",
+                paddingLeft: "2px",
+              }}
+            >
+              Cosmic
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(8, 1fr)",
+                gap: "6px",
+              }}
+            >
+              {COSMIC_THEME_KEYS.map((themeKey) => {
+                const isSelected = selectedTheme === themeKey;
+                const isHovered = hoveredTheme === themeKey;
 
-            return (
-              <div key={themeKey} style={{ position: "relative" }}>
-                <button
-                  onClick={() => {
-                    onThemeSelect(themeKey);
-                  }}
-                  onMouseEnter={() => setHoveredTheme(themeKey)}
-                  onMouseLeave={() => setHoveredTheme(null)}
-                  style={{
-                    width: "100%",
-                    aspectRatio: "1",
-                    padding: "0",
-                    background: THEMES[themeKey],
-                    border: isSelected
-                      ? "2px solid #3B82F6"
-                      : "2px solid rgba(255, 255, 255, 0.1)",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                    position: "relative",
-                    transform: isHovered ? "scale(1.05)" : "scale(1)",
-                  }}
-                >
-                  {isSelected && (
-                    <div
+                return (
+                  <div key={themeKey} style={{ position: "relative" }}>
+                    <button
+                      onClick={() => onThemeSelect(themeKey)}
+                      onMouseEnter={() => setHoveredTheme(themeKey)}
+                      onMouseLeave={() => setHoveredTheme(null)}
                       style={{
-                        position: "absolute",
-                        top: "4px",
-                        right: "4px",
-                        width: "16px",
-                        height: "16px",
-                        background: "#3B82F6",
-                        borderRadius: "50%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
+                        width: "100%",
+                        aspectRatio: "1",
+                        padding: "0",
+                        background: THEMES[themeKey],
+                        border: isSelected
+                          ? "2px solid #3B82F6"
+                          : "1.5px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        position: "relative",
+                        transform: isHovered ? "scale(1.08)" : "scale(1)",
+                        boxShadow: isSelected
+                          ? "0 0 0 2px rgba(59, 130, 246, 0.2)"
+                          : isHovered
+                          ? "0 3px 6px rgba(0, 0, 0, 0.3)"
+                          : "none",
                       }}
                     >
-                      <svg
-                        width="10"
-                        height="10"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        stroke="white"
-                        strokeWidth="2.5"
+                      {isSelected && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "2px",
+                            right: "2px",
+                            width: "12px",
+                            height: "12px",
+                            background: "#3B82F6",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg
+                            width="8"
+                            height="8"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="2.5"
+                          >
+                            <path d="M3 8l3 3 7-7" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    {isHovered && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 8px)",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: colors.background,
+                          color: colors.text,
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          whiteSpace: "nowrap",
+                          pointerEvents: "none",
+                          zIndex: 1001,
+                          border: `1px solid ${colors.border}`,
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                        }}
                       >
-                        <path d="M3 8l3 3 7-7" />
-                      </svg>
-                    </div>
-                  )}
-                </button>
-                {isHovered && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      bottom: "calc(100% + 8px)",
-                      left: "50%",
-                      transform: "translateX(-50%)",
-                      background: colors.background,
-                      color: colors.text,
-                      padding: "4px 8px",
-                      borderRadius: "4px",
-                      fontSize: "11px",
-                      whiteSpace: "nowrap",
-                      pointerEvents: "none",
-                      zIndex: 1001,
-                      border: `1px solid ${colors.border}`,
-                    }}
-                  >
-                    {themeNames[themeKey]}
+                        {themeNames[themeKey]}
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "4px solid transparent",
+                            borderRight: "4px solid transparent",
+                            borderTop: `4px solid ${colors.background}`,
+                          }}
+                        />
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Popular Section */}
+          <div style={{ marginBottom: "16px" }}>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 600,
+                marginBottom: "8px",
+                paddingLeft: "2px",
+              }}
+            >
+              Popular
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(8, 1fr)",
+                gap: "6px",
+              }}
+            >
+              {POPULAR_THEME_KEYS.map((themeKey) => {
+                const isSelected = selectedTheme === themeKey;
+                const isHovered = hoveredTheme === themeKey;
+
+                return (
+                  <div key={themeKey} style={{ position: "relative" }}>
+                    <button
+                      onClick={() => onThemeSelect(themeKey)}
+                      onMouseEnter={() => setHoveredTheme(themeKey)}
+                      onMouseLeave={() => setHoveredTheme(null)}
+                      style={{
+                        width: "100%",
+                        aspectRatio: "1",
+                        padding: "0",
+                        background: THEMES[themeKey],
+                        border: isSelected
+                          ? "2px solid #3B82F6"
+                          : "1.5px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        position: "relative",
+                        transform: isHovered ? "scale(1.08)" : "scale(1)",
+                        boxShadow: isSelected
+                          ? "0 0 0 2px rgba(59, 130, 246, 0.2)"
+                          : isHovered
+                          ? "0 3px 6px rgba(0, 0, 0, 0.3)"
+                          : "none",
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "2px",
+                            right: "2px",
+                            width: "12px",
+                            height: "12px",
+                            background: "#3B82F6",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg
+                            width="8"
+                            height="8"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="2.5"
+                          >
+                            <path d="M3 8l3 3 7-7" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    {isHovered && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 8px)",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: colors.background,
+                          color: colors.text,
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          whiteSpace: "nowrap",
+                          pointerEvents: "none",
+                          zIndex: 1001,
+                          border: `1px solid ${colors.border}`,
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                        }}
+                      >
+                        {themeNames[themeKey]}
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "4px solid transparent",
+                            borderRight: "4px solid transparent",
+                            borderTop: `4px solid ${colors.background}`,
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Dark & Premium Section */}
+          <div style={{ marginBottom: "16px" }}>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 600,
+                marginBottom: "8px",
+                paddingLeft: "2px",
+              }}
+            >
+              Dark & Premium
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(8, 1fr)",
+                gap: "6px",
+              }}
+            >
+              {DARK_PREMIUM_THEME_KEYS.map((themeKey) => {
+                const isSelected = selectedTheme === themeKey;
+                const isHovered = hoveredTheme === themeKey;
+
+                return (
+                  <div key={themeKey} style={{ position: "relative" }}>
+                    <button
+                      onClick={() => onThemeSelect(themeKey)}
+                      onMouseEnter={() => setHoveredTheme(themeKey)}
+                      onMouseLeave={() => setHoveredTheme(null)}
+                      style={{
+                        width: "100%",
+                        aspectRatio: "1",
+                        padding: "0",
+                        background: THEMES[themeKey],
+                        border: isSelected
+                          ? "2px solid #3B82F6"
+                          : "1.5px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        position: "relative",
+                        transform: isHovered ? "scale(1.08)" : "scale(1)",
+                        boxShadow: isSelected
+                          ? "0 0 0 2px rgba(59, 130, 246, 0.2)"
+                          : isHovered
+                          ? "0 3px 6px rgba(0, 0, 0, 0.3)"
+                          : "none",
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "2px",
+                            right: "2px",
+                            width: "12px",
+                            height: "12px",
+                            background: "#3B82F6",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg
+                            width="8"
+                            height="8"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="2.5"
+                          >
+                            <path d="M3 8l3 3 7-7" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    {isHovered && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 8px)",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: colors.background,
+                          color: colors.text,
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          whiteSpace: "nowrap",
+                          pointerEvents: "none",
+                          zIndex: 1001,
+                          border: `1px solid ${colors.border}`,
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                        }}
+                      >
+                        {themeNames[themeKey]}
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "4px solid transparent",
+                            borderRight: "4px solid transparent",
+                            borderTop: `4px solid ${colors.background}`,
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Bright & Colorful Section */}
+          <div style={{ marginBottom: "16px" }}>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 600,
+                marginBottom: "8px",
+                paddingLeft: "2px",
+              }}
+            >
+              Bright & Colorful
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(8, 1fr)",
+                gap: "6px",
+              }}
+            >
+              {BRIGHT_COLORFUL_THEME_KEYS.map((themeKey) => {
+                const isSelected = selectedTheme === themeKey;
+                const isHovered = hoveredTheme === themeKey;
+
+                return (
+                  <div key={themeKey} style={{ position: "relative" }}>
+                    <button
+                      onClick={() => onThemeSelect(themeKey)}
+                      onMouseEnter={() => setHoveredTheme(themeKey)}
+                      onMouseLeave={() => setHoveredTheme(null)}
+                      style={{
+                        width: "100%",
+                        aspectRatio: "1",
+                        padding: "0",
+                        background: THEMES[themeKey],
+                        border: isSelected
+                          ? "2px solid #3B82F6"
+                          : "1.5px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        position: "relative",
+                        transform: isHovered ? "scale(1.08)" : "scale(1)",
+                        boxShadow: isSelected
+                          ? "0 0 0 2px rgba(59, 130, 246, 0.2)"
+                          : isHovered
+                          ? "0 3px 6px rgba(0, 0, 0, 0.3)"
+                          : "none",
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "2px",
+                            right: "2px",
+                            width: "12px",
+                            height: "12px",
+                            background: "#3B82F6",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg
+                            width="8"
+                            height="8"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="2.5"
+                          >
+                            <path d="M3 8l3 3 7-7" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    {isHovered && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 8px)",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: colors.background,
+                          color: colors.text,
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          whiteSpace: "nowrap",
+                          pointerEvents: "none",
+                          zIndex: 1001,
+                          border: `1px solid ${colors.border}`,
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                        }}
+                      >
+                        {themeNames[themeKey]}
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "4px solid transparent",
+                            borderRight: "4px solid transparent",
+                            borderTop: `4px solid ${colors.background}`,
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Nature & Earth Section */}
+          <div style={{ marginBottom: "16px" }}>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 600,
+                marginBottom: "8px",
+                paddingLeft: "2px",
+              }}
+            >
+              Nature & Earth
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(8, 1fr)",
+                gap: "6px",
+              }}
+            >
+              {NATURE_EARTH_THEME_KEYS.map((themeKey) => {
+                const isSelected = selectedTheme === themeKey;
+                const isHovered = hoveredTheme === themeKey;
+
+                return (
+                  <div key={themeKey} style={{ position: "relative" }}>
+                    <button
+                      onClick={() => onThemeSelect(themeKey)}
+                      onMouseEnter={() => setHoveredTheme(themeKey)}
+                      onMouseLeave={() => setHoveredTheme(null)}
+                      style={{
+                        width: "100%",
+                        aspectRatio: "1",
+                        padding: "0",
+                        background: THEMES[themeKey],
+                        border: isSelected
+                          ? "2px solid #3B82F6"
+                          : "1.5px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        position: "relative",
+                        transform: isHovered ? "scale(1.08)" : "scale(1)",
+                        boxShadow: isSelected
+                          ? "0 0 0 2px rgba(59, 130, 246, 0.2)"
+                          : isHovered
+                          ? "0 3px 6px rgba(0, 0, 0, 0.3)"
+                          : "none",
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "2px",
+                            right: "2px",
+                            width: "12px",
+                            height: "12px",
+                            background: "#3B82F6",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg
+                            width="8"
+                            height="8"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="2.5"
+                          >
+                            <path d="M3 8l3 3 7-7" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    {isHovered && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 8px)",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: colors.background,
+                          color: colors.text,
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          whiteSpace: "nowrap",
+                          pointerEvents: "none",
+                          zIndex: 1001,
+                          border: `1px solid ${colors.border}`,
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                        }}
+                      >
+                        {themeNames[themeKey]}
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "4px solid transparent",
+                            borderRight: "4px solid transparent",
+                            borderTop: `4px solid ${colors.background}`,
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Luxury & Metallic Section */}
+          <div style={{ marginBottom: "16px" }}>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 600,
+                marginBottom: "8px",
+                paddingLeft: "2px",
+              }}
+            >
+              Luxury & Metallic
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(8, 1fr)",
+                gap: "6px",
+              }}
+            >
+              {LUXURY_METALLIC_THEME_KEYS.map((themeKey) => {
+                const isSelected = selectedTheme === themeKey;
+                const isHovered = hoveredTheme === themeKey;
+
+                return (
+                  <div key={themeKey} style={{ position: "relative" }}>
+                    <button
+                      onClick={() => onThemeSelect(themeKey)}
+                      onMouseEnter={() => setHoveredTheme(themeKey)}
+                      onMouseLeave={() => setHoveredTheme(null)}
+                      style={{
+                        width: "100%",
+                        aspectRatio: "1",
+                        padding: "0",
+                        background: THEMES[themeKey],
+                        border: isSelected
+                          ? "2px solid #3B82F6"
+                          : "1.5px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        position: "relative",
+                        transform: isHovered ? "scale(1.08)" : "scale(1)",
+                        boxShadow: isSelected
+                          ? "0 0 0 2px rgba(59, 130, 246, 0.2)"
+                          : isHovered
+                          ? "0 3px 6px rgba(0, 0, 0, 0.3)"
+                          : "none",
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "2px",
+                            right: "2px",
+                            width: "12px",
+                            height: "12px",
+                            background: "#3B82F6",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg
+                            width="8"
+                            height="8"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="2.5"
+                          >
+                            <path d="M3 8l3 3 7-7" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    {isHovered && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 8px)",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: colors.background,
+                          color: colors.text,
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          whiteSpace: "nowrap",
+                          pointerEvents: "none",
+                          zIndex: 1001,
+                          border: `1px solid ${colors.border}`,
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                        }}
+                      >
+                        {themeNames[themeKey]}
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "4px solid transparent",
+                            borderRight: "4px solid transparent",
+                            borderTop: `4px solid ${colors.background}`,
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Solid Section */}
+          <div>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 600,
+                marginBottom: "8px",
+                paddingLeft: "2px",
+              }}
+            >
+              Solid
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(8, 1fr)",
+                gap: "6px",
+                marginBottom: "12px",
+              }}
+            >
+              {SOLID_THEME_KEYS.map((themeKey) => {
+                const isSelected = selectedTheme === themeKey;
+                const isHovered = hoveredTheme === themeKey;
+
+                return (
+                  <div key={themeKey} style={{ position: "relative" }}>
+                    <button
+                      onClick={() => onThemeSelect(themeKey)}
+                      onMouseEnter={() => setHoveredTheme(themeKey)}
+                      onMouseLeave={() => setHoveredTheme(null)}
+                      style={{
+                        width: "100%",
+                        aspectRatio: "1",
+                        padding: "0",
+                        background: THEMES[themeKey],
+                        border: isSelected
+                          ? "2px solid #3B82F6"
+                          : "1.5px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        position: "relative",
+                        transform: isHovered ? "scale(1.08)" : "scale(1)",
+                        boxShadow: isSelected
+                          ? "0 0 0 2px rgba(59, 130, 246, 0.2)"
+                          : isHovered
+                          ? "0 3px 6px rgba(0, 0, 0, 0.3)"
+                          : "none",
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "2px",
+                            right: "2px",
+                            width: "12px",
+                            height: "12px",
+                            background: "#3B82F6",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg
+                            width="8"
+                            height="8"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="2.5"
+                          >
+                            <path d="M3 8l3 3 7-7" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    {isHovered && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 8px)",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: colors.background,
+                          color: colors.text,
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          whiteSpace: "nowrap",
+                          pointerEvents: "none",
+                          zIndex: 1001,
+                          border: `1px solid ${colors.border}`,
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                        }}
+                      >
+                        {themeNames[themeKey]}
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "4px solid transparent",
+                            borderRight: "4px solid transparent",
+                            borderTop: `4px solid ${colors.background}`,
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       ) : (
         /* Custom Color Picker */
