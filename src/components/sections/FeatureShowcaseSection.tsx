@@ -85,7 +85,7 @@ const showcaseTabs = [
           <h3 className="text-2xl font-bold text-dark mb-4">Beautiful Text Snapshots</h3>
           <ul className="space-y-3">
             {[
-              "35+ premium themes across 5 categories",
+              "100+ premium themes across 5 categories",
               "Real-time preview with 5x7 theme grid",
               "Customizable card width (600-1400px)",
               "Window chrome toggle (macOS-style browser frame)",
