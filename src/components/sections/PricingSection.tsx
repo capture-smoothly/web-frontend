@@ -251,19 +251,18 @@ export const PricingSection: React.FC = () => {
                   : "border-gray-200 hover:border-coral/30"
               )}
             >
-              {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <Badge variant="warning" className="text-xs px-4 py-1.5 shadow-lg">
-                    MOST POPULAR
-                  </Badge>
-                </div>
-              )}
-
-              {plan.limitedOffer && (
-                <div className="absolute -top-4 right-4">
-                  <Badge variant="success" className="text-xs px-3 py-1.5 shadow-lg animate-pulse">
-                    🎉 FIRST 100 USERS
-                  </Badge>
+              {(plan.popular || plan.limitedOffer) && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
+                  {plan.popular && (
+                    <Badge variant="warning" className="text-xs px-4 py-1.5 shadow-lg whitespace-nowrap">
+                      MOST POPULAR
+                    </Badge>
+                  )}
+                  {plan.limitedOffer && (
+                    <Badge variant="warning" className="text-xs px-3 py-1.5 shadow-lg whitespace-nowrap">
+                      🎉 FIRST 100 USERS
+                    </Badge>
+                  )}
                 </div>
               )}
 
@@ -300,10 +299,7 @@ export const PricingSection: React.FC = () => {
                 <div className="flex items-end justify-center gap-1">
                   {typeof getPrice(plan) === "number" ? (
                     <>
-                      <span className={clsx(
-                        "text-5xl font-bold",
-                        plan.limitedOffer ? "text-teal" : "text-dark"
-                      )}>${getPrice(plan)}</span>
+                      <span className="text-5xl font-bold text-dark">${getPrice(plan)}</span>
                       <span className="text-dark-lighter mb-2">/month</span>
                     </>
                   ) : (
