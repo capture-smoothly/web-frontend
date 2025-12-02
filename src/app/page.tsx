@@ -25,7 +25,7 @@ export default function Home() {
         <HowItWorksSection />
         <SolutionSection />
         <FeatureShowcaseSection />
-        <ComparisonSection />
+        {/* <ComparisonSection /> */}
         <UseCasesSection />
         <PricingSection />
         <TestimonialsSection />

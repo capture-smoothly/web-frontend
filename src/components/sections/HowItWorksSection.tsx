@@ -10,7 +10,7 @@ const mainTools = [
     title: "Screenshot Tool",
     description: "Capture any part of your screen instantly with keyboard shortcuts. Full page, visible area, or custom selection - you're in control.",
     gradient: "from-coral/20 to-peach/20",
-    iconColor: "text-coral",
+    iconColor: "text-white",
     videoUrl: "https://www.youtube.com/embed/SfoJwGpyH_I",
   },
   {
@@ -18,7 +18,7 @@ const mainTools = [
     title: "Text-to-Image Creator",
     description: "Select any text on a webpage and transform it into beautiful, shareable images in seconds. Choose from 35+ professional gradient themes. Perfect for social media posts, quotes, and visual content that gets engagement.",
     gradient: "from-teal/20 to-mint/20",
-    iconColor: "text-teal",
+    iconColor: "text-white",
     videoUrl: "https://www.youtube.com/embed/Hl5zfZ5LqdE",
   },
 ];
