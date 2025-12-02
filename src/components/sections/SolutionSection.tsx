@@ -13,7 +13,7 @@ const features = [
     badge: "Most Popular",
     description: "Convert any copied text into stunning visual snapshots",
     bullets: [
-      "35+ premium gradient themes (Aurora, Crimson, Tropical, etc.)",
+      "100+ premium gradient themes (Aurora, Crimson, Tropical, etc.)",
       "Customizable cards (width, padding, window chrome)",
       "Perfect for social media, presentations, and documentation",
       "4x scale rendering for ultra-crisp quality",

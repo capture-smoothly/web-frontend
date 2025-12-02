@@ -119,7 +119,7 @@ export const HeroSection: React.FC = () => {
           >
             <Badge className="text-sm px-4 py-2 bg-gradient-to-r from-coral/10 to-peach/10 border-coral/30 text-coral-dark backdrop-blur-sm">
               <Sparkles className="w-4 h-4" />
-              35+ Premium Themes
+              100+ Premium Themes
             </Badge>
             <Badge className="text-sm px-4 py-2 bg-gradient-to-r from-teal/10 to-secondary/10 border-teal/30 text-teal-dark backdrop-blur-sm">
               <Zap className="w-4 h-4" />

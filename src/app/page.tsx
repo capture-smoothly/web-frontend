@@ -21,9 +21,9 @@ export default function Home() {
       <main>
         <HeroSection />
         {/* <ExtensionPromotionSection /> */}
-        <ProblemSection />
         <HowItWorksSection />
         <SolutionSection />
+        <ProblemSection />
         <FeatureShowcaseSection />
         {/* <ComparisonSection /> */}
         <UseCasesSection />
