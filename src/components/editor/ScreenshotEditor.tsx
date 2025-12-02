@@ -186,11 +186,129 @@ const THEMES = {
   gunmetal:
     "linear-gradient(145deg, #2a3439 0%, #3d4a50 40%, #536872 70%, #6b8693 100%)",
 
+  // Cosmic Themes - 4-color gradient combinations
+  cosmic1:
+    "linear-gradient(133deg, #ededed 0%, #eb00eb 33%, #731ec8 67%, #1818dc 100%)",
+  cosmic2:
+    "linear-gradient(180deg, #f1c6e4 0%, #c329ae 33%, #44058d 67%, #170637 100%)",
+  cosmic3:
+    "linear-gradient(133deg, #f9d223 0%, #f6a11a 33%, #ef620d 67%, #eb3f06 100%)",
+  cosmic4:
+    "linear-gradient(133deg, #f0f045 0%, #b8e648 33%, #74e24b 67%, #19d84e 100%)",
+  cosmic5:
+    "linear-gradient(133deg, #17c8fe 0%, #21aafe 33%, #347ef9 67%, #485cfe 100%)",
+  cosmic6:
+    "linear-gradient(133deg, #c9fdd9 0%, #e5e4a4 33%, #f4b37f 67%, #f3817c 100%)",
+  cosmic7:
+    "linear-gradient(133deg, #dae4eb 0%, #e9bfe6 33%, #cc99e8 67%, #9e7ff1 100%)",
+  cosmic8:
+    "linear-gradient(133deg, #2f2f2f 0%, #262626 33%, #1d1d1d 67%, #0e0e0e 100%)",
+  cosmic9:
+    "linear-gradient(143deg, #000000 0%, #0e060d 33%, #9d07bb 67%, #5017ee 100%)",
+  cosmic10:
+    "linear-gradient(180deg, #000000 0%, #000000 33%, #0fffff 67%, #1caeb9 100%)",
+  cosmic11:
+    "linear-gradient(167deg, #3d44d4 0%, #0d0c18 33%, #000000 67%, #3ba7be 100%)",
+  cosmic12:
+    "linear-gradient(133deg, #1e0129 0%, #5702a4 33%, #ae55f7 67%, #ddc4ee 100%)",
+  cosmic13:
+    "linear-gradient(133deg, #181c21 0%, #5c666c 33%, #7e888f 67%, #7e888f 100%)",
+  cosmic14:
+    "linear-gradient(133deg, #c183b7 0%, #4da7d0 33%, #6711ba 67%, #3306a4 100%)",
+  cosmic15:
+    "linear-gradient(119deg, #ededed 0%, #fefdfd 33%, #fc9479 67%, #f9523d 100%)",
+  cosmic16:
+    "linear-gradient(68deg, #f7f7f7 0%, #cc0f8a 33%, #f05000 67%, #ddb9a6 100%)",
+  cosmic17: "linear-gradient(68deg, #f7f7f7 0%, #cc0f8a 50%, #f05000 100%)",
+  cosmic18: "linear-gradient(68deg, #f7f7f7 0%, #f05000 50%, #ddb9a6 100%)",
+  cosmic19:
+    "radial-gradient(circle at center, #917054 0%, #d18923 33%, #000000 67%, #242223 100%)",
+  cosmic20:
+    "radial-gradient(circle at center, #fef3fe 0%, #ce03a9 33%, #fbf1fe 67%, #fcf1fc 100%)",
+  cosmic21:
+    "radial-gradient(circle at center, #fcfcfc 0%, #f0f0f0 33%, #60a0bc 67%, #479879 100%)",
+
+  // Solid Color Themes
+  solid1: "#ffc7ec",
+  solid2: "#fe585e",
+  solid3: "#f9f8fa",
+  solid4: "#dfe1e5",
+  solid5: "#151717",
+  solid6: "#fe934c",
+  solid7: "#ffc93c",
+  solid8: "#8ac827",
+  solid9: "#40c85f",
+  solid10: "#feafad",
+  solid11: "#fec3a9",
+  solid12: "#ffd6a5",
+  solid13: "#fefeb7",
+  solid14: "#caffbe",
+  solid15: "#37959d",
+  solid16: "#1b82c4",
+  solid17: "#4366aa",
+  solid18: "#684d92",
+  solid19: "#ee4c85",
+  solid20: "#b3fbde",
+  solid21: "#abe0ee",
+  solid22: "#9ec3fe",
+  solid23: "#bdb2ff",
+  solid24: "#ffc5fe",
+  solid25: "#ffc7eb",
+
   // Custom theme
   custom: "#D8FF00",
 } as const;
 
 type ThemeType = keyof typeof THEMES;
+
+// Categorized theme lists for organized display
+const COSMIC_THEME_KEYS: ThemeType[] = [
+  "cosmic1", "cosmic2", "cosmic3", "cosmic4", "cosmic5", "cosmic6", "cosmic7",
+  "cosmic8", "cosmic9", "cosmic10", "cosmic11", "cosmic12", "cosmic13", "cosmic14",
+  "cosmic15", "cosmic16", "cosmic17", "cosmic18", "cosmic19", "cosmic20", "cosmic21",
+];
+
+const POPULAR_THEME_KEYS: ThemeType[] = [
+  "midnight", "sunset", "ocean", "forest", "lavender", "golden",
+  "coral", "sky", "slate", "rose", "pearl", "carbon",
+];
+
+const DARK_PREMIUM_THEME_KEYS: ThemeType[] = [
+  "obsidian", "graphite", "onyx", "noir", "charcoal", "abyss",
+  "eclipse", "void", "stellar", "darkstar", "blackhole", "supernova",
+  "smoke", "ash", "storm", "thunder", "haze", "cosmos",
+  "nebula", "vercel", "executive", "concrete", "iron", "zinc",
+  "lead", "gunmetal",
+];
+
+const BRIGHT_COLORFUL_THEME_KEYS: ThemeType[] = [
+  "aurora", "crimson", "emerald", "sapphire", "amethyst", "sunshine",
+  "lime", "fuchsia", "bubblegum", "tropical", "peacock", "berry",
+  "citrus", "candy", "mango", "unicorn", "prism", "hologram",
+  "linear", "stripe", "figma",
+];
+
+const NATURE_EARTH_THEME_KEYS: ThemeType[] = [
+  "evergreen", "moss", "fern", "pine", "sage", "jade",
+  "mariana", "pacific", "arctic", "depths", "tidal", "tourmaline",
+  "sahara", "terracotta", "clay", "sandstone", "dune", "chocolate",
+  "caramel", "mahogany", "walnut", "prestige",
+];
+
+const LUXURY_METALLIC_THEME_KEYS: ThemeType[] = [
+  "bronze", "goldbar", "copper", "brass", "steel", "pewter",
+  "platinum", "titanium", "champagne", "rosegold", "blackgold", "ruby",
+  "garnet", "topaz", "citrine", "peridot", "velvet", "burgundy",
+  "wine", "plum", "mulberry", "mercury", "corporate", "mist",
+  "frost", "cloud", "silk", "cream", "notion",
+];
+
+const SOLID_THEME_KEYS: ThemeType[] = [
+  "solid1", "solid2", "solid3", "solid4", "solid5", "solid6", "solid7",
+  "solid8", "solid9", "solid10", "solid11", "solid12", "solid13", "solid14",
+  "solid15", "solid16", "solid17", "solid18", "solid19", "solid20", "solid21",
+  "solid22", "solid23", "solid24", "solid25",
+];
 
 type Tool =
   | "select"
@@ -332,16 +450,23 @@ function TooltipButton({
   );
 }
 
-// Helper function to generate gradient CSS
+// Helper function to generate gradient CSS with multiple colors
 function generateGradient(
   type: "linear" | "radial" | "angular" | "diamond",
-  color1: string,
-  color2: string,
+  colors: string[],
   angle: number = 135
 ): string {
+  // Create color stops evenly distributed
+  const colorStops = colors
+    .map((color, index) => {
+      const percentage = (index / (colors.length - 1)) * 100;
+      return `${color} ${percentage}%`;
+    })
+    .join(", ");
+
   switch (type) {
     case "linear":
-      return `linear-gradient(${angle}deg, ${color1} 0%, ${color2} 100%)`;
+      return `linear-gradient(${angle}deg, ${colorStops})`;
     case "radial":
       const positions = [
         "center",
@@ -355,9 +480,9 @@ function generateGradient(
         "top left",
       ];
       const posIndex = Math.floor((angle % 360) / 40) % positions.length;
-      return `radial-gradient(circle at ${positions[posIndex]}, ${color1} 0%, ${color2} 100%)`;
+      return `radial-gradient(circle at ${positions[posIndex]}, ${colorStops})`;
     case "angular":
-      return `conic-gradient(from ${angle}deg, ${color1}, ${color2}, ${color1})`;
+      return `conic-gradient(from ${angle}deg, ${colorStops}, ${colors[0]})`;
     case "diamond":
       const diamondPositions = [
         "center",
@@ -372,9 +497,9 @@ function generateGradient(
       ];
       const diamondIndex =
         Math.floor((angle % 360) / 40) % diamondPositions.length;
-      return `radial-gradient(ellipse at ${diamondPositions[diamondIndex]}, ${color1} 0%, ${color2} 100%)`;
+      return `radial-gradient(ellipse at ${diamondPositions[diamondIndex]}, ${colorStops})`;
     default:
-      return `linear-gradient(${angle}deg, ${color1} 0%, ${color2} 100%)`;
+      return `linear-gradient(${angle}deg, ${colorStops})`;
   }
 }
 
@@ -384,11 +509,16 @@ function ThemeSelector({
   onThemeSelect,
   onClose,
   editorTheme,
-  initialCustomColor = "#D8FF00",
-  initialCustomColor2 = "#FF00FF",
+  initialCustomColor = "#ededed",
+  initialCustomColor2 = "#eb00eb",
+  initialCustomColor3 = "#731ec8",
+  initialCustomColor4 = "#1818dc",
   initialGradientType = "linear",
-  initialGradientAngle = 135,
-  initialCustomMode = "solid",
+  initialGradientAngle = 133,
+  initialCustomMode = "gradient",
+  initialShowColor2 = true,
+  initialShowColor3 = true,
+  initialShowColor4 = true,
   onCustomChange,
 }: {
   selectedTheme: ThemeType;
@@ -397,16 +527,26 @@ function ThemeSelector({
   editorTheme: "light" | "dark";
   initialCustomColor?: string;
   initialCustomColor2?: string;
+  initialCustomColor3?: string;
+  initialCustomColor4?: string;
   initialGradientType?: "linear" | "radial" | "angular" | "diamond";
   initialGradientAngle?: number;
   initialCustomMode?: "solid" | "gradient";
+  initialShowColor2?: boolean;
+  initialShowColor3?: boolean;
+  initialShowColor4?: boolean;
   onCustomChange?: (
     color: string,
     settings: {
       color2: string;
+      color3: string;
+      color4: string;
       type: "linear" | "radial" | "angular" | "diamond";
       angle: number;
       mode: "solid" | "gradient";
+      showColor2: boolean;
+      showColor3: boolean;
+      showColor4: boolean;
     }
   ) => void;
 }) {
@@ -414,9 +554,14 @@ function ThemeSelector({
   const [showCustom, setShowCustom] = useState(false);
   const [customColor, setCustomColor] = useState(initialCustomColor);
   const [customColor2, setCustomColor2] = useState(initialCustomColor2);
+  const [customColor3, setCustomColor3] = useState(initialCustomColor3);
+  const [customColor4, setCustomColor4] = useState(initialCustomColor4);
   const [gradientType, setGradientType] = useState(initialGradientType);
   const [gradientAngle, setGradientAngle] = useState(initialGradientAngle);
   const [customMode, setCustomMode] = useState(initialCustomMode);
+  const [showColor2, setShowColor2] = useState(initialShowColor2);
+  const [showColor3, setShowColor3] = useState(initialShowColor3);
+  const [showColor4, setShowColor4] = useState(initialShowColor4);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Refs for smooth color updates without state lag
@@ -427,9 +572,14 @@ function ThemeSelector({
     (
       color: string,
       color2: string,
+      color3: string,
+      color4: string,
       type: "linear" | "radial" | "angular" | "diamond",
       angle: number,
-      mode: "solid" | "gradient"
+      mode: "solid" | "gradient",
+      show2: boolean,
+      show3: boolean,
+      show4: boolean
     ) => {
       if (colorUpdateTimeoutRef.current) {
         clearTimeout(colorUpdateTimeoutRef.current);
@@ -438,9 +588,14 @@ function ThemeSelector({
         if (onCustomChange) {
           onCustomChange(color, {
             color2: color2,
+            color3: color3,
+            color4: color4,
             type: type,
             angle: angle,
             mode: mode,
+            showColor2: show2,
+            showColor3: show3,
+            showColor4: show4,
           });
         }
       }, 0); // Update immediately but async to avoid blocking
@@ -597,6 +752,54 @@ function ThemeSelector({
     zinc: "Zinc",
     lead: "Lead",
     gunmetal: "Gunmetal",
+    // Cosmic
+    cosmic1: "Cosmic Dream",
+    cosmic2: "Purple Haze",
+    cosmic3: "Sunset Fire",
+    cosmic4: "Neon Green",
+    cosmic5: "Electric Blue",
+    cosmic6: "Pastel Rainbow",
+    cosmic7: "Lavender Dream",
+    cosmic8: "Dark Fade",
+    cosmic9: "Purple Noir",
+    cosmic10: "Cyan Flash",
+    cosmic11: "Ocean Depth",
+    cosmic12: "Violet Night",
+    cosmic13: "Steel Gray",
+    cosmic14: "Mystic Purple",
+    cosmic15: "Coral Blush",
+    cosmic16: "Pink Flame",
+    cosmic17: "Rose Fire",
+    cosmic18: "Warm Glow",
+    cosmic19: "Bronze Shadow",
+    cosmic20: "Pink Radiance",
+    cosmic21: "Ocean Breeze",
+    // Solid
+    solid1: "Pink Blush",
+    solid2: "Crimson Red",
+    solid3: "Cloud White",
+    solid4: "Light Gray",
+    solid5: "Charcoal",
+    solid6: "Tangerine",
+    solid7: "Golden Yellow",
+    solid8: "Lime Green",
+    solid9: "Emerald",
+    solid10: "Peach Pink",
+    solid11: "Apricot",
+    solid12: "Cream",
+    solid13: "Lemon",
+    solid14: "Mint",
+    solid15: "Teal",
+    solid16: "Ocean Blue",
+    solid17: "Royal Blue",
+    solid18: "Deep Purple",
+    solid19: "Magenta",
+    solid20: "Aqua Mint",
+    solid21: "Sky Blue",
+    solid22: "Periwinkle",
+    solid23: "Lavender",
+    solid24: "Pink Purple",
+    solid25: "Rose Pink",
     // Custom
     custom: "Custom",
   };
@@ -649,20 +852,20 @@ function ThemeSelector({
           <button
             onClick={() => {
               setShowCustom(true);
-              // Only apply default custom colors if user hasn't customized yet
-              // Check if colors are still at their initial state
-              if (customColor === "#D8FF00" && customColor2 === "#FF00FF") {
-                // Already at default, just show the custom panel
-                if (onCustomChange) {
-                  onCustomChange(customColor, {
-                    color2: customColor2,
-                    type: gradientType,
-                    angle: gradientAngle,
-                    mode: customMode,
-                  });
-                }
+              // Apply custom theme with all settings
+              if (onCustomChange) {
+                onCustomChange(customColor, {
+                  color2: customColor2,
+                  color3: customColor3,
+                  color4: customColor4,
+                  type: gradientType,
+                  angle: gradientAngle,
+                  mode: customMode,
+                  showColor2,
+                  showColor3,
+                  showColor4,
+                });
               }
-              // If user has customized, keep their custom colors and just show the panel
             }}
             style={{
               background: showCustom ? "#3B82F6" : "transparent",
@@ -702,94 +905,844 @@ function ThemeSelector({
       {!showCustom ? (
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(6, 1fr)",
-            gap: "8px",
-            marginBottom: "12px",
             overflowY: "auto",
             maxHeight: "calc(70vh - 100px)",
             paddingRight: "4px",
           }}
         >
-          {(Object.keys(THEMES) as ThemeType[]).map((themeKey) => {
-            const isSelected = selectedTheme === themeKey;
-            const isHovered = hoveredTheme === themeKey;
+          {/* Cosmic Section */}
+          <div style={{ marginBottom: "16px" }}>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 600,
+                marginBottom: "8px",
+                paddingLeft: "2px",
+              }}
+            >
+              Cosmic
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(8, 1fr)",
+                gap: "6px",
+              }}
+            >
+              {COSMIC_THEME_KEYS.map((themeKey) => {
+                const isSelected = selectedTheme === themeKey;
+                const isHovered = hoveredTheme === themeKey;
 
-            return (
-              <div key={themeKey} style={{ position: "relative" }}>
-                <button
-                  onClick={() => {
-                    onThemeSelect(themeKey);
-                  }}
-                  onMouseEnter={() => setHoveredTheme(themeKey)}
-                  onMouseLeave={() => setHoveredTheme(null)}
-                  style={{
-                    width: "100%",
-                    aspectRatio: "1",
-                    padding: "0",
-                    background: THEMES[themeKey],
-                    border: isSelected
-                      ? "2px solid #3B82F6"
-                      : "2px solid rgba(255, 255, 255, 0.1)",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                    position: "relative",
-                    transform: isHovered ? "scale(1.05)" : "scale(1)",
-                  }}
-                >
-                  {isSelected && (
-                    <div
+                return (
+                  <div key={themeKey} style={{ position: "relative" }}>
+                    <button
+                      onClick={() => onThemeSelect(themeKey)}
+                      onMouseEnter={() => setHoveredTheme(themeKey)}
+                      onMouseLeave={() => setHoveredTheme(null)}
                       style={{
-                        position: "absolute",
-                        top: "4px",
-                        right: "4px",
-                        width: "16px",
-                        height: "16px",
-                        background: "#3B82F6",
-                        borderRadius: "50%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
+                        width: "100%",
+                        aspectRatio: "1",
+                        padding: "0",
+                        background: THEMES[themeKey],
+                        border: isSelected
+                          ? "2px solid #3B82F6"
+                          : "1.5px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        position: "relative",
+                        transform: isHovered ? "scale(1.08)" : "scale(1)",
+                        boxShadow: isSelected
+                          ? "0 0 0 2px rgba(59, 130, 246, 0.2)"
+                          : isHovered
+                          ? "0 3px 6px rgba(0, 0, 0, 0.3)"
+                          : "none",
                       }}
                     >
-                      <svg
-                        width="10"
-                        height="10"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        stroke="white"
-                        strokeWidth="2.5"
+                      {isSelected && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "2px",
+                            right: "2px",
+                            width: "12px",
+                            height: "12px",
+                            background: "#3B82F6",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg
+                            width="8"
+                            height="8"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="2.5"
+                          >
+                            <path d="M3 8l3 3 7-7" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    {isHovered && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 8px)",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: colors.background,
+                          color: colors.text,
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          whiteSpace: "nowrap",
+                          pointerEvents: "none",
+                          zIndex: 1001,
+                          border: `1px solid ${colors.border}`,
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                        }}
                       >
-                        <path d="M3 8l3 3 7-7" />
-                      </svg>
-                    </div>
-                  )}
-                </button>
-                {isHovered && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      bottom: "calc(100% + 8px)",
-                      left: "50%",
-                      transform: "translateX(-50%)",
-                      background: colors.background,
-                      color: colors.text,
-                      padding: "4px 8px",
-                      borderRadius: "4px",
-                      fontSize: "11px",
-                      whiteSpace: "nowrap",
-                      pointerEvents: "none",
-                      zIndex: 1001,
-                      border: `1px solid ${colors.border}`,
-                    }}
-                  >
-                    {themeNames[themeKey]}
+                        {themeNames[themeKey]}
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "4px solid transparent",
+                            borderRight: "4px solid transparent",
+                            borderTop: `4px solid ${colors.background}`,
+                          }}
+                        />
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Popular Section */}
+          <div style={{ marginBottom: "16px" }}>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 600,
+                marginBottom: "8px",
+                paddingLeft: "2px",
+              }}
+            >
+              Popular
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(8, 1fr)",
+                gap: "6px",
+              }}
+            >
+              {POPULAR_THEME_KEYS.map((themeKey) => {
+                const isSelected = selectedTheme === themeKey;
+                const isHovered = hoveredTheme === themeKey;
+
+                return (
+                  <div key={themeKey} style={{ position: "relative" }}>
+                    <button
+                      onClick={() => onThemeSelect(themeKey)}
+                      onMouseEnter={() => setHoveredTheme(themeKey)}
+                      onMouseLeave={() => setHoveredTheme(null)}
+                      style={{
+                        width: "100%",
+                        aspectRatio: "1",
+                        padding: "0",
+                        background: THEMES[themeKey],
+                        border: isSelected
+                          ? "2px solid #3B82F6"
+                          : "1.5px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        position: "relative",
+                        transform: isHovered ? "scale(1.08)" : "scale(1)",
+                        boxShadow: isSelected
+                          ? "0 0 0 2px rgba(59, 130, 246, 0.2)"
+                          : isHovered
+                          ? "0 3px 6px rgba(0, 0, 0, 0.3)"
+                          : "none",
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "2px",
+                            right: "2px",
+                            width: "12px",
+                            height: "12px",
+                            background: "#3B82F6",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg
+                            width="8"
+                            height="8"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="2.5"
+                          >
+                            <path d="M3 8l3 3 7-7" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    {isHovered && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 8px)",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: colors.background,
+                          color: colors.text,
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          whiteSpace: "nowrap",
+                          pointerEvents: "none",
+                          zIndex: 1001,
+                          border: `1px solid ${colors.border}`,
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                        }}
+                      >
+                        {themeNames[themeKey]}
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "4px solid transparent",
+                            borderRight: "4px solid transparent",
+                            borderTop: `4px solid ${colors.background}`,
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Dark & Premium Section */}
+          <div style={{ marginBottom: "16px" }}>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 600,
+                marginBottom: "8px",
+                paddingLeft: "2px",
+              }}
+            >
+              Dark & Premium
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(8, 1fr)",
+                gap: "6px",
+              }}
+            >
+              {DARK_PREMIUM_THEME_KEYS.map((themeKey) => {
+                const isSelected = selectedTheme === themeKey;
+                const isHovered = hoveredTheme === themeKey;
+
+                return (
+                  <div key={themeKey} style={{ position: "relative" }}>
+                    <button
+                      onClick={() => onThemeSelect(themeKey)}
+                      onMouseEnter={() => setHoveredTheme(themeKey)}
+                      onMouseLeave={() => setHoveredTheme(null)}
+                      style={{
+                        width: "100%",
+                        aspectRatio: "1",
+                        padding: "0",
+                        background: THEMES[themeKey],
+                        border: isSelected
+                          ? "2px solid #3B82F6"
+                          : "1.5px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        position: "relative",
+                        transform: isHovered ? "scale(1.08)" : "scale(1)",
+                        boxShadow: isSelected
+                          ? "0 0 0 2px rgba(59, 130, 246, 0.2)"
+                          : isHovered
+                          ? "0 3px 6px rgba(0, 0, 0, 0.3)"
+                          : "none",
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "2px",
+                            right: "2px",
+                            width: "12px",
+                            height: "12px",
+                            background: "#3B82F6",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg
+                            width="8"
+                            height="8"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="2.5"
+                          >
+                            <path d="M3 8l3 3 7-7" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    {isHovered && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 8px)",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: colors.background,
+                          color: colors.text,
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          whiteSpace: "nowrap",
+                          pointerEvents: "none",
+                          zIndex: 1001,
+                          border: `1px solid ${colors.border}`,
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                        }}
+                      >
+                        {themeNames[themeKey]}
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "4px solid transparent",
+                            borderRight: "4px solid transparent",
+                            borderTop: `4px solid ${colors.background}`,
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Bright & Colorful Section */}
+          <div style={{ marginBottom: "16px" }}>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 600,
+                marginBottom: "8px",
+                paddingLeft: "2px",
+              }}
+            >
+              Bright & Colorful
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(8, 1fr)",
+                gap: "6px",
+              }}
+            >
+              {BRIGHT_COLORFUL_THEME_KEYS.map((themeKey) => {
+                const isSelected = selectedTheme === themeKey;
+                const isHovered = hoveredTheme === themeKey;
+
+                return (
+                  <div key={themeKey} style={{ position: "relative" }}>
+                    <button
+                      onClick={() => onThemeSelect(themeKey)}
+                      onMouseEnter={() => setHoveredTheme(themeKey)}
+                      onMouseLeave={() => setHoveredTheme(null)}
+                      style={{
+                        width: "100%",
+                        aspectRatio: "1",
+                        padding: "0",
+                        background: THEMES[themeKey],
+                        border: isSelected
+                          ? "2px solid #3B82F6"
+                          : "1.5px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        position: "relative",
+                        transform: isHovered ? "scale(1.08)" : "scale(1)",
+                        boxShadow: isSelected
+                          ? "0 0 0 2px rgba(59, 130, 246, 0.2)"
+                          : isHovered
+                          ? "0 3px 6px rgba(0, 0, 0, 0.3)"
+                          : "none",
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "2px",
+                            right: "2px",
+                            width: "12px",
+                            height: "12px",
+                            background: "#3B82F6",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg
+                            width="8"
+                            height="8"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="2.5"
+                          >
+                            <path d="M3 8l3 3 7-7" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    {isHovered && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 8px)",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: colors.background,
+                          color: colors.text,
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          whiteSpace: "nowrap",
+                          pointerEvents: "none",
+                          zIndex: 1001,
+                          border: `1px solid ${colors.border}`,
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                        }}
+                      >
+                        {themeNames[themeKey]}
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "4px solid transparent",
+                            borderRight: "4px solid transparent",
+                            borderTop: `4px solid ${colors.background}`,
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Nature & Earth Section */}
+          <div style={{ marginBottom: "16px" }}>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 600,
+                marginBottom: "8px",
+                paddingLeft: "2px",
+              }}
+            >
+              Nature & Earth
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(8, 1fr)",
+                gap: "6px",
+              }}
+            >
+              {NATURE_EARTH_THEME_KEYS.map((themeKey) => {
+                const isSelected = selectedTheme === themeKey;
+                const isHovered = hoveredTheme === themeKey;
+
+                return (
+                  <div key={themeKey} style={{ position: "relative" }}>
+                    <button
+                      onClick={() => onThemeSelect(themeKey)}
+                      onMouseEnter={() => setHoveredTheme(themeKey)}
+                      onMouseLeave={() => setHoveredTheme(null)}
+                      style={{
+                        width: "100%",
+                        aspectRatio: "1",
+                        padding: "0",
+                        background: THEMES[themeKey],
+                        border: isSelected
+                          ? "2px solid #3B82F6"
+                          : "1.5px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        position: "relative",
+                        transform: isHovered ? "scale(1.08)" : "scale(1)",
+                        boxShadow: isSelected
+                          ? "0 0 0 2px rgba(59, 130, 246, 0.2)"
+                          : isHovered
+                          ? "0 3px 6px rgba(0, 0, 0, 0.3)"
+                          : "none",
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "2px",
+                            right: "2px",
+                            width: "12px",
+                            height: "12px",
+                            background: "#3B82F6",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg
+                            width="8"
+                            height="8"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="2.5"
+                          >
+                            <path d="M3 8l3 3 7-7" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    {isHovered && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 8px)",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: colors.background,
+                          color: colors.text,
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          whiteSpace: "nowrap",
+                          pointerEvents: "none",
+                          zIndex: 1001,
+                          border: `1px solid ${colors.border}`,
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                        }}
+                      >
+                        {themeNames[themeKey]}
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "4px solid transparent",
+                            borderRight: "4px solid transparent",
+                            borderTop: `4px solid ${colors.background}`,
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Luxury & Metallic Section */}
+          <div style={{ marginBottom: "16px" }}>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 600,
+                marginBottom: "8px",
+                paddingLeft: "2px",
+              }}
+            >
+              Luxury & Metallic
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(8, 1fr)",
+                gap: "6px",
+              }}
+            >
+              {LUXURY_METALLIC_THEME_KEYS.map((themeKey) => {
+                const isSelected = selectedTheme === themeKey;
+                const isHovered = hoveredTheme === themeKey;
+
+                return (
+                  <div key={themeKey} style={{ position: "relative" }}>
+                    <button
+                      onClick={() => onThemeSelect(themeKey)}
+                      onMouseEnter={() => setHoveredTheme(themeKey)}
+                      onMouseLeave={() => setHoveredTheme(null)}
+                      style={{
+                        width: "100%",
+                        aspectRatio: "1",
+                        padding: "0",
+                        background: THEMES[themeKey],
+                        border: isSelected
+                          ? "2px solid #3B82F6"
+                          : "1.5px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        position: "relative",
+                        transform: isHovered ? "scale(1.08)" : "scale(1)",
+                        boxShadow: isSelected
+                          ? "0 0 0 2px rgba(59, 130, 246, 0.2)"
+                          : isHovered
+                          ? "0 3px 6px rgba(0, 0, 0, 0.3)"
+                          : "none",
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "2px",
+                            right: "2px",
+                            width: "12px",
+                            height: "12px",
+                            background: "#3B82F6",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg
+                            width="8"
+                            height="8"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="2.5"
+                          >
+                            <path d="M3 8l3 3 7-7" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    {isHovered && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 8px)",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: colors.background,
+                          color: colors.text,
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          whiteSpace: "nowrap",
+                          pointerEvents: "none",
+                          zIndex: 1001,
+                          border: `1px solid ${colors.border}`,
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                        }}
+                      >
+                        {themeNames[themeKey]}
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "4px solid transparent",
+                            borderRight: "4px solid transparent",
+                            borderTop: `4px solid ${colors.background}`,
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Solid Section */}
+          <div>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 600,
+                marginBottom: "8px",
+                paddingLeft: "2px",
+              }}
+            >
+              Solid
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(8, 1fr)",
+                gap: "6px",
+                marginBottom: "12px",
+              }}
+            >
+              {SOLID_THEME_KEYS.map((themeKey) => {
+                const isSelected = selectedTheme === themeKey;
+                const isHovered = hoveredTheme === themeKey;
+
+                return (
+                  <div key={themeKey} style={{ position: "relative" }}>
+                    <button
+                      onClick={() => onThemeSelect(themeKey)}
+                      onMouseEnter={() => setHoveredTheme(themeKey)}
+                      onMouseLeave={() => setHoveredTheme(null)}
+                      style={{
+                        width: "100%",
+                        aspectRatio: "1",
+                        padding: "0",
+                        background: THEMES[themeKey],
+                        border: isSelected
+                          ? "2px solid #3B82F6"
+                          : "1.5px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        position: "relative",
+                        transform: isHovered ? "scale(1.08)" : "scale(1)",
+                        boxShadow: isSelected
+                          ? "0 0 0 2px rgba(59, 130, 246, 0.2)"
+                          : isHovered
+                          ? "0 3px 6px rgba(0, 0, 0, 0.3)"
+                          : "none",
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "2px",
+                            right: "2px",
+                            width: "12px",
+                            height: "12px",
+                            background: "#3B82F6",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg
+                            width="8"
+                            height="8"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="2.5"
+                          >
+                            <path d="M3 8l3 3 7-7" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    {isHovered && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 8px)",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: colors.background,
+                          color: colors.text,
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          whiteSpace: "nowrap",
+                          pointerEvents: "none",
+                          zIndex: 1001,
+                          border: `1px solid ${colors.border}`,
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                        }}
+                      >
+                        {themeNames[themeKey]}
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "4px solid transparent",
+                            borderRight: "4px solid transparent",
+                            borderTop: `4px solid ${colors.background}`,
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       ) : (
         /* Custom Color Picker */
@@ -858,94 +1811,8 @@ function ThemeSelector({
             </button>
           </div>
 
-          {/* Solid Section */}
-          <div style={{ marginBottom: "16px" }}>
-            <div
-              style={{
-                color: colors.text,
-                fontSize: "13px",
-                fontWeight: 500,
-                marginBottom: "8px",
-              }}
-            >
-              Solid
-            </div>
-            <input
-              type="color"
-              value={customColor}
-              onInput={(e) => {
-                const newColor = (e.target as HTMLInputElement).value;
-                setCustomColor(newColor);
-                setCustomMode("solid");
-                debouncedParentUpdate(
-                  newColor,
-                  customColor2,
-                  gradientType,
-                  gradientAngle,
-                  "solid"
-                );
-              }}
-              style={{
-                width: "100%",
-                height: "120px",
-                border: `1px solid ${colors.border}`,
-                borderRadius: "8px",
-                cursor: "pointer",
-              }}
-            />
-            <div
-              style={{
-                marginTop: "8px",
-                display: "flex",
-                gap: "8px",
-                alignItems: "center",
-              }}
-            >
-              <span
-                style={{
-                  color: colors.text,
-                  fontSize: "12px",
-                  fontWeight: 500,
-                }}
-              >
-                Hex:
-              </span>
-              <input
-                type="text"
-                value={customColor}
-                onChange={(e) => {
-                  const newValue = e.target.value;
-                  if (newValue.startsWith("#")) {
-                    setCustomColor(newValue);
-                    if (/^#[0-9A-F]{6}$/i.test(newValue)) {
-                      setCustomMode("solid");
-                      if (onCustomChange) {
-                        onCustomChange(newValue, {
-                          color2: customColor2,
-                          type: gradientType,
-                          angle: gradientAngle,
-                          mode: "solid",
-                        });
-                      }
-                    }
-                  }
-                }}
-                style={{
-                  flex: 1,
-                  padding: "6px 12px",
-                  background: colors.background,
-                  border: `1px solid ${colors.border}`,
-                  borderRadius: "6px",
-                  color: colors.text,
-                  fontSize: "12px",
-                  fontFamily: "monospace",
-                }}
-              />
-            </div>
-          </div>
-
           {/* Gradient Section */}
-          <div>
+          <div style={{ marginBottom: "16px" }}>
             <div
               style={{
                 color: colors.text,
@@ -976,9 +1843,14 @@ function ThemeSelector({
                       if (onCustomChange) {
                         onCustomChange(customColor, {
                           color2: customColor2,
+                          color3: customColor3,
+                          color4: customColor4,
                           type: type,
                           angle: gradientAngle,
                           mode: "gradient",
+                          showColor2,
+                          showColor3,
+                          showColor4,
                         });
                       }
                     }}
@@ -1056,9 +1928,14 @@ function ThemeSelector({
                   if (onCustomChange) {
                     onCustomChange(customColor, {
                       color2: customColor2,
+                      color3: customColor3,
+                      color4: customColor4,
                       type: gradientType,
                       angle: newAngle,
                       mode: "gradient",
+                      showColor2,
+                      showColor3,
+                      showColor4,
                     });
                   }
                 }}
@@ -1066,7 +1943,20 @@ function ThemeSelector({
                   width: "100%",
                   height: "4px",
                   borderRadius: "2px",
-                  background: `linear-gradient(90deg, ${customColor} 0%, ${customColor2} 100%)`,
+                  background: (() => {
+                    const activeColors = [customColor];
+                    if (showColor2) activeColors.push(customColor2);
+                    if (showColor3) activeColors.push(customColor3);
+                    if (showColor4) activeColors.push(customColor4);
+                    const colorStops = activeColors
+                      .map((color, index) => {
+                        const percentage =
+                          (index / (activeColors.length - 1)) * 100;
+                        return `${color} ${percentage}%`;
+                      })
+                      .join(", ");
+                    return `linear-gradient(90deg, ${colorStops})`;
+                  })(),
                   outline: "none",
                   cursor: "pointer",
                 }}
@@ -1096,15 +1986,26 @@ function ThemeSelector({
               </div>
             </div>
 
-            {/* Color Pickers for Gradient */}
+            {/* Color Pickers for Gradient - 4 colors with show/hide toggles */}
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "8px",
+                gridTemplateColumns: "repeat(4, 1fr)",
+                gap: "6px",
               }}
             >
+              {/* Color 1 - Always visible */}
               <div>
+                <div
+                  style={{
+                    color: colors.textMuted,
+                    fontSize: "10px",
+                    marginBottom: "4px",
+                    textAlign: "center",
+                  }}
+                >
+                  Color 1
+                </div>
                 <input
                   type="color"
                   value={customColor}
@@ -1115,14 +2016,19 @@ function ThemeSelector({
                     debouncedParentUpdate(
                       newColor,
                       customColor2,
+                      customColor3,
+                      customColor4,
                       gradientType,
                       gradientAngle,
-                      "gradient"
+                      "gradient",
+                      showColor2,
+                      showColor3,
+                      showColor4
                     );
                   }}
                   style={{
                     width: "100%",
-                    height: "60px",
+                    height: "50px",
                     border: `1px solid ${colors.border}`,
                     borderRadius: "6px",
                     cursor: "pointer",
@@ -1140,9 +2046,14 @@ function ThemeSelector({
                         if (onCustomChange) {
                           onCustomChange(newValue, {
                             color2: customColor2,
+                            color3: customColor3,
+                            color4: customColor4,
                             type: gradientType,
                             angle: gradientAngle,
                             mode: "gradient",
+                            showColor2,
+                            showColor3,
+                            showColor4,
                           });
                         }
                       }
@@ -1161,10 +2072,57 @@ function ThemeSelector({
                   }}
                 />
               </div>
+
+              {/* Color 2 with toggle */}
               <div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "4px",
+                  }}
+                >
+                  <span style={{ color: colors.textMuted, fontSize: "10px" }}>
+                    Color 2
+                  </span>
+                  <button
+                    onClick={() => {
+                      const newShowColor2 = !showColor2;
+                      setShowColor2(newShowColor2);
+                      setCustomMode("gradient");
+                      if (onCustomChange) {
+                        onCustomChange(customColor, {
+                          color2: customColor2,
+                          color3: customColor3,
+                          color4: customColor4,
+                          type: gradientType,
+                          angle: gradientAngle,
+                          mode: "gradient",
+                          showColor2: newShowColor2,
+                          showColor3,
+                          showColor4,
+                        });
+                      }
+                    }}
+                    style={{
+                      background: showColor2 ? "#3B82F6" : colors.border,
+                      color: showColor2 ? "white" : colors.textMuted,
+                      border: "none",
+                      borderRadius: "3px",
+                      padding: "2px 6px",
+                      fontSize: "9px",
+                      cursor: "pointer",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {showColor2 ? "Hide" : "Show"}
+                  </button>
+                </div>
                 <input
                   type="color"
                   value={customColor2}
+                  disabled={!showColor2}
                   onInput={(e) => {
                     const newColor = (e.target as HTMLInputElement).value;
                     setCustomColor2(newColor);
@@ -1172,22 +2130,29 @@ function ThemeSelector({
                     debouncedParentUpdate(
                       customColor,
                       newColor,
+                      customColor3,
+                      customColor4,
                       gradientType,
                       gradientAngle,
-                      "gradient"
+                      "gradient",
+                      showColor2,
+                      showColor3,
+                      showColor4
                     );
                   }}
                   style={{
                     width: "100%",
-                    height: "60px",
+                    height: "50px",
                     border: `1px solid ${colors.border}`,
                     borderRadius: "6px",
-                    cursor: "pointer",
+                    cursor: showColor2 ? "pointer" : "not-allowed",
+                    opacity: showColor2 ? 1 : 0.5,
                   }}
                 />
                 <input
                   type="text"
                   value={customColor2}
+                  disabled={!showColor2}
                   onChange={(e) => {
                     const newValue = e.target.value;
                     if (newValue.startsWith("#")) {
@@ -1197,9 +2162,14 @@ function ThemeSelector({
                         if (onCustomChange) {
                           onCustomChange(customColor, {
                             color2: newValue,
+                            color3: customColor3,
+                            color4: customColor4,
                             type: gradientType,
                             angle: gradientAngle,
                             mode: "gradient",
+                            showColor2,
+                            showColor3,
+                            showColor4,
                           });
                         }
                       }
@@ -1208,16 +2178,347 @@ function ThemeSelector({
                   style={{
                     width: "100%",
                     marginTop: "4px",
-                    padding: "4px 8px",
+                    padding: "4px 6px",
                     background: colors.background,
                     border: `1px solid ${colors.border}`,
                     borderRadius: "4px",
                     color: colors.text,
-                    fontSize: "11px",
+                    fontSize: "10px",
                     fontFamily: "monospace",
+                    opacity: showColor2 ? 1 : 0.5,
                   }}
                 />
               </div>
+
+              {/* Color 3 with toggle */}
+              <div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "4px",
+                  }}
+                >
+                  <span style={{ color: colors.textMuted, fontSize: "10px" }}>
+                    Color 3
+                  </span>
+                  <button
+                    onClick={() => {
+                      const newShowColor3 = !showColor3;
+                      setShowColor3(newShowColor3);
+                      setCustomMode("gradient");
+                      if (onCustomChange) {
+                        onCustomChange(customColor, {
+                          color2: customColor2,
+                          color3: customColor3,
+                          color4: customColor4,
+                          type: gradientType,
+                          angle: gradientAngle,
+                          mode: "gradient",
+                          showColor2,
+                          showColor3: newShowColor3,
+                          showColor4,
+                        });
+                      }
+                    }}
+                    style={{
+                      background: showColor3 ? "#3B82F6" : colors.border,
+                      color: showColor3 ? "white" : colors.textMuted,
+                      border: "none",
+                      borderRadius: "3px",
+                      padding: "2px 6px",
+                      fontSize: "9px",
+                      cursor: "pointer",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {showColor3 ? "Hide" : "Show"}
+                  </button>
+                </div>
+                <input
+                  type="color"
+                  value={customColor3}
+                  disabled={!showColor3}
+                  onInput={(e) => {
+                    const newColor = (e.target as HTMLInputElement).value;
+                    setCustomColor3(newColor);
+                    setCustomMode("gradient");
+                    debouncedParentUpdate(
+                      customColor,
+                      customColor2,
+                      newColor,
+                      customColor4,
+                      gradientType,
+                      gradientAngle,
+                      "gradient",
+                      showColor2,
+                      showColor3,
+                      showColor4
+                    );
+                  }}
+                  style={{
+                    width: "100%",
+                    height: "50px",
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "6px",
+                    cursor: showColor3 ? "pointer" : "not-allowed",
+                    opacity: showColor3 ? 1 : 0.5,
+                  }}
+                />
+                <input
+                  type="text"
+                  value={customColor3}
+                  disabled={!showColor3}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    if (newValue.startsWith("#")) {
+                      setCustomColor3(newValue);
+                      if (/^#[0-9A-F]{6}$/i.test(newValue)) {
+                        setCustomMode("gradient");
+                        if (onCustomChange) {
+                          onCustomChange(customColor, {
+                            color2: customColor2,
+                            color3: newValue,
+                            color4: customColor4,
+                            type: gradientType,
+                            angle: gradientAngle,
+                            mode: "gradient",
+                            showColor2,
+                            showColor3,
+                            showColor4,
+                          });
+                        }
+                      }
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    marginTop: "4px",
+                    padding: "4px 6px",
+                    background: colors.background,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "4px",
+                    color: colors.text,
+                    fontSize: "10px",
+                    fontFamily: "monospace",
+                    opacity: showColor3 ? 1 : 0.5,
+                  }}
+                />
+              </div>
+
+              {/* Color 4 with toggle */}
+              <div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "4px",
+                  }}
+                >
+                  <span style={{ color: colors.textMuted, fontSize: "10px" }}>
+                    Color 4
+                  </span>
+                  <button
+                    onClick={() => {
+                      const newShowColor4 = !showColor4;
+                      setShowColor4(newShowColor4);
+                      setCustomMode("gradient");
+                      if (onCustomChange) {
+                        onCustomChange(customColor, {
+                          color2: customColor2,
+                          color3: customColor3,
+                          color4: customColor4,
+                          type: gradientType,
+                          angle: gradientAngle,
+                          mode: "gradient",
+                          showColor2,
+                          showColor3,
+                          showColor4: newShowColor4,
+                        });
+                      }
+                    }}
+                    style={{
+                      background: showColor4 ? "#3B82F6" : colors.border,
+                      color: showColor4 ? "white" : colors.textMuted,
+                      border: "none",
+                      borderRadius: "3px",
+                      padding: "2px 6px",
+                      fontSize: "9px",
+                      cursor: "pointer",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {showColor4 ? "Hide" : "Show"}
+                  </button>
+                </div>
+                <input
+                  type="color"
+                  value={customColor4}
+                  disabled={!showColor4}
+                  onInput={(e) => {
+                    const newColor = (e.target as HTMLInputElement).value;
+                    setCustomColor4(newColor);
+                    setCustomMode("gradient");
+                    debouncedParentUpdate(
+                      customColor,
+                      customColor2,
+                      customColor3,
+                      newColor,
+                      gradientType,
+                      gradientAngle,
+                      "gradient",
+                      showColor2,
+                      showColor3,
+                      showColor4
+                    );
+                  }}
+                  style={{
+                    width: "100%",
+                    height: "50px",
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "6px",
+                    cursor: showColor4 ? "pointer" : "not-allowed",
+                    opacity: showColor4 ? 1 : 0.5,
+                  }}
+                />
+                <input
+                  type="text"
+                  value={customColor4}
+                  disabled={!showColor4}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    if (newValue.startsWith("#")) {
+                      setCustomColor4(newValue);
+                      if (/^#[0-9A-F]{6}$/i.test(newValue)) {
+                        setCustomMode("gradient");
+                        if (onCustomChange) {
+                          onCustomChange(customColor, {
+                            color2: customColor2,
+                            color3: customColor3,
+                            color4: newValue,
+                            type: gradientType,
+                            angle: gradientAngle,
+                            mode: "gradient",
+                            showColor2,
+                            showColor3,
+                            showColor4,
+                          });
+                        }
+                      }
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    marginTop: "4px",
+                    padding: "4px 6px",
+                    background: colors.background,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "4px",
+                    color: colors.text,
+                    fontSize: "10px",
+                    fontFamily: "monospace",
+                    opacity: showColor4 ? 1 : 0.5,
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Solid Section */}
+          <div>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 500,
+                marginBottom: "8px",
+              }}
+            >
+              Solid
+            </div>
+            <input
+              type="color"
+              value={customColor}
+              onInput={(e) => {
+                const newColor = (e.target as HTMLInputElement).value;
+                setCustomColor(newColor);
+                setCustomMode("solid");
+                debouncedParentUpdate(
+                  newColor,
+                  customColor2,
+                  customColor3,
+                  customColor4,
+                  gradientType,
+                  gradientAngle,
+                  "solid",
+                  showColor2,
+                  showColor3,
+                  showColor4
+                );
+              }}
+              style={{
+                width: "100%",
+                height: "120px",
+                border: `1px solid ${colors.border}`,
+                borderRadius: "8px",
+                cursor: "pointer",
+              }}
+            />
+            <div
+              style={{
+                marginTop: "8px",
+                display: "flex",
+                gap: "8px",
+                alignItems: "center",
+              }}
+            >
+              <span
+                style={{
+                  color: colors.text,
+                  fontSize: "12px",
+                  fontWeight: 500,
+                }}
+              >
+                Hex:
+              </span>
+              <input
+                type="text"
+                value={customColor}
+                onChange={(e) => {
+                  const newValue = e.target.value;
+                  if (newValue.startsWith("#")) {
+                    setCustomColor(newValue);
+                    if (/^#[0-9A-F]{6}$/i.test(newValue)) {
+                      setCustomMode("solid");
+                      if (onCustomChange) {
+                        onCustomChange(newValue, {
+                          color2: customColor2,
+                          color3: customColor3,
+                          color4: customColor4,
+                          type: gradientType,
+                          angle: gradientAngle,
+                          mode: "solid",
+                          showColor2,
+                          showColor3,
+                          showColor4,
+                        });
+                      }
+                    }
+                  }
+                }}
+                style={{
+                  flex: 1,
+                  padding: "6px 12px",
+                  background: colors.background,
+                  border: `1px solid ${colors.border}`,
+                  borderRadius: "6px",
+                  color: colors.text,
+                  fontSize: "12px",
+                  fontFamily: "monospace",
+                }}
+              />
             </div>
           </div>
         </div>
@@ -1268,19 +2569,24 @@ export default function ScreenshotEditor() {
   );
   const [showBackground, setShowBackground] = useState(true);
   const [editorTheme, setEditorTheme] = useState<"light" | "dark">("dark");
-  const [selectedTheme, setSelectedTheme] = useState<ThemeType>("figma");
+  const [selectedTheme, setSelectedTheme] = useState<ThemeType>("cosmic16"); // Pink Flame as default
   const [showThemeSelector, setShowThemeSelector] = useState(false);
-  const [customColor, setCustomColor] = useState("#D8FF00");
-  const [customColor2, setCustomColor2] = useState("#FF00FF");
+  const [customColor, setCustomColor] = useState("#ededed");
+  const [customColor2, setCustomColor2] = useState("#eb00eb");
+  const [customColor3, setCustomColor3] = useState("#731ec8");
+  const [customColor4, setCustomColor4] = useState("#1818dc");
   const [gradientType, setGradientType] = useState<
     "linear" | "radial" | "angular" | "diamond"
   >("linear");
   const [gradientAngle, setGradientAngle] = useState(135);
-  const [customMode, setCustomMode] = useState<"solid" | "gradient">("solid");
+  const [customMode, setCustomMode] = useState<"solid" | "gradient">("gradient");
+  const [showColor2, setShowColor2] = useState(true);
+  const [showColor3, setShowColor3] = useState(true);
+  const [showColor4, setShowColor4] = useState(true);
 
   // Width and padding
   const [cardWidth, setCardWidth] = useState(50);
-  const [cardPadding, setCardPadding] = useState(6.25);
+  const [cardPadding, setCardPadding] = useState(31.25); // 90px default padding
   const [showWidthControl, setShowWidthControl] = useState(false);
   const [showPaddingControl, setShowPaddingControl] = useState(false);
 
@@ -1345,10 +2651,14 @@ export default function ScreenshotEditor() {
       if (customMode === "solid") {
         return customColor;
       } else {
+        // Build array of active colors based on show/hide toggles
+        const activeColors = [customColor];
+        if (showColor2) activeColors.push(customColor2);
+        if (showColor3) activeColors.push(customColor3);
+        if (showColor4) activeColors.push(customColor4);
         return generateGradient(
           gradientType,
-          customColor,
-          customColor2,
+          activeColors,
           gradientAngle
         );
       }
@@ -3951,12 +5261,13 @@ export default function ScreenshotEditor() {
                   setActiveTool("select");
                   setPanModeEnabled(false);
                 }}
-                tooltip="Select (V)"
+                tooltip="Select Tool (V)"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
                 style={{
                   padding: "8px 12px",
+                  fontSize: "13px",
                   cursor: "pointer",
                   backgroundColor:
                     activeTool === "select" && !panModeEnabled
@@ -3968,6 +5279,12 @@ export default function ScreenshotEditor() {
                       : colors.textMuted,
                   border: "none",
                   borderRadius: "6px",
+                  transition: "all 0.2s",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px",
                 }}
               >
                 <svg
@@ -3978,6 +5295,7 @@ export default function ScreenshotEditor() {
                 >
                   <path d="M2 2l12 5-5 1-1 5z" />
                 </svg>
+                <span style={{ fontSize: "10px", fontWeight: 500 }}>Select</span>
               </TooltipButton>
 
               {/* Pan Tool */}
@@ -3989,17 +5307,24 @@ export default function ScreenshotEditor() {
                     showNotification("Click and drag to pan around the canvas");
                   }
                 }}
-                tooltip="Pan (Space)"
+                tooltip="Pan Tool (H) - Hold Space anytime to pan"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
                 style={{
                   padding: "8px 12px",
+                  fontSize: "13px",
                   cursor: "pointer",
                   backgroundColor: panModeEnabled ? "#3B82F6" : colors.buttonBg,
                   color: panModeEnabled ? "white" : colors.textMuted,
                   border: "none",
                   borderRadius: "6px",
+                  transition: "all 0.2s",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px",
                 }}
               >
                 <svg
@@ -4012,6 +5337,7 @@ export default function ScreenshotEditor() {
                 >
                   <path d="M8 2v3M5 8H2M14 8h-3M8 11v3M4.5 4.5l2 2M11.5 4.5l-2 2M4.5 11.5l2-2M11.5 11.5l-2-2" />
                 </svg>
+                <span style={{ fontSize: "10px", fontWeight: 500 }}>Move</span>
               </TooltipButton>
 
               {/* Crop Tool */}
@@ -4030,18 +5356,25 @@ export default function ScreenshotEditor() {
                     );
                   }
                 }}
-                tooltip="Crop (C)"
+                tooltip="Crop Tool (C)"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
                 style={{
                   padding: "8px 12px",
+                  fontSize: "13px",
                   cursor: "pointer",
                   backgroundColor:
                     activeTool === "crop" ? "#3B82F6" : colors.buttonBg,
                   color: activeTool === "crop" ? "white" : colors.textMuted,
                   border: "none",
                   borderRadius: "6px",
+                  transition: "all 0.2s",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px",
                 }}
               >
                 <svg
@@ -4052,6 +5385,7 @@ export default function ScreenshotEditor() {
                 >
                   <path d="M11 2v3h3v1h-3v4h-1V6H6v4H5V6H2V5h3V2h1v3h4V2h1z" />
                 </svg>
+                <span style={{ fontSize: "10px", fontWeight: 500 }}>Crop</span>
               </TooltipButton>
             </div>
 
@@ -4083,6 +5417,11 @@ export default function ScreenshotEditor() {
                 border: "none",
                 borderRadius: "6px",
                 marginRight: "8px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "4px",
               }}
             >
               <svg
@@ -4111,43 +5450,43 @@ export default function ScreenshotEditor() {
                   opacity="0.5"
                 />
               </svg>
+              <span style={{ fontSize: "10px", fontWeight: 500 }}>
+                {showBackground ? "Hide BG" : "Show BG"}
+              </span>
             </TooltipButton>
 
             {/* Theme Selector */}
             <TooltipButton
               onClick={() => {
                 if (!showBackground) {
-                  alert("Add background to use this feature");
                   return;
                 }
                 setShowThemeSelector(!showThemeSelector);
               }}
               tooltip={
-                showBackground
-                  ? "Change Background Color"
-                  : "Add background to use this feature"
+                !showBackground
+                  ? "Enable background to use this feature"
+                  : "Change Background Color"
               }
               tooltipBg={colors.tooltipBg}
               tooltipText={colors.textSecondary}
               tooltipBorder={colors.border}
               style={{
-                padding: "8px 14px",
-                cursor: showBackground ? "pointer" : "not-allowed",
-                backgroundColor: showThemeSelector
-                  ? "#3B82F6"
-                  : colors.buttonBg,
-                color: showThemeSelector
-                  ? "white"
-                  : showBackground
-                  ? colors.textSecondary
-                  : colors.textMuted,
+                padding: "8px 12px",
+                fontSize: "13px",
+                cursor: !showBackground ? "not-allowed" : "pointer",
+                backgroundColor: showThemeSelector ? "#3B82F6" : colors.buttonBg,
+                color: showThemeSelector ? "white" : colors.textMuted,
                 border: "none",
                 borderRadius: "6px",
                 marginRight: "8px",
+                transition: "all 0.2s",
                 display: "flex",
+                flexDirection: "column",
                 alignItems: "center",
-                gap: "6px",
-                opacity: showBackground ? 1 : 0.5,
+                justifyContent: "center",
+                gap: "4px",
+                opacity: !showBackground ? 0.5 : 1,
               }}
             >
               {/* Paint palette icon */}
@@ -4167,7 +5506,9 @@ export default function ScreenshotEditor() {
                 <circle cx="6.5" cy="12.5" r="0.5" fill="currentColor" />
                 <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.555C21.965 6.012 17.461 2 12 2z" />
               </svg>
-              <span style={{ fontSize: "13px", fontWeight: 500 }}>Theme</span>
+              <span style={{ fontSize: "10px", fontWeight: 500 }}>
+                Background
+              </span>
             </TooltipButton>
 
             {/* Width Control */}
@@ -4175,33 +5516,37 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => {
                   if (!showBackground) {
-                    alert("Add background to use this feature");
                     return;
                   }
                   setShowWidthControl(!showWidthControl);
                 }}
                 tooltip={
-                  showBackground
-                    ? `Width: ${Math.round(calculateCardWidth(cardWidth))}px`
-                    : "Add background to use this feature"
+                  !showBackground
+                    ? "Enable background to use this feature"
+                    : `Adjust Width - Current: ${Math.round(
+                        calculateCardWidth(cardWidth)
+                      )}px`
                 }
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
                 style={{
                   padding: "8px 12px",
-                  cursor: showBackground ? "pointer" : "not-allowed",
+                  fontSize: "13px",
+                  cursor: !showBackground ? "not-allowed" : "pointer",
                   backgroundColor: showWidthControl
                     ? "#3B82F6"
                     : colors.buttonBg,
-                  color: showWidthControl
-                    ? "white"
-                    : showBackground
-                    ? colors.textMuted
-                    : colors.textMuted,
+                  color: showWidthControl ? "white" : colors.textMuted,
                   border: "none",
                   borderRadius: "6px",
-                  opacity: showBackground ? 1 : 0.5,
+                  transition: "all 0.2s",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px",
+                  opacity: !showBackground ? 0.5 : 1,
                 }}
               >
                 <svg
@@ -4214,6 +5559,7 @@ export default function ScreenshotEditor() {
                 >
                   <path d="M2 8h12M2 8l2-2M2 8l2 2M14 8l-2-2M14 8l-2 2" />
                 </svg>
+                <span style={{ fontSize: "10px", fontWeight: 500 }}>Width</span>
               </TooltipButton>
               {showWidthControl && (
                 <div
@@ -4274,35 +5620,37 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => {
                   if (!showBackground) {
-                    alert("Add background to use this feature");
                     return;
                   }
                   setShowPaddingControl(!showPaddingControl);
                 }}
                 tooltip={
-                  showBackground
-                    ? `Padding: ${Math.round(
+                  !showBackground
+                    ? "Enable background to use this feature"
+                    : `Adjust Padding - Current: ${Math.round(
                         calculateCardPadding(cardPadding)
                       )}px`
-                    : "Add background to use this feature"
                 }
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
                 style={{
                   padding: "8px 12px",
-                  cursor: showBackground ? "pointer" : "not-allowed",
+                  fontSize: "13px",
+                  cursor: !showBackground ? "not-allowed" : "pointer",
                   backgroundColor: showPaddingControl
                     ? "#3B82F6"
                     : colors.buttonBg,
-                  color: showPaddingControl
-                    ? "white"
-                    : showBackground
-                    ? colors.textMuted
-                    : colors.textMuted,
+                  color: showPaddingControl ? "white" : colors.textMuted,
                   border: "none",
                   borderRadius: "6px",
-                  opacity: showBackground ? 1 : 0.5,
+                  transition: "all 0.2s",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px",
+                  opacity: !showBackground ? 0.5 : 1,
                 }}
               >
                 <svg
@@ -4323,6 +5671,7 @@ export default function ScreenshotEditor() {
                   />
                   <rect x="5" y="5" width="6" height="6" fill="currentColor" />
                 </svg>
+                <span style={{ fontSize: "10px", fontWeight: 500 }}>Spacing</span>
               </TooltipButton>
               {showPaddingControl && (
                 <div
@@ -4383,18 +5732,25 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={handleUndo}
                 disabled={!canUndo}
-                tooltip="Undo (Ctrl+Z)"
+                tooltip="Undo (Ctrl/Cmd + Z)"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
                 style={{
                   padding: "8px 12px",
+                  fontSize: "13px",
                   cursor: canUndo ? "pointer" : "not-allowed",
                   backgroundColor: colors.buttonBg,
                   color: canUndo ? colors.textSecondary : colors.textMuted,
                   border: "none",
                   borderRadius: "6px",
+                  transition: "all 0.2s",
                   opacity: canUndo ? 1 : 0.5,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px",
                 }}
               >
                 <svg
@@ -4405,23 +5761,31 @@ export default function ScreenshotEditor() {
                 >
                   <path d="M3 8h10M8 3l-5 5 5 5" />
                 </svg>
+                <span style={{ fontSize: "10px", fontWeight: 500 }}>Undo</span>
               </TooltipButton>
 
               <TooltipButton
                 onClick={handleRedo}
                 disabled={!canRedo}
-                tooltip="Redo (Ctrl+Shift+Z)"
+                tooltip="Redo (Ctrl/Cmd + Shift + Z)"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
                 style={{
                   padding: "8px 12px",
+                  fontSize: "13px",
                   cursor: canRedo ? "pointer" : "not-allowed",
                   backgroundColor: colors.buttonBg,
                   color: canRedo ? colors.textSecondary : colors.textMuted,
                   border: "none",
                   borderRadius: "6px",
+                  transition: "all 0.2s",
                   opacity: canRedo ? 1 : 0.5,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px",
                 }}
               >
                 <svg
@@ -4432,6 +5796,7 @@ export default function ScreenshotEditor() {
                 >
                   <path d="M3 8h10M8 3l5 5-5 5" />
                 </svg>
+                <span style={{ fontSize: "10px", fontWeight: 500 }}>Redo</span>
               </TooltipButton>
             </div>
 
@@ -4485,7 +5850,7 @@ export default function ScreenshotEditor() {
                 </TooltipButton>
               </div>
             ) : (
-              <div style={{ display: "flex", gap: "8px" }}>
+              <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                 {/* Window Chrome Toggle */}
                 <TooltipButton
                   onClick={() => {
@@ -4504,14 +5869,15 @@ export default function ScreenshotEditor() {
                   }}
                   tooltip={
                     includeWindowChrome
-                      ? "Hide Window Chrome"
-                      : "Show Window Chrome"
+                      ? "Disable window chrome in download"
+                      : "Enable window chrome in download"
                   }
                   tooltipBg={colors.tooltipBg}
                   tooltipText={colors.textSecondary}
                   tooltipBorder={colors.border}
                   style={{
                     padding: "8px 12px",
+                    fontSize: "13px",
                     cursor: "pointer",
                     backgroundColor: includeWindowChrome
                       ? "#3B82F6"
@@ -4519,6 +5885,12 @@ export default function ScreenshotEditor() {
                     color: includeWindowChrome ? "white" : colors.textMuted,
                     border: "none",
                     borderRadius: "6px",
+                    transition: "all 0.2s",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "4px",
                   }}
                 >
                   <svg
@@ -4535,9 +5907,10 @@ export default function ScreenshotEditor() {
                     <circle cx="6" cy="4.5" r="0.5" fill="currentColor" />
                     <circle cx="8" cy="4.5" r="0.5" fill="currentColor" />
                   </svg>
+                  <span style={{ fontSize: "10px", fontWeight: 500 }}>Chrome</span>
                 </TooltipButton>
 
-                {/* Theme Toggle */}
+                {/* Theme Toggle - show when window chrome is enabled */}
                 {includeWindowChrome && (
                   <TooltipButton
                     onClick={() => {
@@ -4557,39 +5930,88 @@ export default function ScreenshotEditor() {
                     }}
                     tooltip={
                       windowChromeTheme === "light"
-                        ? "Dark Chrome"
-                        : "Light Chrome"
+                        ? "Switch to dark theme"
+                        : "Switch to light theme"
                     }
                     tooltipBg={colors.tooltipBg}
                     tooltipText={colors.textSecondary}
                     tooltipBorder={colors.border}
                     style={{
                       padding: "8px 12px",
+                      fontSize: "13px",
                       cursor: "pointer",
                       backgroundColor: colors.buttonBg,
                       color: colors.textSecondary,
                       border: "none",
                       borderRadius: "6px",
+                      transition: "all 0.2s",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "4px",
                     }}
                   >
                     {windowChromeTheme === "light" ? (
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="currentColor"
-                      >
-                        <circle cx="8" cy="8" r="3" />
-                      </svg>
+                      <>
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          fill="currentColor"
+                        >
+                          <circle cx="8" cy="8" r="3" />
+                          <line
+                            x1="8"
+                            y1="1"
+                            x2="8"
+                            y2="3"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                          />
+                          <line
+                            x1="8"
+                            y1="13"
+                            x2="8"
+                            y2="15"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                          />
+                          <line
+                            x1="1"
+                            y1="8"
+                            x2="3"
+                            y2="8"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                          />
+                          <line
+                            x1="13"
+                            y1="8"
+                            x2="15"
+                            y2="8"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                          />
+                        </svg>
+                        <span style={{ fontSize: "10px", fontWeight: 500 }}>
+                          Light
+                        </span>
+                      </>
                     ) : (
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="currentColor"
-                      >
-                        <path d="M8 1C4.134 1 1 4.134 1 8s3.134 7 7 7 7-3.134 7-7-3.134-7-7-7z" />
-                      </svg>
+                      <>
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          fill="currentColor"
+                        >
+                          <path d="M8 1C4.134 1 1 4.134 1 8s3.134 7 7 7 7-3.134 7-7-3.134-7-7-7zm0 12.5c-3.038 0-5.5-2.462-5.5-5.5S4.962 2.5 8 2.5V8l3.89 3.89A5.474 5.474 0 018 13.5z" />
+                        </svg>
+                        <span style={{ fontSize: "10px", fontWeight: 500 }}>
+                          Dark
+                        </span>
+                      </>
                     )}
                   </TooltipButton>
                 )}
@@ -4765,15 +6187,25 @@ export default function ScreenshotEditor() {
           editorTheme={editorTheme}
           initialCustomColor={customColor}
           initialCustomColor2={customColor2}
+          initialCustomColor3={customColor3}
+          initialCustomColor4={customColor4}
           initialGradientType={gradientType}
           initialGradientAngle={gradientAngle}
           initialCustomMode={customMode}
+          initialShowColor2={showColor2}
+          initialShowColor3={showColor3}
+          initialShowColor4={showColor4}
           onCustomChange={(color, settings) => {
             setCustomColor(color);
             setCustomColor2(settings.color2);
+            setCustomColor3(settings.color3);
+            setCustomColor4(settings.color4);
             setGradientType(settings.type);
             setGradientAngle(settings.angle);
             setCustomMode(settings.mode);
+            setShowColor2(settings.showColor2);
+            setShowColor3(settings.showColor3);
+            setShowColor4(settings.showColor4);
             setSelectedTheme("custom" as ThemeType);
           }}
         />
@@ -5974,6 +7406,20 @@ export default function ScreenshotEditor() {
               border: `1px solid ${colors.border}`,
             }}
           >
+            {/* Drawing Toolbox Label */}
+            <div
+              style={{
+                fontSize: "11px",
+                fontWeight: 600,
+                color: colors.textSecondary,
+                textAlign: "center",
+                paddingBottom: "4px",
+                borderBottom: `1px solid ${colors.border}`,
+              }}
+            >
+              Drawing Toolbox
+            </div>
+
             {/* Row 1: Line, Freehand, Arrow */}
             <div style={{ display: "flex", gap: "4px" }}>
               <TooltipButton
@@ -6825,6 +8271,20 @@ export default function ScreenshotEditor() {
               border: `1px solid ${colors.border}`,
             }}
           >
+            {/* Zoom Label */}
+            <div
+              style={{
+                fontSize: "11px",
+                fontWeight: 600,
+                color: colors.textSecondary,
+                textAlign: "center",
+                paddingBottom: "4px",
+                borderBottom: `1px solid ${colors.border}`,
+              }}
+            >
+              Zoom
+            </div>
+
             {/* Row 1: Zoom Out, Percentage, Zoom In */}
             <div style={{ display: "flex", gap: "4px" }}>
               <TooltipButton
