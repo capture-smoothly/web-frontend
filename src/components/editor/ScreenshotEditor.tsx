@@ -7406,6 +7406,20 @@ export default function ScreenshotEditor() {
               border: `1px solid ${colors.border}`,
             }}
           >
+            {/* Drawing Toolbox Label */}
+            <div
+              style={{
+                fontSize: "11px",
+                fontWeight: 600,
+                color: colors.textSecondary,
+                textAlign: "center",
+                paddingBottom: "4px",
+                borderBottom: `1px solid ${colors.border}`,
+              }}
+            >
+              Drawing Toolbox
+            </div>
+
             {/* Row 1: Line, Freehand, Arrow */}
             <div style={{ display: "flex", gap: "4px" }}>
               <TooltipButton
@@ -8257,6 +8271,20 @@ export default function ScreenshotEditor() {
               border: `1px solid ${colors.border}`,
             }}
           >
+            {/* Zoom Label */}
+            <div
+              style={{
+                fontSize: "11px",
+                fontWeight: 600,
+                color: colors.textSecondary,
+                textAlign: "center",
+                paddingBottom: "4px",
+                borderBottom: `1px solid ${colors.border}`,
+              }}
+            >
+              Zoom
+            </div>
+
             {/* Row 1: Zoom Out, Percentage, Zoom In */}
             <div style={{ display: "flex", gap: "4px" }}>
               <TooltipButton
