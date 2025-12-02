@@ -20,7 +20,7 @@ export default function Home() {
       <SnapshotNavbar />
       <main>
         <HeroSection />
-        <ExtensionPromotionSection />
+        {/* <ExtensionPromotionSection /> */}
         <ProblemSection />
         <HowItWorksSection />
         <SolutionSection />

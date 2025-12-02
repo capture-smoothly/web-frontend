@@ -11,6 +11,7 @@ const mainTools = [
     description: "Capture any part of your screen instantly with keyboard shortcuts. Full page, visible area, or custom selection - you're in control.",
     gradient: "from-coral/20 to-peach/20",
     iconColor: "text-coral",
+    videoUrl: "https://www.youtube.com/embed/SfoJwGpyH_I",
   },
   {
     icon: MousePointerClick,
@@ -18,6 +19,7 @@ const mainTools = [
     description: "Select any text on a webpage and transform it into beautiful, shareable images in seconds. Choose from 35+ professional gradient themes. Perfect for social media posts, quotes, and visual content that gets engagement.",
     gradient: "from-teal/20 to-mint/20",
     iconColor: "text-teal",
+    videoUrl: "https://www.youtube.com/embed/Hl5zfZ5LqdE",
   },
 ];
 
@@ -68,7 +70,7 @@ export const HowItWorksSection: React.FC = () => {
         </motion.div>
 
         {/* Main Tools Section */}
-        <div className="grid md:grid-cols-2 gap-8 mb-20">
+        <div className="space-y-12 mb-20">
           {mainTools.map((tool, index) => (
             <motion.div
               key={index}
@@ -76,13 +78,24 @@ export const HowItWorksSection: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.2 }}
-              className={`relative bg-gradient-to-br ${tool.gradient} backdrop-blur-sm border border-white/20 rounded-2xl p-8 hover:scale-105 transition-transform duration-300`}
+              className={`relative bg-gradient-to-br ${tool.gradient} backdrop-blur-sm border border-white/20 rounded-2xl p-8 md:p-12 hover:scale-[1.02] transition-transform duration-300`}
             >
               <div className={`w-16 h-16 rounded-xl bg-white/10 flex items-center justify-center mb-6 ${tool.iconColor}`}>
                 <tool.icon className="w-8 h-8" />
               </div>
-              <h3 className="text-2xl font-bold mb-4">{tool.title}</h3>
-              <p className="text-white/90 text-lg leading-relaxed">{tool.description}</p>
+              <h3 className="text-2xl md:text-3xl font-bold mb-4">{tool.title}</h3>
+              <p className="text-white/90 text-lg leading-relaxed mb-8 max-w-4xl">{tool.description}</p>
+
+              {/* Video Demo */}
+              <div className="relative w-full max-w-5xl aspect-video rounded-xl overflow-hidden shadow-2xl">
+                <iframe
+                  src={tool.videoUrl}
+                  title={`${tool.title} Demo`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full border-0"
+                />
+              </div>
             </motion.div>
           ))}
         </div>
