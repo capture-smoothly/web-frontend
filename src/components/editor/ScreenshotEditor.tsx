@@ -2569,7 +2569,7 @@ export default function ScreenshotEditor() {
   );
   const [showBackground, setShowBackground] = useState(true);
   const [editorTheme, setEditorTheme] = useState<"light" | "dark">("dark");
-  const [selectedTheme, setSelectedTheme] = useState<ThemeType>("figma");
+  const [selectedTheme, setSelectedTheme] = useState<ThemeType>("cosmic16"); // Pink Flame as default
   const [showThemeSelector, setShowThemeSelector] = useState(false);
   const [customColor, setCustomColor] = useState("#ededed");
   const [customColor2, setCustomColor2] = useState("#eb00eb");
@@ -2586,7 +2586,7 @@ export default function ScreenshotEditor() {
 
   // Width and padding
   const [cardWidth, setCardWidth] = useState(50);
-  const [cardPadding, setCardPadding] = useState(6.25);
+  const [cardPadding, setCardPadding] = useState(31.25); // 90px default padding
   const [showWidthControl, setShowWidthControl] = useState(false);
   const [showPaddingControl, setShowPaddingControl] = useState(false);
 
