@@ -33,68 +33,49 @@ const pricingPlans: PricingPlan[] = [
     yearlyPrice: 0,
     yearlyTotal: 0,
     features: [
+      { text: "Web editor access", included: true },
       { text: "Chrome extension access", included: true },
-      { text: "5 screenshots per day", included: true },
-      { text: "3 basic themes", included: true },
-      { text: "Visible area capture only", included: true },
-      { text: "Basic annotations (arrows, boxes)", included: true },
+      { text: "Unlimited screenshots", included: true },
+      { text: "10 basic themes", included: true },
       { text: "Watermark on exports", included: true },
-      { text: "Full-page screenshots", included: false },
-      { text: "Web editor access", included: false },
-      { text: "Premium themes (35+)", included: false },
+      { text: "Unlimited full page screenshots", included: true },
+      { text: "Text-to-image converter (5 per day)", included: true },
+      { text: "Web editor access", included: true },
+      { text: "Annotations tools", included: false },
+      { text: "Highest quality export", included: false },
+      { text: "Premium themes (120+)", included: false },
+      { text: "Custom theme", included: false },
       { text: "Blur & pixelate tools", included: false },
       { text: "Cloud storage", included: false },
       { text: "Priority support", included: false },
+      { text: "Request new features", included: false },
+      { text: "Export to multiple formats (PDF, JPG)", included: false },
     ],
     cta: "Get Started Free",
     ctaVariant: "outline",
   },
   {
     name: "Pro",
-    icon: <Chrome className="w-6 h-6" />,
-    description: "For creators who capture a lot",
+    icon: <Crown className="w-6 h-6" />,
+    description: "Full power for professionals",
     monthlyPrice: 3,
     yearlyPrice: 2,
     yearlyTotal: 24,
-    features: [
-      { text: "Everything in Free, plus:", included: true, highlight: true },
-      { text: "Unlimited screenshots", included: true },
-      { text: "Full-page capture", included: true },
-      { text: "All 35+ premium themes", included: true },
-      { text: "Advanced annotations", included: true },
-      { text: "Blur & pixelate tools", included: true },
-      { text: "No watermark", included: true },
-      { text: "Text-to-image converter", included: true },
-      { text: "Custom colors & styles", included: true },
-      { text: "Email support", included: true },
-      { text: "Web editor access", included: false },
-      { text: "Cloud storage", included: false },
-    ],
-    cta: "Start 7-Day Free Trial",
-    ctaVariant: "secondary",
-    badge: "Extension Only",
-  },
-  {
-    name: "Master",
-    icon: <Crown className="w-6 h-6" />,
-    description: "Full power for professionals",
-    monthlyPrice: 4,
-    yearlyPrice: 3,
-    yearlyTotal: 36,
     popular: true,
     features: [
-      { text: "Everything in Pro, plus:", included: true, highlight: true },
+      { text: "Everything in Free, plus:", included: true, highlight: true },
+      { text: "Annotations tools", included: true },
       { text: "Web editor full access", included: true },
-      { text: "Upload & edit any image", included: true },
-      { text: "2GB cloud storage", included: true },
-      { text: "Shareable screenshot links", included: true },
-      { text: "Priority support (24h response)", included: true },
+      { text: "Highest quality export", included: true },
+      { text: "Premium themes (120+)", included: true },
+      { text: "Custom theme", included: true },
+      { text: "Blur & pixelate tools", included: true },
+      { text: "Cloud storage", included: true },
+      { text: "Priority support (24 hours)", included: true },
       { text: "Request new features", included: true },
-      { text: "Early access to new tools", included: true },
-      { text: "Export to multiple formats", included: true },
-      { text: "Batch processing (coming soon)", included: true },
-      { text: "Team sharing (coming soon)", included: true },
-      { text: "API access (coming soon)", included: true },
+      { text: "Cloud storage (Coming soon)", included: true },
+      { text: "Export to multiple formats (PDF, JPG) (Coming Soon)", included: true },
+      { text: "Early access to new tools (Coming Soon)", included: true },
     ],
     cta: "Start 7-Day Free Trial",
     ctaVariant: "primary",
@@ -186,45 +167,47 @@ export const PricingSection: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex items-center justify-center gap-4 mb-12"
+          className="flex flex-col items-center justify-center gap-3 mb-16"
         >
-          <span className={clsx(
-            "text-sm font-medium transition-colors",
-            billingPeriod === "monthly" ? "text-dark" : "text-dark-lighter"
-          )}>
-            Monthly
-          </span>
-          <button
-            onClick={() => setBillingPeriod(billingPeriod === "monthly" ? "yearly" : "monthly")}
-            className={clsx(
-              "relative w-14 h-7 rounded-full transition-colors duration-300",
-              billingPeriod === "yearly" ? "bg-coral" : "bg-gray-300"
-            )}
-          >
-            <motion.div
-              layout
-              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          <div className="flex items-center gap-4">
+            <span className={clsx(
+              "text-sm font-medium transition-colors",
+              billingPeriod === "monthly" ? "text-dark" : "text-dark-lighter"
+            )}>
+              Monthly
+            </span>
+            <button
+              onClick={() => setBillingPeriod(billingPeriod === "monthly" ? "yearly" : "monthly")}
               className={clsx(
-                "absolute top-1 w-5 h-5 bg-white rounded-full shadow-md",
-                billingPeriod === "yearly" ? "left-8" : "left-1"
+                "relative w-14 h-7 rounded-full transition-colors duration-300",
+                billingPeriod === "yearly" ? "bg-coral" : "bg-gray-300"
               )}
-            />
-          </button>
-          <span className={clsx(
-            "text-sm font-medium transition-colors",
-            billingPeriod === "yearly" ? "text-dark" : "text-dark-lighter"
-          )}>
-            Yearly
-          </span>
+            >
+              <motion.div
+                layout
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                className={clsx(
+                  "absolute top-1 w-5 h-5 bg-white rounded-full shadow-md",
+                  billingPeriod === "yearly" ? "left-8" : "left-1"
+                )}
+              />
+            </button>
+            <span className={clsx(
+              "text-sm font-medium transition-colors",
+              billingPeriod === "yearly" ? "text-dark" : "text-dark-lighter"
+            )}>
+              Yearly
+            </span>
+          </div>
           {billingPeriod === "yearly" && (
-            <Badge variant="warning" className="text-xs ml-2">
-              Save up to 33%
+            <Badge variant="warning" className="text-xs">
+              Save 33%
             </Badge>
           )}
         </motion.div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {pricingPlans.map((plan, index) => (
             <motion.div
               key={plan.name}

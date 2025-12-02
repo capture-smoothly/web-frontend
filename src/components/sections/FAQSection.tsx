@@ -15,15 +15,15 @@ const faqItems = [
   },
   {
     question: "What's included in the free plan?",
-    answer: "The free plan gives you:\n• Chrome extension access\n• 5 screenshots per day\n• 3 basic gradient themes\n• Visible area screenshots\n• Basic annotations (arrows, rectangles)\n• Exports with a small watermark\n\nIt's genuinely useful for light usage. No credit card needed to start.",
+    answer: "The free plan gives you:\n• Web editor access\n• Chrome extension access\n• Unlimited screenshots\n• 10 basic themes\n• Unlimited full page screenshots\n• Text-to-image converter (5 per day)\n• Exports with a small watermark\n\nIt's genuinely useful for regular usage. No credit card needed to start.",
   },
   {
-    question: "What's the difference between Pro and Master?",
-    answer: "Pro ($3/month or $24/year) unlocks all extension features - unlimited screenshots, full-page capture, all 35+ themes, blur/pixelate tools, no watermark.\n\nMaster ($4/month or $36/year) includes everything in Pro PLUS full web editor access, 2GB cloud storage, shareable links, priority support, and the ability to request new features. If you edit screenshots regularly, Master pays for itself.",
+    question: "What does Pro plan include?",
+    answer: "Pro ($3/month or $24/year) includes everything in Free PLUS:\n• Annotations tools\n• Web editor full access\n• Highest quality export\n• Premium themes (120+)\n• Custom theme creation\n• Blur & pixelate tools\n• Cloud storage (coming soon)\n• Priority support (24 hours)\n• Request new features\n• Export to multiple formats (PDF, JPG) - coming soon\n• Early access to new tools - coming soon",
   },
   {
-    question: "Can I try Pro or Master before paying?",
-    answer: "Absolutely. Both Pro and Master come with a 7-day free trial. Full access, no restrictions. Cancel before the trial ends and you won't be charged anything.",
+    question: "Can I try Pro before paying?",
+    answer: "Absolutely. Pro comes with a 7-day free trial. Full access, no restrictions. Cancel before the trial ends and you won't be charged anything.",
   },
   {
     question: "How does the text-to-image feature work?",
@@ -31,11 +31,11 @@ const faqItems = [
   },
   {
     question: "What about full-page screenshots? How long can they be?",
-    answer: "Our full-page capture handles pages up to 32,767 pixels tall - that's basically any webpage you'll encounter. The extension scrolls through the page automatically and stitches everything together. You'll see a progress indicator while it works. Takes a few seconds for really long pages.",
+    answer: "Our full-page capture (available in both Free and Pro plans) handles pages up to 32,767 pixels tall - that's basically any webpage you'll encounter. The extension scrolls through the page automatically and stitches everything together. You'll see a progress indicator while it works. Takes a few seconds for really long pages.",
   },
   {
     question: "Is my data private?",
-    answer: "Very. Screenshots are processed locally in your browser by default. We don't see them unless you explicitly use cloud features (Master plan). Even then, your images are encrypted and only accessible by you. We don't train AI on your content or sell your data. Ever.",
+    answer: "Very. Screenshots are processed locally in your browser by default. We don't see them unless you explicitly use cloud features (Pro plan). Even then, your images are encrypted and only accessible by you. We don't train AI on your content or sell your data. Ever.",
   },
   {
     question: "What keyboard shortcuts are available?",
@@ -51,7 +51,7 @@ const faqItems = [
   },
   {
     question: "Will you add more features?",
-    answer: "We're actively building. Video/GIF recording, OCR text extraction, team sharing, and API access are all on the roadmap. Master plan users can request features directly and get early access to new tools.",
+    answer: "We're actively building. Video/GIF recording, OCR text extraction, team sharing, and API access are all on the roadmap. Pro plan users can request features directly and get early access to new tools.",
   },
 ];
 
