@@ -89,7 +89,7 @@ export const HowItWorksSection: React.FC = () => {
               {/* Video Demo */}
               <div className="relative w-full max-w-5xl aspect-video rounded-xl overflow-hidden shadow-2xl">
                 <iframe
-                  src={tool.videoUrl}
+                  src={`${tool.videoUrl}?autoplay=1&mute=1`}
                   title={`${tool.title} Demo`}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
