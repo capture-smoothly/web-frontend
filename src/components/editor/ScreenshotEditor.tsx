@@ -1655,8 +1655,8 @@ export default function ScreenshotEditor() {
   const [editorTheme, setEditorTheme] = useState<"light" | "dark">("dark");
   const [selectedTheme, setSelectedTheme] = useState<ThemeType>("figma");
   const [showThemeSelector, setShowThemeSelector] = useState(false);
-  const [customColor, setCustomColor] = useState("#D8FF00");
-  const [customColor2, setCustomColor2] = useState("#FF00FF");
+  const [customColor, setCustomColor] = useState("#ededed");
+  const [customColor2, setCustomColor2] = useState("#eb00eb");
   const [customColor3, setCustomColor3] = useState("#731ec8");
   const [customColor4, setCustomColor4] = useState("#1818dc");
   const [gradientType, setGradientType] = useState<
