@@ -20,12 +20,12 @@ export default function Home() {
       <SnapshotNavbar />
       <main>
         <HeroSection />
-        <ExtensionPromotionSection />
+        {/* <ExtensionPromotionSection /> */}
         <ProblemSection />
         <HowItWorksSection />
         <SolutionSection />
         <FeatureShowcaseSection />
-        <ComparisonSection />
+        {/* <ComparisonSection /> */}
         <UseCasesSection />
         <PricingSection />
         <TestimonialsSection />

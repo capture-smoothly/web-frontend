@@ -17,11 +17,14 @@ interface PricingPlan {
   monthlyPrice: number;
   yearlyPrice: number;
   yearlyTotal: number;
+  originalMonthlyPrice?: number;
+  originalYearlyTotal?: number;
   features: { text: string; included: boolean; highlight?: boolean }[];
   cta: string;
   ctaVariant: "primary" | "secondary" | "outline";
   popular?: boolean;
   badge?: string;
+  limitedOffer?: boolean;
 }
 
 const pricingPlans: PricingPlan[] = [
@@ -33,68 +36,52 @@ const pricingPlans: PricingPlan[] = [
     yearlyPrice: 0,
     yearlyTotal: 0,
     features: [
+      { text: "Web editor access", included: true },
       { text: "Chrome extension access", included: true },
-      { text: "5 screenshots per day", included: true },
-      { text: "3 basic themes", included: true },
-      { text: "Visible area capture only", included: true },
-      { text: "Basic annotations (arrows, boxes)", included: true },
+      { text: "Unlimited screenshots", included: true },
+      { text: "10 basic themes", included: true },
       { text: "Watermark on exports", included: true },
-      { text: "Full-page screenshots", included: false },
-      { text: "Web editor access", included: false },
-      { text: "Premium themes (35+)", included: false },
+      { text: "Unlimited full page screenshots", included: true },
+      { text: "Text-to-image converter (5 per day)", included: true },
+      { text: "Web editor access", included: true },
+      { text: "Annotations tools", included: false },
+      { text: "Highest quality export", included: false },
+      { text: "Premium themes (120+)", included: false },
+      { text: "Custom theme", included: false },
       { text: "Blur & pixelate tools", included: false },
       { text: "Cloud storage", included: false },
       { text: "Priority support", included: false },
+      { text: "Request new features", included: false },
+      { text: "Export to multiple formats (PDF, JPG)", included: false },
     ],
     cta: "Get Started Free",
     ctaVariant: "outline",
   },
   {
     name: "Pro",
-    icon: <Chrome className="w-6 h-6" />,
-    description: "For creators who capture a lot",
-    monthlyPrice: 3,
-    yearlyPrice: 2,
-    yearlyTotal: 24,
-    features: [
-      { text: "Everything in Free, plus:", included: true, highlight: true },
-      { text: "Unlimited screenshots", included: true },
-      { text: "Full-page capture", included: true },
-      { text: "All 35+ premium themes", included: true },
-      { text: "Advanced annotations", included: true },
-      { text: "Blur & pixelate tools", included: true },
-      { text: "No watermark", included: true },
-      { text: "Text-to-image converter", included: true },
-      { text: "Custom colors & styles", included: true },
-      { text: "Email support", included: true },
-      { text: "Web editor access", included: false },
-      { text: "Cloud storage", included: false },
-    ],
-    cta: "Start 7-Day Free Trial",
-    ctaVariant: "secondary",
-    badge: "Extension Only",
-  },
-  {
-    name: "Master",
     icon: <Crown className="w-6 h-6" />,
     description: "Full power for professionals",
-    monthlyPrice: 4,
-    yearlyPrice: 3,
-    yearlyTotal: 36,
+    monthlyPrice: 2,
+    yearlyPrice: 1,
+    yearlyTotal: 12,
+    originalMonthlyPrice: 3,
+    originalYearlyTotal: 24,
     popular: true,
+    limitedOffer: true,
     features: [
-      { text: "Everything in Pro, plus:", included: true, highlight: true },
+      { text: "Everything in Free, plus:", included: true, highlight: true },
+      { text: "Annotations tools", included: true },
       { text: "Web editor full access", included: true },
-      { text: "Upload & edit any image", included: true },
-      { text: "2GB cloud storage", included: true },
-      { text: "Shareable screenshot links", included: true },
-      { text: "Priority support (24h response)", included: true },
+      { text: "Highest quality export", included: true },
+      { text: "Premium themes (120+)", included: true },
+      { text: "Custom theme", included: true },
+      { text: "Blur & pixelate tools", included: true },
+      { text: "Cloud storage", included: true },
+      { text: "Priority support (24 hours)", included: true },
       { text: "Request new features", included: true },
-      { text: "Early access to new tools", included: true },
-      { text: "Export to multiple formats", included: true },
-      { text: "Batch processing (coming soon)", included: true },
-      { text: "Team sharing (coming soon)", included: true },
-      { text: "API access (coming soon)", included: true },
+      { text: "Cloud storage (Coming soon)", included: true },
+      { text: "Export to multiple formats (PDF, JPG) (Coming Soon)", included: true },
+      { text: "Early access to new tools (Coming Soon)", included: true },
     ],
     cta: "Start 7-Day Free Trial",
     ctaVariant: "primary",
@@ -170,7 +157,7 @@ export const PricingSection: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-dark mb-4">
             Pick Your Plan
@@ -180,51 +167,75 @@ export const PricingSection: React.FC = () => {
           </p>
         </motion.div>
 
+        {/* Limited Offer Banner */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="max-w-3xl mx-auto mb-8"
+        >
+          <div className="bg-gradient-to-r from-teal/10 via-coral/10 to-teal/10 border-2 border-teal/30 rounded-2xl p-6 text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <PartyPopper className="w-5 h-5 text-coral" />
+              <h3 className="text-lg md:text-xl font-bold text-dark">
+                Launch Special: First 100 Users Only!
+              </h3>
+              <PartyPopper className="w-5 h-5 text-coral" />
+            </div>
+            <p className="text-dark-lighter text-sm md:text-base">
+              Get <span className="font-bold text-teal">50% OFF</span> Pro plan forever - Lock in your discount now before we reach capacity!
+            </p>
+          </div>
+        </motion.div>
+
         {/* Billing Toggle */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex items-center justify-center gap-4 mb-12"
+          className="flex flex-col items-center justify-center gap-3 mb-16"
         >
-          <span className={clsx(
-            "text-sm font-medium transition-colors",
-            billingPeriod === "monthly" ? "text-dark" : "text-dark-lighter"
-          )}>
-            Monthly
-          </span>
-          <button
-            onClick={() => setBillingPeriod(billingPeriod === "monthly" ? "yearly" : "monthly")}
-            className={clsx(
-              "relative w-14 h-7 rounded-full transition-colors duration-300",
-              billingPeriod === "yearly" ? "bg-coral" : "bg-gray-300"
-            )}
-          >
-            <motion.div
-              layout
-              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          <div className="flex items-center gap-4">
+            <span className={clsx(
+              "text-sm font-medium transition-colors",
+              billingPeriod === "monthly" ? "text-dark" : "text-dark-lighter"
+            )}>
+              Monthly
+            </span>
+            <button
+              onClick={() => setBillingPeriod(billingPeriod === "monthly" ? "yearly" : "monthly")}
               className={clsx(
-                "absolute top-1 w-5 h-5 bg-white rounded-full shadow-md",
-                billingPeriod === "yearly" ? "left-8" : "left-1"
+                "relative w-14 h-7 rounded-full transition-colors duration-300",
+                billingPeriod === "yearly" ? "bg-coral" : "bg-gray-300"
               )}
-            />
-          </button>
-          <span className={clsx(
-            "text-sm font-medium transition-colors",
-            billingPeriod === "yearly" ? "text-dark" : "text-dark-lighter"
-          )}>
-            Yearly
-          </span>
+            >
+              <motion.div
+                layout
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                className={clsx(
+                  "absolute top-1 w-5 h-5 bg-white rounded-full shadow-md",
+                  billingPeriod === "yearly" ? "left-8" : "left-1"
+                )}
+              />
+            </button>
+            <span className={clsx(
+              "text-sm font-medium transition-colors",
+              billingPeriod === "yearly" ? "text-dark" : "text-dark-lighter"
+            )}>
+              Yearly
+            </span>
+          </div>
           {billingPeriod === "yearly" && (
-            <Badge variant="warning" className="text-xs ml-2">
-              Save up to 33%
+            <Badge variant="warning" className="text-xs">
+              Save 33%
             </Badge>
           )}
         </motion.div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {pricingPlans.map((plan, index) => (
             <motion.div
               key={plan.name}
@@ -240,15 +251,22 @@ export const PricingSection: React.FC = () => {
                   : "border-gray-200 hover:border-coral/30"
               )}
             >
-              {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <Badge variant="warning" className="text-xs px-4 py-1.5 shadow-lg">
-                    MOST POPULAR
-                  </Badge>
+              {(plan.popular || plan.limitedOffer) && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
+                  {plan.popular && (
+                    <Badge variant="warning" className="text-xs px-4 py-1.5 shadow-lg whitespace-nowrap">
+                      MOST POPULAR
+                    </Badge>
+                  )}
+                  {plan.limitedOffer && (
+                    <Badge variant="warning" className="text-xs px-3 py-1.5 shadow-lg whitespace-nowrap">
+                      🎉 FIRST 100 USERS
+                    </Badge>
+                  )}
                 </div>
               )}
 
-              {plan.badge && !plan.popular && (
+              {plan.badge && !plan.popular && !plan.limitedOffer && (
                 <div className="absolute -top-3 right-4">
                   <Badge variant="info" className="text-xs px-3 py-1">
                     {plan.badge}
@@ -270,6 +288,14 @@ export const PricingSection: React.FC = () => {
 
               {/* Price */}
               <div className="text-center mb-6">
+                {plan.limitedOffer && typeof getPrice(plan) === "number" && (
+                  <div className="mb-2">
+                    <span className="text-2xl text-gray-400 line-through">
+                      ${billingPeriod === "monthly" ? plan.originalMonthlyPrice : plan.originalYearlyTotal && billingPeriod === "yearly" ? Math.round(plan.originalYearlyTotal / 12) : getPrice(plan)}
+                    </span>
+                    <span className="text-dark-lighter text-sm ml-1">/month</span>
+                  </div>
+                )}
                 <div className="flex items-end justify-center gap-1">
                   {typeof getPrice(plan) === "number" ? (
                     <>
@@ -281,13 +307,28 @@ export const PricingSection: React.FC = () => {
                   )}
                 </div>
                 {billingPeriod === "yearly" && plan.yearlyTotal > 0 && (
-                  <p className="text-sm text-teal font-medium mt-2">
-                    ${plan.yearlyTotal}/year (Save ${getSavings(plan)})
-                  </p>
+                  <>
+                    {plan.limitedOffer && plan.originalYearlyTotal && (
+                      <p className="text-sm text-gray-400 line-through mt-1">
+                        Was ${plan.originalYearlyTotal}/year
+                      </p>
+                    )}
+                    <p className={clsx(
+                      "text-sm font-medium mt-2",
+                      plan.limitedOffer ? "text-teal" : "text-teal"
+                    )}>
+                      ${plan.yearlyTotal}/year {plan.limitedOffer ? `(Save $${plan.originalYearlyTotal ? plan.originalYearlyTotal - plan.yearlyTotal : getSavings(plan)})` : `(Save $${getSavings(plan)})`}
+                    </p>
+                  </>
                 )}
-                {billingPeriod === "monthly" && plan.monthlyPrice > 0 && (
+                {billingPeriod === "monthly" && plan.monthlyPrice > 0 && !plan.limitedOffer && (
                   <p className="text-xs text-dark-lighter mt-2">
                     or ${plan.yearlyTotal}/year if billed annually
+                  </p>
+                )}
+                {billingPeriod === "monthly" && plan.limitedOffer && (
+                  <p className="text-xs text-teal font-medium mt-2">
+                    Only ${plan.yearlyTotal}/year if billed annually
                   </p>
                 )}
               </div>

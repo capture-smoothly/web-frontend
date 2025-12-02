@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "motion/react";
+import Link from "next/link";
 import {
   Cloud,
   Video,
@@ -22,16 +23,15 @@ import {
 
 const roadmapPhases = [
   {
-    phase: "Phase 1: Launch (December 2025)",
+    phase: "Phase 1: Launch (December 2025) - Done!",
     features: [
       { icon: Chrome, label: "Chrome Store publication" },
-      { icon: CreditCard, label: "Payment integration with Paddle" },
       { icon: Mail, label: "Email support system" },
       { icon: Globe, label: "Landing page with documentation" },
     ],
   },
   {
-    phase: "Phase 2: Q1 2025",
+    phase: "Phase 2: Q1 2026",
     features: [
       { icon: Cloud, label: "Cloud storage with shareable links" },
       { icon: Video, label: "Video & GIF screen recording" },
@@ -39,7 +39,7 @@ const roadmapPhases = [
     ],
   },
   {
-    phase: "Phase 3: Q2 2025",
+    phase: "Phase 3: Q2 2026",
     features: [
       { icon: Link2, label: "Slack & Microsoft Teams integration" },
       { icon: Users, label: "Real-time team collaboration" },
@@ -117,9 +117,9 @@ export const RoadmapSection: React.FC = () => {
           className="text-center mt-12 text-dark-lighter"
         >
           Have a feature request?{" "}
-          <button className="text-primary font-semibold hover:underline">
+          <Link href="/support" className="text-primary font-semibold hover:underline">
             Let us know!
-          </button>
+          </Link>
         </motion.p>
       </div>
     </section>

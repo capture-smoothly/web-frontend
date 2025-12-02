@@ -10,14 +10,16 @@ const mainTools = [
     title: "Screenshot Tool",
     description: "Capture any part of your screen instantly with keyboard shortcuts. Full page, visible area, or custom selection - you're in control.",
     gradient: "from-coral/20 to-peach/20",
-    iconColor: "text-coral",
+    iconColor: "text-dark",
+    videoUrl: "https://www.youtube.com/embed/SfoJwGpyH_I",
   },
   {
     icon: MousePointerClick,
     title: "Text-to-Image Creator",
     description: "Select any text on a webpage and transform it into beautiful, shareable images in seconds. Choose from 35+ professional gradient themes. Perfect for social media posts, quotes, and visual content that gets engagement.",
     gradient: "from-teal/20 to-mint/20",
-    iconColor: "text-teal",
+    iconColor: "text-dark",
+    videoUrl: "https://www.youtube.com/embed/Hl5zfZ5LqdE",
   },
 ];
 
@@ -44,11 +46,11 @@ const steps = [
 
 export const HowItWorksSection: React.FC = () => {
   return (
-    <section className="py-20 md:py-32 bg-gradient-cta text-white overflow-hidden relative">
+    <section className="py-20 md:py-32 bg-gradient-to-br from-orange-50 to-peach/20 overflow-hidden relative">
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-coral/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-orange-100/50 rounded-full blur-3xl" />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -59,16 +61,16 @@ export const HowItWorksSection: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-dark">
             How It Works
           </h2>
-          <p className="text-xl text-white/80 max-w-3xl mx-auto">
+          <p className="text-xl text-dark-lighter max-w-3xl mx-auto">
             Two powerful tools, infinite possibilities
           </p>
         </motion.div>
 
         {/* Main Tools Section */}
-        <div className="grid md:grid-cols-2 gap-8 mb-20">
+        <div className="space-y-12 mb-20">
           {mainTools.map((tool, index) => (
             <motion.div
               key={index}
@@ -76,13 +78,24 @@ export const HowItWorksSection: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.2 }}
-              className={`relative bg-gradient-to-br ${tool.gradient} backdrop-blur-sm border border-white/20 rounded-2xl p-8 hover:scale-105 transition-transform duration-300`}
+              className={`relative bg-gradient-to-br ${tool.gradient} backdrop-blur-sm border border-white/20 rounded-2xl p-8 md:p-12 hover:scale-[1.02] transition-transform duration-300`}
             >
-              <div className={`w-16 h-16 rounded-xl bg-white/10 flex items-center justify-center mb-6 ${tool.iconColor}`}>
+              <div className={`w-16 h-16 rounded-xl bg-white flex items-center justify-center mb-6 ${tool.iconColor}`}>
                 <tool.icon className="w-8 h-8" />
               </div>
-              <h3 className="text-2xl font-bold mb-4">{tool.title}</h3>
-              <p className="text-white/90 text-lg leading-relaxed">{tool.description}</p>
+              <h3 className="text-2xl md:text-3xl font-bold mb-4 text-dark">{tool.title}</h3>
+              <p className="text-dark-lighter text-lg leading-relaxed mb-8 max-w-4xl">{tool.description}</p>
+
+              {/* Video Demo */}
+              <div className="relative w-full max-w-5xl aspect-video rounded-xl overflow-hidden shadow-2xl">
+                <iframe
+                  src={tool.videoUrl}
+                  title={`${tool.title} Demo`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full border-0"
+                />
+              </div>
             </motion.div>
           ))}
         </div>
@@ -95,7 +108,7 @@ export const HowItWorksSection: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h3 className="text-3xl md:text-4xl font-bold mb-4">
+          <h3 className="text-3xl md:text-4xl font-bold mb-4 text-dark">
             From Capture to Share in 3 Simple Steps
           </h3>
         </motion.div>
@@ -104,13 +117,13 @@ export const HowItWorksSection: React.FC = () => {
         <div className="hidden md:block">
           <div className="relative">
             {/* Connection Line */}
-            <div className="absolute top-16 left-0 right-0 h-1 bg-white/20">
+            <div className="absolute top-16 left-0 right-0 h-1 bg-orange-200">
               <motion.div
                 initial={{ width: 0 }}
                 whileInView={{ width: "100%" }}
                 viewport={{ once: true }}
                 transition={{ duration: 1.5, delay: 0.3 }}
-                className="h-full bg-white/60"
+                className="h-full bg-coral"
               />
             </div>
 
@@ -125,14 +138,14 @@ export const HowItWorksSection: React.FC = () => {
                   className="relative"
                 >
                   <div className="flex flex-col items-center text-center">
-                    <div className="relative z-10 w-32 h-32 rounded-full bg-white/10 backdrop-blur-sm border-4 border-white/30 flex items-center justify-center mb-6">
-                      <div className="absolute -top-3 -right-3 w-10 h-10 rounded-full bg-white text-primary font-bold flex items-center justify-center text-xl">
+                    <div className="relative z-10 w-32 h-32 rounded-full bg-white border-4 border-coral/30 flex items-center justify-center mb-6">
+                      <div className="absolute -top-3 -right-3 w-10 h-10 rounded-full bg-coral text-white font-bold flex items-center justify-center text-xl">
                         {step.number}
                       </div>
-                      <step.icon className="w-12 h-12" />
+                      <step.icon className="w-12 h-12 text-coral" />
                     </div>
-                    <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
-                    <p className="text-white/90 leading-relaxed">{step.description}</p>
+                    <h3 className="text-2xl font-bold mb-3 text-dark">{step.title}</h3>
+                    <p className="text-dark-lighter leading-relaxed">{step.description}</p>
                   </div>
                 </motion.div>
               ))}
@@ -153,29 +166,29 @@ export const HowItWorksSection: React.FC = () => {
             >
               {/* Timeline line */}
               {index < steps.length - 1 && (
-                <div className="absolute left-12 top-24 bottom-0 w-1 bg-white/20">
+                <div className="absolute left-12 top-24 bottom-0 w-1 bg-orange-200">
                   <motion.div
                     initial={{ height: 0 }}
                     whileInView={{ height: "100%" }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8, delay: index * 0.3 }}
-                    className="w-full bg-white/60"
+                    className="w-full bg-coral"
                   />
                 </div>
               )}
 
               <div className="relative z-10 flex-shrink-0">
-                <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-sm border-4 border-white/30 flex items-center justify-center">
-                  <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-white text-primary font-bold flex items-center justify-center">
+                <div className="w-24 h-24 rounded-full bg-white border-4 border-coral/30 flex items-center justify-center">
+                  <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-coral text-white font-bold flex items-center justify-center">
                     {step.number}
                   </div>
-                  <step.icon className="w-10 h-10" />
+                  <step.icon className="w-10 h-10 text-coral" />
                 </div>
               </div>
 
               <div className="flex-1 pt-2">
-                <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
-                <p className="text-white/90 leading-relaxed">{step.description}</p>
+                <h3 className="text-2xl font-bold mb-3 text-dark">{step.title}</h3>
+                <p className="text-dark-lighter leading-relaxed">{step.description}</p>
               </div>
             </motion.div>
           ))}
