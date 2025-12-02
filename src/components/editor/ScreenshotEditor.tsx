@@ -4345,12 +4345,13 @@ export default function ScreenshotEditor() {
                   setActiveTool("select");
                   setPanModeEnabled(false);
                 }}
-                tooltip="Select (V)"
+                tooltip="Select Tool (V)"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
                 style={{
                   padding: "8px 12px",
+                  fontSize: "13px",
                   cursor: "pointer",
                   backgroundColor:
                     activeTool === "select" && !panModeEnabled
@@ -4362,6 +4363,12 @@ export default function ScreenshotEditor() {
                       : colors.textMuted,
                   border: "none",
                   borderRadius: "6px",
+                  transition: "all 0.2s",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px",
                 }}
               >
                 <svg
@@ -4372,6 +4379,7 @@ export default function ScreenshotEditor() {
                 >
                   <path d="M2 2l12 5-5 1-1 5z" />
                 </svg>
+                <span style={{ fontSize: "10px", fontWeight: 500 }}>Select</span>
               </TooltipButton>
 
               {/* Pan Tool */}
@@ -4383,17 +4391,24 @@ export default function ScreenshotEditor() {
                     showNotification("Click and drag to pan around the canvas");
                   }
                 }}
-                tooltip="Pan (Space)"
+                tooltip="Pan Tool (H) - Hold Space anytime to pan"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
                 style={{
                   padding: "8px 12px",
+                  fontSize: "13px",
                   cursor: "pointer",
                   backgroundColor: panModeEnabled ? "#3B82F6" : colors.buttonBg,
                   color: panModeEnabled ? "white" : colors.textMuted,
                   border: "none",
                   borderRadius: "6px",
+                  transition: "all 0.2s",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px",
                 }}
               >
                 <svg
@@ -4406,6 +4421,7 @@ export default function ScreenshotEditor() {
                 >
                   <path d="M8 2v3M5 8H2M14 8h-3M8 11v3M4.5 4.5l2 2M11.5 4.5l-2 2M4.5 11.5l2-2M11.5 11.5l-2-2" />
                 </svg>
+                <span style={{ fontSize: "10px", fontWeight: 500 }}>Move</span>
               </TooltipButton>
 
               {/* Crop Tool */}
@@ -4424,18 +4440,25 @@ export default function ScreenshotEditor() {
                     );
                   }
                 }}
-                tooltip="Crop (C)"
+                tooltip="Crop Tool (C)"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
                 style={{
                   padding: "8px 12px",
+                  fontSize: "13px",
                   cursor: "pointer",
                   backgroundColor:
                     activeTool === "crop" ? "#3B82F6" : colors.buttonBg,
                   color: activeTool === "crop" ? "white" : colors.textMuted,
                   border: "none",
                   borderRadius: "6px",
+                  transition: "all 0.2s",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px",
                 }}
               >
                 <svg
@@ -4446,6 +4469,7 @@ export default function ScreenshotEditor() {
                 >
                   <path d="M11 2v3h3v1h-3v4h-1V6H6v4H5V6H2V5h3V2h1v3h4V2h1z" />
                 </svg>
+                <span style={{ fontSize: "10px", fontWeight: 500 }}>Crop</span>
               </TooltipButton>
             </div>
 
@@ -4477,6 +4501,11 @@ export default function ScreenshotEditor() {
                 border: "none",
                 borderRadius: "6px",
                 marginRight: "8px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "4px",
               }}
             >
               <svg
@@ -4505,43 +4534,43 @@ export default function ScreenshotEditor() {
                   opacity="0.5"
                 />
               </svg>
+              <span style={{ fontSize: "10px", fontWeight: 500 }}>
+                {showBackground ? "Hide BG" : "Show BG"}
+              </span>
             </TooltipButton>
 
             {/* Theme Selector */}
             <TooltipButton
               onClick={() => {
                 if (!showBackground) {
-                  alert("Add background to use this feature");
                   return;
                 }
                 setShowThemeSelector(!showThemeSelector);
               }}
               tooltip={
-                showBackground
-                  ? "Change Background Color"
-                  : "Add background to use this feature"
+                !showBackground
+                  ? "Enable background to use this feature"
+                  : "Change Background Color"
               }
               tooltipBg={colors.tooltipBg}
               tooltipText={colors.textSecondary}
               tooltipBorder={colors.border}
               style={{
-                padding: "8px 14px",
-                cursor: showBackground ? "pointer" : "not-allowed",
-                backgroundColor: showThemeSelector
-                  ? "#3B82F6"
-                  : colors.buttonBg,
-                color: showThemeSelector
-                  ? "white"
-                  : showBackground
-                  ? colors.textSecondary
-                  : colors.textMuted,
+                padding: "8px 12px",
+                fontSize: "13px",
+                cursor: !showBackground ? "not-allowed" : "pointer",
+                backgroundColor: showThemeSelector ? "#3B82F6" : colors.buttonBg,
+                color: showThemeSelector ? "white" : colors.textMuted,
                 border: "none",
                 borderRadius: "6px",
                 marginRight: "8px",
+                transition: "all 0.2s",
                 display: "flex",
+                flexDirection: "column",
                 alignItems: "center",
-                gap: "6px",
-                opacity: showBackground ? 1 : 0.5,
+                justifyContent: "center",
+                gap: "4px",
+                opacity: !showBackground ? 0.5 : 1,
               }}
             >
               {/* Paint palette icon */}
@@ -4561,7 +4590,9 @@ export default function ScreenshotEditor() {
                 <circle cx="6.5" cy="12.5" r="0.5" fill="currentColor" />
                 <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.555C21.965 6.012 17.461 2 12 2z" />
               </svg>
-              <span style={{ fontSize: "13px", fontWeight: 500 }}>Theme</span>
+              <span style={{ fontSize: "10px", fontWeight: 500 }}>
+                Background
+              </span>
             </TooltipButton>
 
             {/* Width Control */}
@@ -4569,33 +4600,37 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => {
                   if (!showBackground) {
-                    alert("Add background to use this feature");
                     return;
                   }
                   setShowWidthControl(!showWidthControl);
                 }}
                 tooltip={
-                  showBackground
-                    ? `Width: ${Math.round(calculateCardWidth(cardWidth))}px`
-                    : "Add background to use this feature"
+                  !showBackground
+                    ? "Enable background to use this feature"
+                    : `Adjust Width - Current: ${Math.round(
+                        calculateCardWidth(cardWidth)
+                      )}px`
                 }
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
                 style={{
                   padding: "8px 12px",
-                  cursor: showBackground ? "pointer" : "not-allowed",
+                  fontSize: "13px",
+                  cursor: !showBackground ? "not-allowed" : "pointer",
                   backgroundColor: showWidthControl
                     ? "#3B82F6"
                     : colors.buttonBg,
-                  color: showWidthControl
-                    ? "white"
-                    : showBackground
-                    ? colors.textMuted
-                    : colors.textMuted,
+                  color: showWidthControl ? "white" : colors.textMuted,
                   border: "none",
                   borderRadius: "6px",
-                  opacity: showBackground ? 1 : 0.5,
+                  transition: "all 0.2s",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px",
+                  opacity: !showBackground ? 0.5 : 1,
                 }}
               >
                 <svg
@@ -4608,6 +4643,7 @@ export default function ScreenshotEditor() {
                 >
                   <path d="M2 8h12M2 8l2-2M2 8l2 2M14 8l-2-2M14 8l-2 2" />
                 </svg>
+                <span style={{ fontSize: "10px", fontWeight: 500 }}>Width</span>
               </TooltipButton>
               {showWidthControl && (
                 <div
@@ -4668,35 +4704,37 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={() => {
                   if (!showBackground) {
-                    alert("Add background to use this feature");
                     return;
                   }
                   setShowPaddingControl(!showPaddingControl);
                 }}
                 tooltip={
-                  showBackground
-                    ? `Padding: ${Math.round(
+                  !showBackground
+                    ? "Enable background to use this feature"
+                    : `Adjust Padding - Current: ${Math.round(
                         calculateCardPadding(cardPadding)
                       )}px`
-                    : "Add background to use this feature"
                 }
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
                 style={{
                   padding: "8px 12px",
-                  cursor: showBackground ? "pointer" : "not-allowed",
+                  fontSize: "13px",
+                  cursor: !showBackground ? "not-allowed" : "pointer",
                   backgroundColor: showPaddingControl
                     ? "#3B82F6"
                     : colors.buttonBg,
-                  color: showPaddingControl
-                    ? "white"
-                    : showBackground
-                    ? colors.textMuted
-                    : colors.textMuted,
+                  color: showPaddingControl ? "white" : colors.textMuted,
                   border: "none",
                   borderRadius: "6px",
-                  opacity: showBackground ? 1 : 0.5,
+                  transition: "all 0.2s",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px",
+                  opacity: !showBackground ? 0.5 : 1,
                 }}
               >
                 <svg
@@ -4717,6 +4755,7 @@ export default function ScreenshotEditor() {
                   />
                   <rect x="5" y="5" width="6" height="6" fill="currentColor" />
                 </svg>
+                <span style={{ fontSize: "10px", fontWeight: 500 }}>Spacing</span>
               </TooltipButton>
               {showPaddingControl && (
                 <div
@@ -4777,18 +4816,25 @@ export default function ScreenshotEditor() {
               <TooltipButton
                 onClick={handleUndo}
                 disabled={!canUndo}
-                tooltip="Undo (Ctrl+Z)"
+                tooltip="Undo (Ctrl/Cmd + Z)"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
                 style={{
                   padding: "8px 12px",
+                  fontSize: "13px",
                   cursor: canUndo ? "pointer" : "not-allowed",
                   backgroundColor: colors.buttonBg,
                   color: canUndo ? colors.textSecondary : colors.textMuted,
                   border: "none",
                   borderRadius: "6px",
+                  transition: "all 0.2s",
                   opacity: canUndo ? 1 : 0.5,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px",
                 }}
               >
                 <svg
@@ -4799,23 +4845,31 @@ export default function ScreenshotEditor() {
                 >
                   <path d="M3 8h10M8 3l-5 5 5 5" />
                 </svg>
+                <span style={{ fontSize: "10px", fontWeight: 500 }}>Undo</span>
               </TooltipButton>
 
               <TooltipButton
                 onClick={handleRedo}
                 disabled={!canRedo}
-                tooltip="Redo (Ctrl+Shift+Z)"
+                tooltip="Redo (Ctrl/Cmd + Shift + Z)"
                 tooltipBg={colors.tooltipBg}
                 tooltipText={colors.textSecondary}
                 tooltipBorder={colors.border}
                 style={{
                   padding: "8px 12px",
+                  fontSize: "13px",
                   cursor: canRedo ? "pointer" : "not-allowed",
                   backgroundColor: colors.buttonBg,
                   color: canRedo ? colors.textSecondary : colors.textMuted,
                   border: "none",
                   borderRadius: "6px",
+                  transition: "all 0.2s",
                   opacity: canRedo ? 1 : 0.5,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px",
                 }}
               >
                 <svg
@@ -4826,6 +4880,7 @@ export default function ScreenshotEditor() {
                 >
                   <path d="M3 8h10M8 3l5 5-5 5" />
                 </svg>
+                <span style={{ fontSize: "10px", fontWeight: 500 }}>Redo</span>
               </TooltipButton>
             </div>
 
@@ -4879,7 +4934,7 @@ export default function ScreenshotEditor() {
                 </TooltipButton>
               </div>
             ) : (
-              <div style={{ display: "flex", gap: "8px" }}>
+              <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                 {/* Window Chrome Toggle */}
                 <TooltipButton
                   onClick={() => {
@@ -4898,14 +4953,15 @@ export default function ScreenshotEditor() {
                   }}
                   tooltip={
                     includeWindowChrome
-                      ? "Hide Window Chrome"
-                      : "Show Window Chrome"
+                      ? "Disable window chrome in download"
+                      : "Enable window chrome in download"
                   }
                   tooltipBg={colors.tooltipBg}
                   tooltipText={colors.textSecondary}
                   tooltipBorder={colors.border}
                   style={{
                     padding: "8px 12px",
+                    fontSize: "13px",
                     cursor: "pointer",
                     backgroundColor: includeWindowChrome
                       ? "#3B82F6"
@@ -4913,6 +4969,12 @@ export default function ScreenshotEditor() {
                     color: includeWindowChrome ? "white" : colors.textMuted,
                     border: "none",
                     borderRadius: "6px",
+                    transition: "all 0.2s",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "4px",
                   }}
                 >
                   <svg
@@ -4929,9 +4991,10 @@ export default function ScreenshotEditor() {
                     <circle cx="6" cy="4.5" r="0.5" fill="currentColor" />
                     <circle cx="8" cy="4.5" r="0.5" fill="currentColor" />
                   </svg>
+                  <span style={{ fontSize: "10px", fontWeight: 500 }}>Chrome</span>
                 </TooltipButton>
 
-                {/* Theme Toggle */}
+                {/* Theme Toggle - show when window chrome is enabled */}
                 {includeWindowChrome && (
                   <TooltipButton
                     onClick={() => {
@@ -4951,39 +5014,88 @@ export default function ScreenshotEditor() {
                     }}
                     tooltip={
                       windowChromeTheme === "light"
-                        ? "Dark Chrome"
-                        : "Light Chrome"
+                        ? "Switch to dark theme"
+                        : "Switch to light theme"
                     }
                     tooltipBg={colors.tooltipBg}
                     tooltipText={colors.textSecondary}
                     tooltipBorder={colors.border}
                     style={{
                       padding: "8px 12px",
+                      fontSize: "13px",
                       cursor: "pointer",
                       backgroundColor: colors.buttonBg,
                       color: colors.textSecondary,
                       border: "none",
                       borderRadius: "6px",
+                      transition: "all 0.2s",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "4px",
                     }}
                   >
                     {windowChromeTheme === "light" ? (
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="currentColor"
-                      >
-                        <circle cx="8" cy="8" r="3" />
-                      </svg>
+                      <>
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          fill="currentColor"
+                        >
+                          <circle cx="8" cy="8" r="3" />
+                          <line
+                            x1="8"
+                            y1="1"
+                            x2="8"
+                            y2="3"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                          />
+                          <line
+                            x1="8"
+                            y1="13"
+                            x2="8"
+                            y2="15"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                          />
+                          <line
+                            x1="1"
+                            y1="8"
+                            x2="3"
+                            y2="8"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                          />
+                          <line
+                            x1="13"
+                            y1="8"
+                            x2="15"
+                            y2="8"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                          />
+                        </svg>
+                        <span style={{ fontSize: "10px", fontWeight: 500 }}>
+                          Light
+                        </span>
+                      </>
                     ) : (
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="currentColor"
-                      >
-                        <path d="M8 1C4.134 1 1 4.134 1 8s3.134 7 7 7 7-3.134 7-7-3.134-7-7-7z" />
-                      </svg>
+                      <>
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          fill="currentColor"
+                        >
+                          <path d="M8 1C4.134 1 1 4.134 1 8s3.134 7 7 7 7-3.134 7-7-3.134-7-7-7zm0 12.5c-3.038 0-5.5-2.462-5.5-5.5S4.962 2.5 8 2.5V8l3.89 3.89A5.474 5.474 0 018 13.5z" />
+                        </svg>
+                        <span style={{ fontSize: "10px", fontWeight: 500 }}>
+                          Dark
+                        </span>
+                      </>
                     )}
                   </TooltipButton>
                 )}
