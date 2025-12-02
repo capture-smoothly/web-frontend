@@ -1778,7 +1778,7 @@ function ThemeSelector({
             <button
               onClick={() =>
                 window.open(
-                  "https://youtu.be/_0s6b6V4Ybk?si=0p7_hbH6hd_5MIwV",
+                  "https://youtu.be/FMfCSW-DTKw?si=esACvhbXrT0Ea1hM",
                   "_blank"
                 )
               }
