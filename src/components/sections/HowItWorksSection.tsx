@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Camera, MousePointerClick, PenTool, Share2 } from "lucide-react";
 
@@ -43,6 +43,53 @@ const steps = [
     description: "Copy to clipboard, save as PNG/JPEG, or upload to cloud (coming soon). Your perfect screenshot is ready in seconds, not minutes.",
   },
 ];
+
+// Video Player Component with Intersection Observer
+const VideoPlayer: React.FC<{ videoUrl: string; title: string }> = ({ videoUrl, title }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const videoRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      {
+        threshold: 0.5, // Trigger when 50% of the video is visible
+      }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => {
+      if (videoRef.current) {
+        observer.unobserve(videoRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div ref={videoRef} className="relative w-full max-w-5xl aspect-video rounded-xl overflow-hidden shadow-2xl">
+      {isVisible ? (
+        <iframe
+          src={`${videoUrl}?autoplay=1&mute=1`}
+          title={title}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="absolute inset-0 w-full h-full border-0"
+        />
+      ) : (
+        <div className="absolute inset-0 w-full h-full bg-gray-200 flex items-center justify-center">
+          <span className="text-dark-lighter">Loading video...</span>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const HowItWorksSection: React.FC = () => {
   return (
@@ -87,15 +134,7 @@ export const HowItWorksSection: React.FC = () => {
               <p className="text-dark-lighter text-lg leading-relaxed mb-8 max-w-4xl">{tool.description}</p>
 
               {/* Video Demo */}
-              <div className="relative w-full max-w-5xl aspect-video rounded-xl overflow-hidden shadow-2xl">
-                <iframe
-                  src={`${tool.videoUrl}?autoplay=1&mute=1`}
-                  title={`${tool.title} Demo`}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="absolute inset-0 w-full h-full border-0"
-                />
-              </div>
+              <VideoPlayer videoUrl={tool.videoUrl} title={`${tool.title} Demo`} />
             </motion.div>
           ))}
         </div>
