@@ -234,6 +234,16 @@ export const HeroSection: React.FC = () => {
             ))}
           </motion.div> */}
 
+          {/* Demo Heading */}
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.45 }}
+            className="text-3xl md:text-4xl font-bold text-dark mb-6"
+          >
+            See the Web Editor in Action
+          </motion.h2>
+
           {/* Additional Text Before Video */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
