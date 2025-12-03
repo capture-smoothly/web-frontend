@@ -119,7 +119,7 @@ export const HeroSection: React.FC = () => {
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
-        <div className="text-center max-w-4xl mx-auto">
+        <div className="text-center max-w-5xl mx-auto">
           {/* Main Headline */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
@@ -141,9 +141,10 @@ export const HeroSection: React.FC = () => {
             className="text-xl md:text-2xl text-dark-lighter mb-8 leading-relaxed"
           >
             We have two tools, one is Browser Extension which lets you take
-            Screenshot of full webpage, turn text into beautiful graphics and
-            edit everything with pro tools &amp; Second is our Web Editor which
-            lets you upload any image and edit it with pro tools.
+            Screenshot of full webpage, select texts and turn them into
+            beautiful graphics &amp; Second is our Web Editor which lets you
+            upload any image and convert it into beautiful images using our pro
+            tools.
           </motion.p>
 
           {/* Platform Badges */}
