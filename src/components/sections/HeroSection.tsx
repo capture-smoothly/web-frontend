@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import {
@@ -13,13 +13,59 @@ import {
 } from "lucide-react";
 import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
-import Image from "next/image";
 
 const stats = [
   { label: "Active Users", value: "2K+" },
   { label: "Screenshots Taken", value: "50K+" },
   { label: "5-Star Reviews", value: "100+" },
 ];
+
+// Video Player Component with Intersection Observer
+const VideoPlayer: React.FC<{ videoUrl: string; title: string }> = ({ videoUrl, title }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const videoRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      {
+        threshold: 0.5, // Trigger when 50% of the video is visible
+      }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => {
+      if (videoRef.current) {
+        observer.unobserve(videoRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div ref={videoRef} className="relative w-full max-w-5xl aspect-video rounded-xl overflow-hidden shadow-2xl">
+      {isVisible ? (
+        <iframe
+          src={`${videoUrl}?autoplay=1&mute=1&loop=1&playlist=${videoUrl.split('/').pop()}`}
+          title={title}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="absolute inset-0 w-full h-full border-0"
+        />
+      ) : (
+        <div className="absolute inset-0 w-full h-full bg-gray-200 flex items-center justify-center">
+          <span className="text-dark-lighter">Loading video...</span>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const HeroSection: React.FC = () => {
   const router = useRouter();
@@ -178,62 +224,27 @@ export const HeroSection: React.FC = () => {
             ))}
           </motion.div> */}
 
+          {/* Additional Text Before Video */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-lg md:text-xl text-dark-lighter mb-8 leading-relaxed"
+          >
+            Convert boring images into professional beautiful HD quality images using our editor
+          </motion.p>
+
           {/* Hero Visual */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="mt-16 relative"
+            className="mt-8 relative flex justify-center"
           >
-            <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl shadow-colorful p-8 border-2 border-gradient-to-r from-coral/30 via-teal/30 to-accent/30">
-              <div className="relative rounded-2xl overflow-hidden">
-                <Image
-                  src="/demo/Beautiful_Screenshots.png"
-                  alt="Beautiful Screenshots Demo"
-                  width={1200}
-                  height={675}
-                  className="w-full h-auto rounded-2xl"
-                  priority
-                />
-              </div>
-
-              {/* Floating UI elements mockup */}
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="absolute -top-6 -right-6 bg-white rounded-2xl shadow-colorful p-4 border-2 border-coral/30"
-              >
-                <div className="flex items-center gap-2">
-                  <Chrome className="w-6 h-6 text-[#4285F4]" />
-                  <div className="text-left">
-                    <p className="text-xs font-semibold text-dark">Extension</p>
-                    <p className="text-xs text-teal">Quick Capture</p>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div
-                animate={{ y: [0, 10, 0] }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 1,
-                }}
-                className="absolute -bottom-4 -left-6 bg-white rounded-2xl shadow-colorful p-3 border-2 border-teal/30"
-              >
-                <div className="flex items-center gap-2">
-                  <Monitor className="w-5 h-5 text-teal" />
-                  <p className="text-xs text-dark-lighter font-medium">
-                    Web Editor
-                  </p>
-                </div>
-              </motion.div>
-            </div>
+            <VideoPlayer
+              videoUrl="https://www.youtube.com/embed/Jw-rS00rhXI"
+              title="Beautiful Screenshots Demo"
+            />
           </motion.div>
         </div>
 
