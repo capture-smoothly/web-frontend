@@ -8,7 +8,8 @@ const mainTools = [
   {
     icon: Camera,
     title: "Screenshot Tool",
-    description: "Capture any part of your screen instantly with keyboard shortcuts. Full page, visible area, or custom selection - you're in control.",
+    description:
+      "Capture any part of your screen instantly with keyboard shortcuts. Full page, visible area, or custom selection - you're in control.",
     gradient: "from-coral/20 to-peach/20",
     iconColor: "text-dark",
     videoUrl: "https://www.youtube.com/embed/SfoJwGpyH_I",
@@ -16,7 +17,8 @@ const mainTools = [
   {
     icon: MousePointerClick,
     title: "Text-to-Image Creator",
-    description: "Select any text on a webpage and transform it into beautiful, shareable images in seconds. Choose from 100+ professional gradient themes. Perfect for social media posts, quotes, and visual content that gets engagement.",
+    description:
+      "Select any text on a webpage and transform it into beautiful, shareable images in seconds. Choose from 100+ professional gradient themes. Perfect for social media posts, quotes, and visual content that gets engagement.",
     gradient: "from-teal/20 to-mint/20",
     iconColor: "text-dark",
     videoUrl: "https://www.youtube.com/embed/Hl5zfZ5LqdE",
@@ -28,24 +30,30 @@ const steps = [
     number: 1,
     icon: Camera,
     title: "Capture",
-    description: "Press Ctrl+Shift+Y for quick screenshot, or use Copy Capture mode to grab text from any webpage. Our two-point selection makes long content a breeze.",
+    description:
+      "Press Ctrl+Shift+Y for quick screenshot, or use Copy Capture mode to grab text from any webpage. Our two-point selection makes long content a breeze.",
   },
   {
     number: 2,
     icon: PenTool,
     title: "Edit",
-    description: "Annotate with arrows, blur sensitive info, highlight key points, or convert text into a themed snapshot. Your editing toolkit is always one click away.",
+    description:
+      "Annotate with arrows, blur sensitive info, highlight key points, or convert text into a themed snapshot. Your editing toolkit is always one click away.",
   },
   {
     number: 3,
     icon: Share2,
     title: "Share",
-    description: "Copy to clipboard, save as PNG/JPEG, or upload to cloud (coming soon). Your perfect screenshot is ready in seconds, not minutes.",
+    description:
+      "Copy to clipboard, save as PNG/JPEG, or upload to cloud (coming soon). Your perfect screenshot is ready in seconds, not minutes.",
   },
 ];
 
 // Video Player Component with Intersection Observer
-const VideoPlayer: React.FC<{ videoUrl: string; title: string }> = ({ videoUrl, title }) => {
+const VideoPlayer: React.FC<{ videoUrl: string; title: string }> = ({
+  videoUrl,
+  title,
+}) => {
   const [isVisible, setIsVisible] = useState(false);
   const videoRef = useRef<HTMLDivElement>(null);
 
@@ -73,10 +81,15 @@ const VideoPlayer: React.FC<{ videoUrl: string; title: string }> = ({ videoUrl, 
   }, []);
 
   return (
-    <div ref={videoRef} className="relative w-full max-w-5xl aspect-video rounded-xl overflow-hidden shadow-2xl">
+    <div
+      ref={videoRef}
+      className="relative w-full max-w-5xl aspect-video rounded-xl overflow-hidden shadow-2xl"
+    >
       {isVisible ? (
         <iframe
-          src={`${videoUrl}?autoplay=1&mute=1&loop=1&playlist=${videoUrl.split('/').pop()}`}
+          src={`${videoUrl}?autoplay=1&mute=1&loop=1&playlist=${videoUrl
+            .split("/")
+            .pop()}`}
           title={title}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
@@ -109,7 +122,7 @@ export const HowItWorksSection: React.FC = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-dark">
-            How It Works
+            How our Extension Works
           </h2>
           <p className="text-xl text-dark-lighter max-w-3xl mx-auto">
             Two powerful tools, infinite possibilities
@@ -125,16 +138,25 @@ export const HowItWorksSection: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.2 }}
-              className={`relative bg-gradient-to-br ${tool.gradient} backdrop-blur-sm border border-white/20 rounded-2xl p-8 md:p-12 hover:scale-[1.02] transition-transform duration-300`}
+              className={`relative bg-gradient-to-br ${tool.gradient} backdrop-blur-sm border border-white/20 rounded-2xl p-8 md:p-12 hover:scale-[1.02] transition-transform duration-300 text-center flex flex-col items-center`}
             >
-              <div className={`w-16 h-16 rounded-xl bg-white flex items-center justify-center mb-6 ${tool.iconColor}`}>
+              <div
+                className={`w-16 h-16 rounded-xl bg-white flex items-center justify-center mb-6 ${tool.iconColor}`}
+              >
                 <tool.icon className="w-8 h-8" />
               </div>
-              <h3 className="text-2xl md:text-3xl font-bold mb-4 text-dark">{tool.title}</h3>
-              <p className="text-dark-lighter text-lg leading-relaxed mb-8 max-w-4xl">{tool.description}</p>
+              <h3 className="text-2xl md:text-3xl font-bold mb-4 text-dark">
+                {tool.title}
+              </h3>
+              <p className="text-dark-lighter text-lg leading-relaxed mb-8 max-w-4xl">
+                {tool.description}
+              </p>
 
               {/* Video Demo */}
-              <VideoPlayer videoUrl={tool.videoUrl} title={`${tool.title} Demo`} />
+              <VideoPlayer
+                videoUrl={tool.videoUrl}
+                title={`${tool.title} Demo`}
+              />
             </motion.div>
           ))}
         </div>
@@ -183,8 +205,12 @@ export const HowItWorksSection: React.FC = () => {
                       </div>
                       <step.icon className="w-12 h-12 text-coral" />
                     </div>
-                    <h3 className="text-2xl font-bold mb-3 text-dark">{step.title}</h3>
-                    <p className="text-dark-lighter leading-relaxed">{step.description}</p>
+                    <h3 className="text-2xl font-bold mb-3 text-dark">
+                      {step.title}
+                    </h3>
+                    <p className="text-dark-lighter leading-relaxed">
+                      {step.description}
+                    </p>
                   </div>
                 </motion.div>
               ))}
@@ -226,8 +252,12 @@ export const HowItWorksSection: React.FC = () => {
               </div>
 
               <div className="flex-1 pt-2">
-                <h3 className="text-2xl font-bold mb-3 text-dark">{step.title}</h3>
-                <p className="text-dark-lighter leading-relaxed">{step.description}</p>
+                <h3 className="text-2xl font-bold mb-3 text-dark">
+                  {step.title}
+                </h3>
+                <p className="text-dark-lighter leading-relaxed">
+                  {step.description}
+                </p>
               </div>
             </motion.div>
           ))}

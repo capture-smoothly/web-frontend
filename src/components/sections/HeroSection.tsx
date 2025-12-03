@@ -21,7 +21,10 @@ const stats = [
 ];
 
 // Video Player Component with Intersection Observer
-const VideoPlayer: React.FC<{ videoUrl: string; title: string }> = ({ videoUrl, title }) => {
+const VideoPlayer: React.FC<{ videoUrl: string; title: string }> = ({
+  videoUrl,
+  title,
+}) => {
   const [isVisible, setIsVisible] = useState(false);
   const videoRef = useRef<HTMLDivElement>(null);
 
@@ -49,10 +52,15 @@ const VideoPlayer: React.FC<{ videoUrl: string; title: string }> = ({ videoUrl, 
   }, []);
 
   return (
-    <div ref={videoRef} className="relative w-full max-w-5xl aspect-video rounded-xl overflow-hidden shadow-2xl">
+    <div
+      ref={videoRef}
+      className="relative w-full max-w-5xl aspect-video rounded-xl overflow-hidden shadow-2xl"
+    >
       {isVisible ? (
         <iframe
-          src={`${videoUrl}?autoplay=1&mute=1&loop=1&playlist=${videoUrl.split('/').pop()}`}
+          src={`${videoUrl}?autoplay=1&mute=1&loop=1&playlist=${videoUrl
+            .split("/")
+            .pop()}`}
           title={title}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
@@ -121,7 +129,7 @@ export const HeroSection: React.FC = () => {
           >
             Screenshots That{" "}
             <span className="bg-gradient-to-r from-coral via-peach to-accent bg-clip-text text-transparent">
-              Actually Look Good
+              Actually Looks Good
             </span>
           </motion.h1>
 
@@ -132,9 +140,10 @@ export const HeroSection: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-xl md:text-2xl text-dark-lighter mb-8 leading-relaxed"
           >
-            Capture any webpage, turn text into beautiful graphics, and edit
-            everything with pro tools. Use our Chrome extension for quick
-            captures, or the web editor for detailed work.
+            We have two tools, one is Browser Extension which lets you take
+            Screenshot of full webpage, turn text into beautiful graphics and
+            edit everything with pro tools &amp; Second is our Web Editor which
+            lets you upload any image and edit it with pro tools.
           </motion.p>
 
           {/* Platform Badges */}
@@ -157,7 +166,7 @@ export const HeroSection: React.FC = () => {
           </motion.div>
 
           {/* Feature Badges */}
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -175,7 +184,7 @@ export const HeroSection: React.FC = () => {
               <Edit3 className="w-4 h-4" />
               Pro Editing Tools
             </Badge>
-          </motion.div>
+          </motion.div> */}
 
           {/* CTAs */}
           <motion.div
@@ -231,7 +240,8 @@ export const HeroSection: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="text-lg md:text-xl text-dark-lighter mb-8 leading-relaxed"
           >
-            Convert boring images into professional beautiful HD quality images using our editor
+            Convert boring images into professional beautiful HD quality images
+            using our editor
           </motion.p>
 
           {/* Hero Visual */}
@@ -256,7 +266,7 @@ export const HeroSection: React.FC = () => {
           className="absolute bottom-8 left-1/2 -translate-x-1/2"
         >
           <div className="flex flex-col items-center gap-2 text-dark-lighter">
-            <p className="text-sm">Scroll to explore</p>
+            <p className="text-sm">Scroll to see extension in action</p>
             <motion.div
               animate={{ y: [0, 8, 0] }}
               transition={{
