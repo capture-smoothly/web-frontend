@@ -80,10 +80,13 @@ const pricingPlans: PricingPlan[] = [
       { text: "Priority support (24 hours)", included: true },
       { text: "Request new features", included: true },
       { text: "Cloud storage (Coming soon)", included: true },
-      { text: "Export to multiple formats (PDF, JPG) (Coming Soon)", included: true },
+      {
+        text: "Export to multiple formats (PDF, JPG) (Coming Soon)",
+        included: true,
+      },
       { text: "Early access to new tools (Coming Soon)", included: true },
     ],
-    cta: "Start 7-Day Free Trial",
+    cta: "Upgrade to Pro",
     ctaVariant: "primary",
     badge: "Best Value",
   },
@@ -117,7 +120,10 @@ export const PricingSection: React.FC = () => {
   };
 
   return (
-    <section id="pricing" className="py-20 md:py-32 bg-gradient-to-br from-primary/5 to-secondary/5">
+    <section
+      id="pricing"
+      className="py-20 md:py-32 bg-gradient-to-br from-primary/5 to-secondary/5"
+    >
       {/* Coming Soon Notice */}
       <AnimatePresence>
         {showComingSoonNotice && (
@@ -137,7 +143,12 @@ export const PricingSection: React.FC = () => {
                   <Gift className="w-4 h-4 text-teal" />
                 </p>
                 <p className="text-sm text-dark-lighter mt-1">
-                  We&apos;re putting the finishing touches on our payment system. Until then, enjoy <span className="font-medium text-teal">every feature completely free</span> - no limits! Happy Thanksgiving!
+                  We&apos;re putting the finishing touches on our payment
+                  system. Until then, enjoy{" "}
+                  <span className="font-medium text-teal">
+                    every feature completely free
+                  </span>{" "}
+                  - no limits! Happy Thanksgiving!
                 </p>
               </div>
               <button
@@ -163,7 +174,8 @@ export const PricingSection: React.FC = () => {
             Pick Your Plan
           </h2>
           <p className="text-xl text-dark-lighter max-w-2xl mx-auto">
-            Start free, upgrade when you need more. No hidden fees, cancel anytime.
+            Start free, upgrade when you need more. No hidden fees, cancel
+            anytime.
           </p>
         </motion.div>
 
@@ -184,7 +196,8 @@ export const PricingSection: React.FC = () => {
               <PartyPopper className="w-5 h-5 text-coral" />
             </div>
             <p className="text-dark-lighter text-sm md:text-base">
-              Get <span className="font-bold text-teal">50% OFF</span> Pro plan forever - Lock in your discount now before we reach capacity!
+              Get <span className="font-bold text-teal">50% OFF</span> Pro plan
+              forever - Lock in your discount now before we reach capacity!
             </p>
           </div>
         </motion.div>
@@ -198,14 +211,20 @@ export const PricingSection: React.FC = () => {
           className="flex flex-col items-center justify-center gap-3 mb-16"
         >
           <div className="flex items-center gap-4">
-            <span className={clsx(
-              "text-sm font-medium transition-colors",
-              billingPeriod === "monthly" ? "text-dark" : "text-dark-lighter"
-            )}>
+            <span
+              className={clsx(
+                "text-sm font-medium transition-colors",
+                billingPeriod === "monthly" ? "text-dark" : "text-dark-lighter"
+              )}
+            >
               Monthly
             </span>
             <button
-              onClick={() => setBillingPeriod(billingPeriod === "monthly" ? "yearly" : "monthly")}
+              onClick={() =>
+                setBillingPeriod(
+                  billingPeriod === "monthly" ? "yearly" : "monthly"
+                )
+              }
               className={clsx(
                 "relative w-14 h-7 rounded-full transition-colors duration-300",
                 billingPeriod === "yearly" ? "bg-coral" : "bg-gray-300"
@@ -220,10 +239,12 @@ export const PricingSection: React.FC = () => {
                 )}
               />
             </button>
-            <span className={clsx(
-              "text-sm font-medium transition-colors",
-              billingPeriod === "yearly" ? "text-dark" : "text-dark-lighter"
-            )}>
+            <span
+              className={clsx(
+                "text-sm font-medium transition-colors",
+                billingPeriod === "yearly" ? "text-dark" : "text-dark-lighter"
+              )}
+            >
               Yearly
             </span>
           </div>
@@ -254,12 +275,18 @@ export const PricingSection: React.FC = () => {
               {(plan.popular || plan.limitedOffer) && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
                   {plan.popular && (
-                    <Badge variant="warning" className="text-xs px-4 py-1.5 shadow-lg whitespace-nowrap">
+                    <Badge
+                      variant="warning"
+                      className="text-xs px-4 py-1.5 shadow-lg whitespace-nowrap"
+                    >
                       MOST POPULAR
                     </Badge>
                   )}
                   {plan.limitedOffer && (
-                    <Badge variant="warning" className="text-xs px-3 py-1.5 shadow-lg whitespace-nowrap">
+                    <Badge
+                      variant="warning"
+                      className="text-xs px-3 py-1.5 shadow-lg whitespace-nowrap"
+                    >
                       🎉 FIRST 100 USERS
                     </Badge>
                   )}
@@ -276,13 +303,19 @@ export const PricingSection: React.FC = () => {
 
               {/* Plan Header */}
               <div className="text-center mb-6">
-                <div className={clsx(
-                  "inline-flex items-center justify-center w-12 h-12 rounded-xl mb-4",
-                  plan.popular ? "bg-coral/10 text-coral" : "bg-gray-100 text-gray-600"
-                )}>
+                <div
+                  className={clsx(
+                    "inline-flex items-center justify-center w-12 h-12 rounded-xl mb-4",
+                    plan.popular
+                      ? "bg-coral/10 text-coral"
+                      : "bg-gray-100 text-gray-600"
+                  )}
+                >
                   {plan.icon}
                 </div>
-                <h3 className="text-2xl font-bold text-dark mb-1">{plan.name}</h3>
+                <h3 className="text-2xl font-bold text-dark mb-1">
+                  {plan.name}
+                </h3>
                 <p className="text-sm text-dark-lighter">{plan.description}</p>
               </div>
 
@@ -291,19 +324,30 @@ export const PricingSection: React.FC = () => {
                 {plan.limitedOffer && typeof getPrice(plan) === "number" && (
                   <div className="mb-2">
                     <span className="text-2xl text-gray-400 line-through">
-                      ${billingPeriod === "monthly" ? plan.originalMonthlyPrice : plan.originalYearlyTotal && billingPeriod === "yearly" ? Math.round(plan.originalYearlyTotal / 12) : getPrice(plan)}
+                      $
+                      {billingPeriod === "monthly"
+                        ? plan.originalMonthlyPrice
+                        : plan.originalYearlyTotal && billingPeriod === "yearly"
+                        ? Math.round(plan.originalYearlyTotal / 12)
+                        : getPrice(plan)}
                     </span>
-                    <span className="text-dark-lighter text-sm ml-1">/month</span>
+                    <span className="text-dark-lighter text-sm ml-1">
+                      /month
+                    </span>
                   </div>
                 )}
                 <div className="flex items-end justify-center gap-1">
                   {typeof getPrice(plan) === "number" ? (
                     <>
-                      <span className="text-5xl font-bold text-dark">${getPrice(plan)}</span>
+                      <span className="text-5xl font-bold text-dark">
+                        ${getPrice(plan)}
+                      </span>
                       <span className="text-dark-lighter mb-2">/month</span>
                     </>
                   ) : (
-                    <span className="text-5xl font-bold text-dark">{getPrice(plan)}</span>
+                    <span className="text-5xl font-bold text-dark">
+                      {getPrice(plan)}
+                    </span>
                   )}
                 </div>
                 {billingPeriod === "yearly" && plan.yearlyTotal > 0 && (
@@ -313,19 +357,30 @@ export const PricingSection: React.FC = () => {
                         Was ${plan.originalYearlyTotal}/year
                       </p>
                     )}
-                    <p className={clsx(
-                      "text-sm font-medium mt-2",
-                      plan.limitedOffer ? "text-teal" : "text-teal"
-                    )}>
-                      ${plan.yearlyTotal}/year {plan.limitedOffer ? `(Save $${plan.originalYearlyTotal ? plan.originalYearlyTotal - plan.yearlyTotal : getSavings(plan)})` : `(Save $${getSavings(plan)})`}
+                    <p
+                      className={clsx(
+                        "text-sm font-medium mt-2",
+                        plan.limitedOffer ? "text-teal" : "text-teal"
+                      )}
+                    >
+                      ${plan.yearlyTotal}/year{" "}
+                      {plan.limitedOffer
+                        ? `(Save $${
+                            plan.originalYearlyTotal
+                              ? plan.originalYearlyTotal - plan.yearlyTotal
+                              : getSavings(plan)
+                          })`
+                        : `(Save $${getSavings(plan)})`}
                     </p>
                   </>
                 )}
-                {billingPeriod === "monthly" && plan.monthlyPrice > 0 && !plan.limitedOffer && (
-                  <p className="text-xs text-dark-lighter mt-2">
-                    or ${plan.yearlyTotal}/year if billed annually
-                  </p>
-                )}
+                {billingPeriod === "monthly" &&
+                  plan.monthlyPrice > 0 &&
+                  !plan.limitedOffer && (
+                    <p className="text-xs text-dark-lighter mt-2">
+                      or ${plan.yearlyTotal}/year if billed annually
+                    </p>
+                  )}
                 {billingPeriod === "monthly" && plan.limitedOffer && (
                   <p className="text-xs text-teal font-medium mt-2">
                     Only ${plan.yearlyTotal}/year if billed annually
@@ -347,18 +402,24 @@ export const PricingSection: React.FC = () => {
                 {plan.features.map((feature, i) => (
                   <div key={i} className="flex items-start gap-3">
                     {feature.included ? (
-                      <Check className={clsx(
-                        "w-5 h-5 flex-shrink-0 mt-0.5",
-                        feature.highlight ? "text-coral" : "text-teal"
-                      )} />
+                      <Check
+                        className={clsx(
+                          "w-5 h-5 flex-shrink-0 mt-0.5",
+                          feature.highlight ? "text-coral" : "text-teal"
+                        )}
+                      />
                     ) : (
                       <X className="w-5 h-5 text-gray-300 flex-shrink-0 mt-0.5" />
                     )}
-                    <span className={clsx(
-                      "text-sm",
-                      feature.included ? "text-dark-lighter" : "text-gray-400",
-                      feature.highlight && "font-medium text-dark"
-                    )}>
+                    <span
+                      className={clsx(
+                        "text-sm",
+                        feature.included
+                          ? "text-dark-lighter"
+                          : "text-gray-400",
+                        feature.highlight && "font-medium text-dark"
+                      )}
+                    >
                       {feature.text}
                     </span>
                   </div>
@@ -405,7 +466,10 @@ export const PricingSection: React.FC = () => {
             Check out our FAQ
           </a>{" "}
           or{" "}
-          <a href="mailto:support@ilovesnapshots.com" className="text-coral hover:underline font-medium">
+          <a
+            href="mailto:support@ilovesnapshots.com"
+            className="text-coral hover:underline font-medium"
+          >
             reach out to us
           </a>
         </motion.p>

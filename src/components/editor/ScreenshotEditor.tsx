@@ -7164,6 +7164,40 @@ export default function ScreenshotEditor() {
               boxSizing: "border-box",
             }}
           >
+            {/* Watermark */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px",
+                marginBottom: "16px",
+                paddingTop: "8px",
+              }}
+            >
+              <img
+                src="/logo.png"
+                alt="Logo"
+                style={{
+                  width: "24px",
+                  height: "24px",
+                  borderRadius: "6px",
+                }}
+              />
+              <span
+                style={{
+                  fontSize: "16px",
+                  fontWeight: "600",
+                  color: "rgba(255, 255, 255, 0.9)",
+                  textShadow: "0 1px 2px rgba(0, 0, 0, 0.3)",
+                  fontFamily:
+                    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                }}
+              >
+                IloveSnapshots.online
+              </span>
+            </div>
+
             {/* Shadow layers */}
             <div style={{ position: "relative" }}>
               {[45, 40, 35, 30, 25, 20, 15].map((offset, i) => (
