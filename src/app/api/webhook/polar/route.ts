@@ -1,12 +1,13 @@
 import { Webhooks } from "@polar-sh/nextjs";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const POST = Webhooks({
   webhookSecret: process.env.POLAR_WEBHOOK_SECRET!,
   onPayload: async (payload) => {
     console.log("🔔 Polar webhook received:", payload.type);
 
-    const supabase = await createClient();
+    // Use admin client for webhooks (bypasses RLS)
+    const supabase = createAdminClient();
 
     try {
       // Handle subscription creation
