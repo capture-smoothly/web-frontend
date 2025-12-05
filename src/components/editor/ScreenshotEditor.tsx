@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { hasProSubscription } from "@/lib/subscription";
 
 // Theme gradients
 const THEMES = {
@@ -2610,6 +2611,9 @@ export default function ScreenshotEditor() {
   // Quality modal state
   const [showQualityModal, setShowQualityModal] = useState(false);
 
+  // Subscription state
+  const [hasProPlan, setHasProPlan] = useState(false);
+
   // History
   const [history, setHistory] = useState<HistoryState[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
@@ -2729,6 +2733,18 @@ export default function ScreenshotEditor() {
     },
     [handleImageLoad]
   );
+
+  // Check subscription status
+  useEffect(() => {
+    const checkSubscription = async () => {
+      const isPro = await hasProSubscription();
+      setHasProPlan(isPro);
+    };
+
+    if (user) {
+      checkSubscription();
+    }
+  }, [user]);
 
   // Handle paste
   useEffect(() => {
@@ -6721,7 +6737,14 @@ export default function ScreenshotEditor() {
 
               {/* HD Quality Option */}
               <button
-                onClick={() => performDownload("hd")}
+                onClick={() => {
+                  if (!hasProPlan) {
+                    setShowQualityModal(false);
+                    router.push("/#pricing");
+                  } else {
+                    performDownload("hd");
+                  }
+                }}
                 style={{
                   background:
                     "linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%)",
@@ -6747,13 +6770,13 @@ export default function ScreenshotEditor() {
                   e.currentTarget.style.boxShadow = "none";
                 }}
               >
-                {/* Recommended Badge */}
+                {/* Pro Only / Recommended Badge */}
                 <div
                   style={{
                     position: "absolute",
                     top: "12px",
                     right: "12px",
-                    background: "#3B82F6",
+                    background: hasProPlan ? "#3B82F6" : "#F59E0B",
                     color: "white",
                     fontSize: "10px",
                     fontWeight: 600,
@@ -6763,7 +6786,7 @@ export default function ScreenshotEditor() {
                     letterSpacing: "0.5px",
                   }}
                 >
-                  Recommended
+                  {hasProPlan ? "Recommended" : "Pro Only"}
                 </div>
 
                 <div
@@ -6817,27 +6840,52 @@ export default function ScreenshotEditor() {
                   Maximum resolution with crystal-clear text. Best for
                   professional use, presentations, and printing.
                 </div>
-                <div
-                  style={{
-                    fontSize: "11px",
-                    color: "#F59E0B",
-                    paddingLeft: "52px",
-                    marginTop: "4px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "4px",
-                  }}
-                >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 16 16"
-                    fill="currentColor"
+                {!hasProPlan ? (
+                  <div
+                    style={{
+                      fontSize: "11px",
+                      color: "#F59E0B",
+                      paddingLeft: "52px",
+                      marginTop: "4px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      fontWeight: 600,
+                    }}
                   >
-                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-                  </svg>
-                  Note: Larger file size due to higher quality
-                </div>
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 16 16"
+                      fill="currentColor"
+                    >
+                      <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 13A6 6 0 1 1 8 2a6 6 0 0 1 0 12zm-.5-6.5v-3a.5.5 0 0 1 1 0v3a.5.5 0 0 1-1 0zM8 11a.75.75 0 1 1 0-1.5A.75.75 0 0 1 8 11z" />
+                    </svg>
+                    Click to upgrade to Pro and unlock Ultra HD downloads
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      fontSize: "11px",
+                      color: "#F59E0B",
+                      paddingLeft: "52px",
+                      marginTop: "4px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "4px",
+                    }}
+                  >
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 16 16"
+                      fill="currentColor"
+                    >
+                      <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                    </svg>
+                    Note: Larger file size due to higher quality
+                  </div>
+                )}
               </button>
             </div>
           </div>
@@ -7175,27 +7223,41 @@ export default function ScreenshotEditor() {
                 paddingTop: "8px",
               }}
             >
-              <img
-                src="/logo.png"
-                alt="Logo"
+              <div
                 style={{
-                  width: "24px",
-                  height: "24px",
-                  borderRadius: "6px",
-                }}
-              />
-              <span
-                style={{
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  color: "rgba(255, 255, 255, 0.9)",
-                  textShadow: "0 1px 2px rgba(0, 0, 0, 0.3)",
-                  fontFamily:
-                    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  background: "rgba(0, 0, 0, 0.6)",
+                  backdropFilter: "blur(8px)",
+                  padding: "8px 16px",
+                  borderRadius: "8px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
                 }}
               >
-                IloveSnapshots.online
-              </span>
+                <img
+                  src="/logo.png"
+                  alt="Logo"
+                  style={{
+                    width: "24px",
+                    height: "24px",
+                    borderRadius: "6px",
+                  }}
+                />
+                <span
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    color: "rgba(255, 255, 255, 0.95)",
+                    textShadow: "0 1px 3px rgba(0, 0, 0, 0.5)",
+                    fontFamily:
+                      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  }}
+                >
+                  IloveSnapshots.online
+                </span>
+              </div>
             </div>
 
             {/* Shadow layers */}

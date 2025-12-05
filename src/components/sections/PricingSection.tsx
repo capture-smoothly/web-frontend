@@ -110,9 +110,36 @@ export const PricingSection: React.FC = () => {
     return savings;
   };
 
-  const handlePlanClick = (planName: string) => {
+  const handlePlanClick = async (planName: string) => {
     if (planName === "Free") {
       router.push("/auth/login");
+    } else if (planName === "Pro") {
+      try {
+        // Call checkout API to create Polar checkout session
+        const response = await fetch("/api/checkout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            plan: billingPeriod,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to create checkout session");
+        }
+
+        // Redirect to Polar checkout
+        if (data.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+        }
+      } catch (error) {
+        console.error("Checkout error:", error);
+        alert("Failed to start checkout. Please try again.");
+      }
     } else {
       setShowComingSoonNotice(true);
       setTimeout(() => setShowComingSoonNotice(false), 6000);
