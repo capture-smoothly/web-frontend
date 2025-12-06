@@ -2659,7 +2659,7 @@ export default function ScreenshotEditor() {
     "dark"
   );
   const [showBackground, setShowBackground] = useState(true);
-  const [editorTheme, setEditorTheme] = useState<"light" | "dark">("dark");
+  const [editorTheme, setEditorTheme] = useState<"light" | "dark">("light");
   const [selectedTheme, setSelectedTheme] = useState<ThemeType>("cosmic1"); // Cosmic Dream as default
   const [showThemeSelector, setShowThemeSelector] = useState(false);
   const [customColor, setCustomColor] = useState("#ededed");
