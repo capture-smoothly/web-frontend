@@ -45,7 +45,18 @@ export async function POST(request: NextRequest) {
       returnUrl: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/payment/cancel`,
     });
 
-    // Store checkout info in Supabase
+    // First, deactivate any existing active subscriptions for this user
+    const { error: deactivateError } = await supabase
+      .from("subscriptions")
+      .update({ status: "cancelled" })
+      .eq("user_id", user.id)
+      .eq("status", "active");
+
+    if (deactivateError) {
+      console.error("Error deactivating old subscriptions:", deactivateError);
+    }
+
+    // Then create new subscription
     const { error: insertError } = await supabase
       .from("subscriptions")
       .insert({

@@ -28,17 +28,20 @@ export async function hasProSubscription(): Promise<boolean> {
       return false;
     }
 
-    // Get user's subscription
-    const { data: subscription, error: subError } = await supabase
+    // Get user's most recent active subscription
+    const { data: subscriptions, error: subError } = await supabase
       .from("subscriptions")
       .select("*")
       .eq("user_id", user.id)
       .eq("status", "active")
-      .single();
+      .order("created_at", { ascending: false })
+      .limit(1);
 
-    if (subError || !subscription) {
+    if (subError || !subscriptions || subscriptions.length === 0) {
       return false;
     }
+
+    const subscription = subscriptions[0];
 
     // Check if subscription is Pro and still active
     const isPro = subscription.plan_type === "monthly" || subscription.plan_type === "yearly";
