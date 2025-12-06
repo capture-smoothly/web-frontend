@@ -451,6 +451,55 @@ function TooltipButton({
   );
 }
 
+// Sparkle Icon Component - Reusable premium indicator
+function SparkleIcon({
+  size = 16,
+  useGradient = true,
+}: {
+  size?: number;
+  useGradient?: boolean;
+}) {
+  const gradientId = `sparkle-gradient-${Math.random().toString(36).substr(2, 9)}`;
+  
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {useGradient && (
+        <defs>
+          <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#EC4899" />
+            <stop offset="50%" stopColor="#8B5CF6" />
+            <stop offset="100%" stopColor="#06B6D4" />
+          </linearGradient>
+        </defs>
+      )}
+      <path
+        d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z"
+        fill={useGradient ? `url(#${gradientId})` : "#EC4899"}
+        stroke={useGradient ? `url(#${gradientId})` : "#EC4899"}
+        strokeWidth="1"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M19 4L19.5 6.5L22 7L19.5 7.5L19 10L18.5 7.5L16 7L18.5 6.5L19 4Z"
+        fill={useGradient ? `url(#${gradientId})` : "#06B6D4"}
+        opacity="0.8"
+      />
+      <path
+        d="M5 14L5.5 16.5L8 17L5.5 17.5L5 20L4.5 17.5L2 17L4.5 16.5L5 14Z"
+        fill={useGradient ? `url(#${gradientId})` : "#06B6D4"}
+        opacity="0.8"
+      />
+    </svg>
+  );
+}
+
 // Helper function to generate gradient CSS with multiple colors
 function generateGradient(
   type: "linear" | "radial" | "angular" | "diamond",
@@ -878,9 +927,25 @@ function ThemeSelector({
               borderRadius: "6px",
               cursor: "pointer",
               transition: "all 0.2s",
+              position: "relative",
             }}
           >
             Custom
+            {/* Premium Star Badge */}
+            <span
+              style={{
+                position: "absolute",
+                top: "-6px",
+                right: "-6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                animation: "shimmer 2s ease-in-out infinite",
+                filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))",
+              }}
+            >
+              <SparkleIcon size={16} />
+            </span>
           </button>
         </div>
         <button
@@ -2613,6 +2678,8 @@ export default function ScreenshotEditor() {
 
   // Subscription state
   const [hasProPlan, setHasProPlan] = useState(false);
+  const [usedPremiumFeatures, setUsedPremiumFeatures] = useState(false);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
 
   // History
   const [history, setHistory] = useState<HistoryState[]>([]);
@@ -6223,6 +6290,10 @@ export default function ScreenshotEditor() {
             setShowColor3(settings.showColor3);
             setShowColor4(settings.showColor4);
             setSelectedTheme("custom" as ThemeType);
+            // Mark premium features as used when custom theme is selected
+            if (!hasProPlan) {
+              setUsedPremiumFeatures(true);
+            }
           }}
         />
       )}
@@ -6652,6 +6723,33 @@ export default function ScreenshotEditor() {
               >
                 Select the quality that best suits your needs
               </p>
+
+              {/* Premium Features Notification */}
+              {!hasProPlan && usedPremiumFeatures && (
+                <div
+                  style={{
+                    marginTop: "12px",
+                    padding: "10px 14px",
+                    background: "rgba(251, 146, 60, 0.1)",
+                    border: "1px solid rgba(251, 146, 60, 0.3)",
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                >
+                  <span style={{ fontSize: "16px" }}>⚠️</span>
+                  <span
+                    style={{
+                      fontSize: "13px",
+                      color: "#FB923C",
+                      fontWeight: 500,
+                    }}
+                  >
+                    You have used premium features in editor
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Quality Options */}
@@ -6660,7 +6758,15 @@ export default function ScreenshotEditor() {
             >
               {/* Standard Quality Option */}
               <button
-                onClick={() => performDownload("standard")}
+                onClick={() => {
+                  // If free user has used premium features, show upgrade prompt
+                  if (!hasProPlan && usedPremiumFeatures) {
+                    setShowQualityModal(false);
+                    setShowUpgradePrompt(true);
+                  } else {
+                    performDownload("standard");
+                  }
+                }}
                 style={{
                   background: colors.buttonBg,
                   border: `2px solid ${colors.border}`,
@@ -6891,6 +6997,137 @@ export default function ScreenshotEditor() {
           </div>
         </div>
       )}
+
+      {/* Upgrade Prompt Modal */}
+      {showUpgradePrompt && (
+        <div
+          onClick={() => setShowUpgradePrompt(false)}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.8)",
+            backdropFilter: "blur(8px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 10000,
+          }}
+        >
+          <div
+            style={{
+              background: colors.toolbar,
+              borderRadius: "16px",
+              padding: "32px",
+              maxWidth: "480px",
+              width: "90%",
+              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.5)",
+              border: `1px solid ${colors.border}`,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Icon */}
+            <div
+              style={{
+                width: "64px",
+                height: "64px",
+                borderRadius: "16px",
+                background: "linear-gradient(135deg, #EC4899 0%, #8B5CF6 50%, #06B6D4 100%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 20px",
+                boxShadow: "0 8px 24px rgba(236, 72, 153, 0.4)",
+              }}
+            >
+              <SparkleIcon size={36} />
+            </div>
+
+            {/* Message */}
+            <h3
+              style={{
+                margin: "0 0 12px 0",
+                fontSize: "22px",
+                fontWeight: 600,
+                color: colors.text,
+                textAlign: "center",
+              }}
+            >
+              You have used Pro features
+            </h3>
+            <p
+              style={{
+                margin: "0 0 28px 0",
+                fontSize: "15px",
+                color: colors.textMuted,
+                lineHeight: "1.6",
+                textAlign: "center",
+              }}
+            >
+              Please upgrade to pro plan to export the image with those features
+            </p>
+
+            {/* Buttons */}
+            <div style={{ display: "flex", gap: "12px" }}>
+              <button
+                onClick={() => setShowUpgradePrompt(false)}
+                style={{
+                  flex: 1,
+                  padding: "14px 24px",
+                  background: "transparent",
+                  border: `2px solid ${colors.border}`,
+                  borderRadius: "10px",
+                  color: colors.text,
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = colors.buttonBg;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowUpgradePrompt(false);
+                  router.push("/#pricing");
+                }}
+                style={{
+                  flex: 1,
+                  padding: "14px 24px",
+                  background: "linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%)",
+                  border: "none",
+                  borderRadius: "10px",
+                  color: "white",
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  boxShadow: "0 4px 16px rgba(59, 130, 246, 0.4)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow = "0 6px 20px rgba(59, 130, 246, 0.5)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "0 4px 16px rgba(59, 130, 246, 0.4)";
+                }}
+              >
+                Upgrade to Pro
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
 
       {/* Watch Demo and Contact Buttons - Below Toolbar on Left */}
       <div
@@ -8630,6 +8867,17 @@ export default function ScreenshotEditor() {
             to {
               opacity: 1;
               transform: translateX(-50%) translateY(0);
+            }
+          }
+
+          @keyframes shimmer {
+            0%, 100% {
+              opacity: 1;
+              transform: scale(1);
+            }
+            50% {
+              opacity: 0.7;
+              transform: scale(1.1);
             }
           }
         `}
