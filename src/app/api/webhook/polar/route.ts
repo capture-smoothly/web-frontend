@@ -43,26 +43,34 @@ export const POST = Webhooks({
         }
       }
 
-      // Handle subscription updates (cancellation, renewal, etc.)
+      // Handle subscription updates (renewal, cancellation, etc.)
       if (payload.type === "subscription.updated") {
         const subscription = payload.data;
 
         console.log("📝 Subscription updated:", {
           subscriptionId: subscription.id,
           status: subscription.status,
+          currentPeriodEnd: subscription.currentPeriodEnd,
         });
+
+        // Calculate new expiration based on billing period
+        let newExpiration = null;
+        if (subscription.currentPeriodEnd) {
+          newExpiration = new Date(subscription.currentPeriodEnd).toISOString();
+        }
 
         const { error: updateError } = await supabase
           .from("subscriptions")
           .update({
             status: subscription.status === "active" ? "active" : "cancelled",
+            expires_at: newExpiration, // Update expiration on renewal
           })
           .eq("payment_id", subscription.id);
 
         if (updateError) {
-          console.error("❌ Error updating subscription status:", updateError);
+          console.error("❌ Error updating subscription:", updateError);
         } else {
-          console.log("✅ Subscription status updated");
+          console.log("✅ Subscription renewed - new expiration:", newExpiration);
         }
       }
 
@@ -83,6 +91,36 @@ export const POST = Webhooks({
           console.error("❌ Error cancelling subscription:", updateError);
         } else {
           console.log("✅ Subscription cancelled in database");
+        }
+      }
+
+      // Handle subscription.active event (when subscription becomes active after payment)
+      if (payload.type === "subscription.active") {
+        const subscription = payload.data;
+
+        console.log("🎉 Subscription activated:", {
+          subscriptionId: subscription.id,
+          currentPeriodEnd: subscription.currentPeriodEnd,
+        });
+
+        // Update expiration date when subscription becomes active
+        let expiresAt = null;
+        if (subscription.currentPeriodEnd) {
+          expiresAt = new Date(subscription.currentPeriodEnd).toISOString();
+        }
+
+        const { error: updateError } = await supabase
+          .from("subscriptions")
+          .update({
+            status: "active",
+            expires_at: expiresAt,
+          })
+          .eq("payment_id", subscription.id);
+
+        if (updateError) {
+          console.error("❌ Error activating subscription:", updateError);
+        } else {
+          console.log("✅ Subscription activated with expiration:", expiresAt);
         }
       }
 
