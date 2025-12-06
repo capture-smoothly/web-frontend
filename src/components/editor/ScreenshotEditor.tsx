@@ -8829,6 +8829,43 @@ export default function ScreenshotEditor() {
           </div>
         )}
 
+        {/* Remove Watermark Button - Always visible for free users */}
+        {!hasProPlan && (
+          <div
+            onClick={() => setShowUpgradePrompt(true)}
+            style={{
+              position: "absolute",
+              bottom: usedPremiumFeatures ? "204px" : "152px", // Above premium notification (152 + 42 + 10) or above preview
+              left: "20px",
+              background: "linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)",
+              color: "#FFF",
+              padding: "10px 14px",
+              borderRadius: "6px",
+              fontSize: "13px",
+              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+              border: "1px solid #4F46E5",
+              zIndex: 1001,
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(99, 102, 241, 0.4)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.3)";
+            }}
+          >
+            <SparkleIcon size={14} />
+            <span>Remove Watermark</span>
+          </div>
+        )}
+
         {/* Minimap Preview - Bottom Left (only when zoomed/panned) */}
         {imageUrl && (zoom !== 1 || pan.x !== 0 || pan.y !== 0) && (
           <div
