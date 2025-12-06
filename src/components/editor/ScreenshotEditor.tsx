@@ -7212,53 +7212,55 @@ export default function ScreenshotEditor() {
               boxSizing: "border-box",
             }}
           >
-            {/* Watermark */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-                marginBottom: "16px",
-                paddingTop: "8px",
-              }}
-            >
+            {/* Watermark - Only show for free plan users */}
+            {!hasProPlan && (
               <div
                 style={{
-                  background: "rgba(0, 0, 0, 0.6)",
-                  backdropFilter: "blur(8px)",
-                  padding: "8px 16px",
-                  borderRadius: "8px",
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "center",
                   gap: "8px",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
-                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
+                  marginBottom: "16px",
+                  paddingTop: "8px",
                 }}
               >
-                <img
-                  src="/logo.png"
-                  alt="Logo"
+                <div
                   style={{
-                    width: "24px",
-                    height: "24px",
-                    borderRadius: "6px",
-                  }}
-                />
-                <span
-                  style={{
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    color: "rgba(255, 255, 255, 0.95)",
-                    textShadow: "0 1px 3px rgba(0, 0, 0, 0.5)",
-                    fontFamily:
-                      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                    background: "rgba(0, 0, 0, 0.6)",
+                    backdropFilter: "blur(8px)",
+                    padding: "8px 16px",
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
                   }}
                 >
-                  IloveSnapshots.online
-                </span>
+                  <img
+                    src="/logo.png"
+                    alt="Logo"
+                    style={{
+                      width: "24px",
+                      height: "24px",
+                      borderRadius: "6px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      color: "rgba(255, 255, 255, 0.95)",
+                      textShadow: "0 1px 3px rgba(0, 0, 0, 0.5)",
+                      fontFamily:
+                        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                    }}
+                  >
+                    IloveSnapshots.online
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Shadow layers */}
             <div style={{ position: "relative" }}>
