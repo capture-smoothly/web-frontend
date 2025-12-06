@@ -4604,6 +4604,12 @@ export default function ScreenshotEditor() {
   };
 
   const handleCopy = async () => {
+    // Check if free user has used premium features
+    if (!hasProPlan && usedPremiumFeatures) {
+      setShowUpgradePrompt(true);
+      return;
+    }
+
     // Check if user is logged in
     if (!user) {
       setLoginPromptAction("copy");
