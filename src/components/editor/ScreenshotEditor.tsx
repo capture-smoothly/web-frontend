@@ -7633,7 +7633,6 @@ export default function ScreenshotEditor() {
                   justifyContent: "center",
                   gap: "8px",
                   marginBottom: "16px",
-                  paddingTop: "8px",
                 }}
               >
                 <div
@@ -7668,7 +7667,7 @@ export default function ScreenshotEditor() {
                         '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
                     }}
                   >
-                    IloveSnapshots.online
+                    iloveSnapshots.online
                   </span>
                 </div>
               </div>
