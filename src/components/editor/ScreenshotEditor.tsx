@@ -264,7 +264,7 @@ type ThemeType = keyof typeof THEMES;
 
 // Categorized theme lists for organized display
 const COSMIC_THEME_KEYS: ThemeType[] = [
-  "cosmic1", "cosmic2", "cosmic3", "cosmic4", "cosmic5", "cosmic6", "cosmic7",
+  "cosmic2", "cosmic3", "cosmic4", "cosmic5", "cosmic6", "cosmic7",
   "cosmic8", "cosmic9", "cosmic10", "cosmic11", "cosmic12", "cosmic13", "cosmic14",
   "cosmic15", "cosmic16", "cosmic17", "cosmic18", "cosmic19", "cosmic20", "cosmic21",
 ];
@@ -272,6 +272,7 @@ const COSMIC_THEME_KEYS: ThemeType[] = [
 const POPULAR_THEME_KEYS: ThemeType[] = [
   "pearl", "sunset", "rose", "forest", "lavender", "golden",
   "coral", "sky", "slate", "ocean", "midnight", "carbon",
+  "cosmic1", "figma",
 ];
 
 const DARK_PREMIUM_THEME_KEYS: ThemeType[] = [
@@ -286,7 +287,7 @@ const BRIGHT_COLORFUL_THEME_KEYS: ThemeType[] = [
   "aurora", "crimson", "emerald", "sapphire", "amethyst", "sunshine",
   "lime", "fuchsia", "bubblegum", "tropical", "peacock", "berry",
   "citrus", "candy", "mango", "unicorn", "prism", "hologram",
-  "linear", "stripe", "figma",
+  "linear", "stripe",
 ];
 
 const NATURE_EARTH_THEME_KEYS: ThemeType[] = [
