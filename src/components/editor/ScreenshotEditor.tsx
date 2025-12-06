@@ -6885,7 +6885,7 @@ export default function ScreenshotEditor() {
                 onClick={() => {
                   if (!hasProPlan) {
                     setShowQualityModal(false);
-                    router.push("/#pricing");
+                    setShowUpgradePrompt(true);
                   } else {
                     performDownload("hd");
                   }
@@ -7246,7 +7246,7 @@ export default function ScreenshotEditor() {
               <button
                 onClick={() => {
                   setShowUpgradePrompt(false);
-                  window.open("/pricing", "_blank");
+                  window.location.href = "/#pricing";
                 }}
                 style={{
                   width: "100%",
@@ -8966,7 +8966,7 @@ export default function ScreenshotEditor() {
         )}
 
         {/* Remove Watermark Button - Always visible for free users */}
-        {!hasProPlan && (
+        {!hasProPlan && imageUrl && (
           <div
             onClick={() => setShowUpgradePrompt(true)}
             style={{
