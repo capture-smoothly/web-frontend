@@ -7155,7 +7155,7 @@ export default function ScreenshotEditor() {
                   <span style={{ fontSize: "16px", color: colors.textMuted }}>/month</span>
                 </div>
                 <div style={{ fontSize: "13px", color: "#06B6D4", fontWeight: 500 }}>
-                  Or $12/year (save $12) • Cancel anytime
+                  Or $12/year (save $12) 
                 </div>
               </div>
 
