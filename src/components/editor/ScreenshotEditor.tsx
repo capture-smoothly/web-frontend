@@ -7789,9 +7789,14 @@ export default function ScreenshotEditor() {
                 textAlign: "center",
                 paddingBottom: "4px",
                 borderBottom: `1px solid ${colors.border}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "4px",
               }}
             >
-              Drawing Toolbox
+              <span>Drawing Toolbox</span>
+              <SparkleIcon size={10} />
             </div>
 
             {/* Row 1: Line, Freehand, Arrow */}
@@ -7801,6 +7806,10 @@ export default function ScreenshotEditor() {
                   setActiveTool("line");
                   setPanModeEnabled(false);
                   showNotification("Click and drag to draw a straight line");
+                  // Mark premium feature usage for free users
+                  if (!hasProPlan) {
+                    setUsedPremiumFeatures(true);
+                  }
                 }}
                 tooltip="Line (L)"
                 tooltipPosition="left"
@@ -7839,6 +7848,9 @@ export default function ScreenshotEditor() {
                   setActiveTool("freehand");
                   setPanModeEnabled(false);
                   showNotification("Click and drag to draw freehand");
+                  if (!hasProPlan) {
+                    setUsedPremiumFeatures(true);
+                  }
                 }}
                 tooltip="Freehand (F)"
                 tooltipPosition="left"
@@ -7878,6 +7890,9 @@ export default function ScreenshotEditor() {
                   setActiveTool("arrow");
                   setPanModeEnabled(false);
                   showNotification("Click and drag to draw an arrow");
+                  if (!hasProPlan) {
+                    setUsedPremiumFeatures(true);
+                  }
                 }}
                 tooltip="Arrow (A)"
                 tooltipPosition="left"
@@ -7920,6 +7935,9 @@ export default function ScreenshotEditor() {
                   setActiveTool("circle");
                   setPanModeEnabled(false);
                   showNotification("Click and drag to draw a circle");
+                  if (!hasProPlan) {
+                    setUsedPremiumFeatures(true);
+                  }
                 }}
                 tooltip="Circle (C)"
                 tooltipPosition="left"
@@ -7959,6 +7977,9 @@ export default function ScreenshotEditor() {
                   setActiveTool("rectangle");
                   setPanModeEnabled(false);
                   showNotification("Click and drag to draw a rectangle");
+                  if (!hasProPlan) {
+                    setUsedPremiumFeatures(true);
+                  }
                 }}
                 tooltip="Rectangle (R)"
                 tooltipPosition="left"
@@ -7998,6 +8019,9 @@ export default function ScreenshotEditor() {
                   setActiveTool("blur");
                   setPanModeEnabled(false);
                   showNotification("Click and drag to blur an area");
+                  if (!hasProPlan) {
+                    setUsedPremiumFeatures(true);
+                  }
                 }}
                 tooltip="Blur (B)"
                 tooltipPosition="left"
