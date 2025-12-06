@@ -270,8 +270,8 @@ const COSMIC_THEME_KEYS: ThemeType[] = [
 ];
 
 const POPULAR_THEME_KEYS: ThemeType[] = [
-  "midnight", "sunset", "ocean", "forest", "lavender", "golden",
-  "coral", "sky", "slate", "rose", "pearl", "carbon",
+  "pearl", "sunset", "rose", "forest", "lavender", "golden",
+  "coral", "sky", "slate", "ocean", "midnight", "carbon",
 ];
 
 const DARK_PREMIUM_THEME_KEYS: ThemeType[] = [
