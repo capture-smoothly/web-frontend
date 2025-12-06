@@ -6261,12 +6261,7 @@ export default function ScreenshotEditor() {
               setUsedPremiumFeatures(false);
             }
             
-            // Show notification when free user selects custom theme
-            if (newTheme === "custom" && !hasProPlan) {
-              setToolNotification("Premium feature used");
-              setShowToolNotification(true);
-              setTimeout(() => setShowToolNotification(false), 3000);
-            }
+
             
             setTimeout(() => {
               saveToHistory({
@@ -6306,9 +6301,6 @@ export default function ScreenshotEditor() {
             // Mark premium features as used when custom theme is selected
             if (!hasProPlan) {
               setUsedPremiumFeatures(true);
-              setToolNotification("Premium feature used");
-              setShowToolNotification(true);
-              setTimeout(() => setShowToolNotification(false), 3000);
             }
           }}
         />
@@ -8753,6 +8745,32 @@ export default function ScreenshotEditor() {
                 </svg>
               </TooltipButton>
             </div>
+          </div>
+        )}
+
+        {/* Premium Feature Notification - Above Preview */}
+        {!hasProPlan && usedPremiumFeatures && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "152px", // Above preview card
+              left: "20px",
+              background: "#FFA000",
+              color: "#000",
+              padding: "10px 14px",
+              borderRadius: "6px",
+              fontSize: "13px",
+              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+              border: "1px solid #FF8F00",
+              zIndex: 1001,
+            }}
+          >
+            <SparkleIcon size={14} />
+            <span>Premium Feature Used</span>
           </div>
         )}
 
