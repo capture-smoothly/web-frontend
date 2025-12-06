@@ -7059,108 +7059,244 @@ export default function ScreenshotEditor() {
             style={{
               background: colors.toolbar,
               borderRadius: "16px",
-              padding: "32px",
-              maxWidth: "480px",
+              maxWidth: "460px",
               width: "90%",
-              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.5)",
-              border: `1px solid ${colors.border}`,
+              maxHeight: "85vh",
+              boxShadow: "0 25px 60px rgba(0, 0, 0, 0.5)",
+              border: `2px solid ${colors.border}`,
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Icon */}
+            {/* Header - Fixed */}
             <div
               style={{
-                width: "64px",
-                height: "64px",
-                borderRadius: "16px",
-                background: "linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFA500 100%)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "0 auto 20px",
-                boxShadow: "0 8px 24px rgba(255, 193, 7, 0.5)",
+                padding: "24px 28px",
+                borderBottom: `1px solid ${colors.border}`,
+                textAlign: "center",
               }}
             >
-              <SparkleIcon size={36} />
+              <img 
+                src="/logo.png" 
+                alt="Logo"
+                style={{
+                  width: "48px",
+                  height: "48px",
+                  margin: "0 auto 16px",
+                  display: "block",
+                }}
+              />
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", marginBottom: "6px" }}>
+                <h2
+                  style={{
+                    margin: 0,
+                    fontSize: "24px",
+                    fontWeight: 600,
+                    color: colors.text,
+                  }}
+                >
+                  Upgrade to Pro
+                </h2>
+                <SparkleIcon size={20} />
+              </div>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "14px",
+                  color: colors.textMuted,
+                  lineHeight: "1.4",
+                }}
+              >
+                Unlock premium features for your screenshots
+              </p>
             </div>
 
-            {/* Message */}
-            <h3
+            {/* Scrollable Content */}
+            <div
               style={{
-                margin: "0 0 12px 0",
-                fontSize: "22px",
-                fontWeight: 600,
-                color: colors.text,
-                textAlign: "center",
+                overflowY: "auto",
+                padding: "24px 28px",
+                flex: 1,
               }}
             >
-              You have used Pro features
-            </h3>
-            <p
-              style={{
-                margin: "0 0 28px 0",
-                fontSize: "15px",
-                color: colors.textMuted,
-                lineHeight: "1.6",
-                textAlign: "center",
-              }}
-            >
-              Please upgrade to pro plan to export the image with those features
-            </p>
+              {/* Launch Special Badge */}
+              <div
+                style={{
+                  background: "linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(251, 146, 60, 0.1) 100%)",
+                  border: "2px solid rgba(6, 182, 212, 0.3)",
+                  borderRadius: "10px",
+                  padding: "14px 16px",
+                  marginBottom: "20px",
+                  textAlign: "center",
+                }}
+              >
+                <div style={{ fontSize: "20px", marginBottom: "4px" }}>🎉</div>
+                <div style={{ fontSize: "13px", fontWeight: 600, color: colors.text, marginBottom: "2px" }}>
+                  Launch Special: 50% OFF
+                </div>
+                <div style={{ fontSize: "12px", color: colors.textMuted }}>
+                  First 100 users only!
+                </div>
+              </div>
 
-            {/* Buttons */}
-            <div style={{ display: "flex", gap: "12px" }}>
+              {/* Pricing */}
+              <div style={{ textAlign: "center", marginBottom: "24px" }}>
+                <div style={{ marginBottom: "12px" }}>
+                  <span style={{ fontSize: "20px", color: colors.textMuted, textDecoration: "line-through" }}>$3</span>
+                  <span style={{ fontSize: "36px", fontWeight: 700, color: colors.text, marginLeft: "8px" }}>$2</span>
+                  <span style={{ fontSize: "16px", color: colors.textMuted }}>/month</span>
+                </div>
+                <div style={{ fontSize: "13px", color: "#06B6D4", fontWeight: 500 }}>
+                  Or $12/year (save $12) • Cancel anytime
+                </div>
+              </div>
+
+              {/* Features */}
+              <div style={{ marginBottom: "20px" }}>
+                <div
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    color: colors.text,
+                    marginBottom: "12px",
+                  }}
+                >
+                  What's included:
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                  {[
+                    "Premium themes (120+ styles)",
+                    "Custom theme creator",
+                    "Drawing \u0026 annotation tools",
+                    "Blur \u0026 pixelate tools",
+                    "Highest quality exports (4K)",
+                    "No watermark on exports",
+                    "Priority support (24h)",
+                    "Cloud storage (coming soon)",
+                  ].map((feature, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                      }}
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#06B6D4"
+                        strokeWidth="3"
+                        style={{ flexShrink: 0 }}
+                      >
+                        <path d="M5 12l5 5L20 7" />
+                      </svg>
+                      <span style={{ fontSize: "14px", color: colors.textSecondary }}>
+                        {feature}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Trust Elements */}
+              <div
+                style={{
+                  borderTop: `1px solid ${colors.border}`,
+                  paddingTop: "16px",
+                  marginTop: "20px",
+                }}
+              >
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {[
+                    // { icon: "✓", text: "7-day free trial" },
+                    { icon: "✓", text: "Cancel anytime, no questions" },
+                    { icon: "✓", text: "Secure payment" },
+                  ].map((item, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        fontSize: "13px",
+                        color: colors.textMuted,
+                      }}
+                    >
+                      <span style={{ color: "#06B6D4", fontWeight: "bold" }}>{item.icon}</span>
+                      <span>{item.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer with buttons - Fixed */}
+            <div
+              style={{
+                padding: "20px 28px",
+                borderTop: `1px solid ${colors.border}`,
+                background: colors.toolbar,
+              }}
+            >
+              <button
+                onClick={() => {
+                  setShowUpgradePrompt(false);
+                  window.open("/pricing", "_blank");
+                }}
+                style={{
+                  width: "100%",
+                  padding: "14px 24px",
+                  background: "linear-gradient(135deg, #06B6D4 0%, #0EA5E9 100%)",
+                  border: "none",
+                  borderRadius: "10px",
+                  color: "#FFF",
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  marginBottom: "10px",
+                  boxShadow: "0 4px 14px rgba(6, 182, 212, 0.3)",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                  e.currentTarget.style.boxShadow = "0 6px 20px rgba(6, 182, 212, 0.4)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "0 4px 14px rgba(6, 182, 212, 0.3)";
+                }}
+              >
+                Upgrade to Pro
+              </button>
               <button
                 onClick={() => setShowUpgradePrompt(false)}
                 style={{
-                  flex: 1,
-                  padding: "14px 24px",
+                  width: "100%",
+                  padding: "12px 24px",
                   background: "transparent",
-                  border: `2px solid ${colors.border}`,
-                  borderRadius: "10px",
-                  color: colors.text,
-                  fontSize: "15px",
-                  fontWeight: 600,
+                  border: "none",
+                  borderRadius: "8px",
+                  color: colors.textMuted,
+                  fontSize: "14px",
+                  fontWeight: 500,
                   cursor: "pointer",
                   transition: "all 0.2s",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = colors.buttonBg;
+                  e.currentTarget.style.color = colors.text;
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.color = colors.textMuted;
                 }}
               >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  setShowUpgradePrompt(false);
-                  router.push("/#pricing");
-                }}
-                style={{
-                  flex: 1,
-                  padding: "14px 24px",
-                  background: "linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%)",
-                  border: "none",
-                  borderRadius: "10px",
-                  color: "white",
-                  fontSize: "15px",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  boxShadow: "0 4px 16px rgba(59, 130, 246, 0.4)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.boxShadow = "0 6px 20px rgba(59, 130, 246, 0.5)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "0 4px 16px rgba(59, 130, 246, 0.4)";
-                }}
-              >
-                Upgrade to Pro
+                Maybe Later
               </button>
             </div>
           </div>
