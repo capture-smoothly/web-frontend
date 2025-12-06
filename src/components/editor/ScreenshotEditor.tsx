@@ -472,9 +472,9 @@ function SparkleIcon({
       {useGradient && (
         <defs>
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#EC4899" />
-            <stop offset="50%" stopColor="#8B5CF6" />
-            <stop offset="100%" stopColor="#06B6D4" />
+            <stop offset="0%" stopColor="#FFC107" />
+            <stop offset="50%" stopColor="#FFD700" />
+            <stop offset="100%" stopColor="#FFA500" />
           </linearGradient>
         </defs>
       )}
@@ -6255,6 +6255,19 @@ export default function ScreenshotEditor() {
           selectedTheme={selectedTheme}
           onThemeSelect={(newTheme) => {
             setSelectedTheme(newTheme);
+            
+            // Reset premium feature flag if switching away from custom theme
+            if (newTheme !== "custom" && !hasProPlan) {
+              setUsedPremiumFeatures(false);
+            }
+            
+            // Show notification when free user selects custom theme
+            if (newTheme === "custom" && !hasProPlan) {
+              setToolNotification("Premium feature used");
+              setShowToolNotification(true);
+              setTimeout(() => setShowToolNotification(false), 3000);
+            }
+            
             setTimeout(() => {
               saveToHistory({
                 imageUrl,
@@ -6293,6 +6306,9 @@ export default function ScreenshotEditor() {
             // Mark premium features as used when custom theme is selected
             if (!hasProPlan) {
               setUsedPremiumFeatures(true);
+              setToolNotification("Premium feature used");
+              setShowToolNotification(true);
+              setTimeout(() => setShowToolNotification(false), 3000);
             }
           }}
         />
@@ -7034,12 +7050,12 @@ export default function ScreenshotEditor() {
                 width: "64px",
                 height: "64px",
                 borderRadius: "16px",
-                background: "linear-gradient(135deg, #EC4899 0%, #8B5CF6 50%, #06B6D4 100%)",
+                background: "linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFA500 100%)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 margin: "0 auto 20px",
-                boxShadow: "0 8px 24px rgba(236, 72, 153, 0.4)",
+                boxShadow: "0 8px 24px rgba(255, 193, 7, 0.5)",
               }}
             >
               <SparkleIcon size={36} />
