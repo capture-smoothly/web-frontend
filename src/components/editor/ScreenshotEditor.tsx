@@ -7143,7 +7143,7 @@ export default function ScreenshotEditor() {
                   Launch Special: 50% OFF
                 </div>
                 <div style={{ fontSize: "12px", color: colors.textMuted }}>
-                  First 100 users only!
+                  For First 100 users only!
                 </div>
               </div>
 

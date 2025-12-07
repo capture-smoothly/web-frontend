@@ -367,7 +367,7 @@ export const PricingSection: React.FC = () => {
                       variant="warning"
                       className="text-xs px-3 py-1.5 shadow-lg whitespace-nowrap"
                     >
-                      🎉 FIRST 100 USERS
+                      🎉 FOR FIRST 100 USERS ONLY!
                     </Badge>
                   )}
                 </div>
@@ -401,18 +401,16 @@ export const PricingSection: React.FC = () => {
 
               {/* Price */}
               <div className="text-center mb-6">
-                {plan.limitedOffer && typeof getPrice(plan) === "number" && (
+                {plan.limitedOffer && (
                   <div className="mb-2">
                     <span className="text-2xl text-gray-400 line-through">
                       $
                       {billingPeriod === "monthly"
                         ? plan.originalMonthlyPrice
-                        : plan.originalYearlyTotal && billingPeriod === "yearly"
-                        ? Math.round(plan.originalYearlyTotal / 12)
-                        : getPrice(plan)}
+                        : plan.originalYearlyTotal}
                     </span>
                     <span className="text-dark-lighter text-sm ml-1">
-                      /month
+                      /{billingPeriod === "monthly" ? "month" : "year"}
                     </span>
                   </div>
                 )}
@@ -420,9 +418,11 @@ export const PricingSection: React.FC = () => {
                   {typeof getPrice(plan) === "number" ? (
                     <>
                       <span className="text-5xl font-bold text-dark">
-                        ${getPrice(plan)}
+                        ${billingPeriod === "yearly" && plan.yearlyTotal > 0 ? plan.yearlyTotal : getPrice(plan)}
                       </span>
-                      <span className="text-dark-lighter mb-2">/month</span>
+                      <span className="text-dark-lighter mb-2">
+                        /{billingPeriod === "yearly" && plan.yearlyTotal > 0 ? "year" : "month"}
+                      </span>
                     </>
                   ) : (
                     <span className="text-5xl font-bold text-dark">
@@ -433,25 +433,15 @@ export const PricingSection: React.FC = () => {
                 {billingPeriod === "yearly" && plan.yearlyTotal > 0 && (
                   <>
                     {plan.limitedOffer && plan.originalYearlyTotal && (
-                      <p className="text-sm text-gray-400 line-through mt-1">
-                        Was ${plan.originalYearlyTotal}/year
+                      <p className="text-sm text-teal font-medium mt-2">
+                        Save ${plan.originalYearlyTotal - plan.yearlyTotal} compared to regular price
                       </p>
                     )}
-                    <p
-                      className={clsx(
-                        "text-sm font-medium mt-2",
-                        plan.limitedOffer ? "text-teal" : "text-teal"
-                      )}
-                    >
-                      ${plan.yearlyTotal}/year{" "}
-                      {plan.limitedOffer
-                        ? `(Save $${
-                            plan.originalYearlyTotal
-                              ? plan.originalYearlyTotal - plan.yearlyTotal
-                              : getSavings(plan)
-                          })`
-                        : `(Save $${getSavings(plan)})`}
-                    </p>
+                    {!plan.limitedOffer && (
+                      <p className="text-sm font-medium text-teal mt-2">
+                        Save ${getSavings(plan)} compared to monthly billing
+                      </p>
+                    )}
                   </>
                 )}
                 {billingPeriod === "monthly" &&
