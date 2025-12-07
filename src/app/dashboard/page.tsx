@@ -138,6 +138,9 @@ export default function DashboardPage() {
     });
   };
 
+  // Check if user has a pro plan (monthly or yearly)
+  const isProPlan = subscription?.plan_type === "monthly" || subscription?.plan_type === "yearly";
+
   return (
     <div className="min-h-screen bg-gradient-hero">
       {/* Navbar */}
@@ -337,6 +340,14 @@ export default function DashboardPage() {
                     : "N/A"}
                 </span>
               </div>
+              {isProPlan && subscription?.expires_at && (
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Expires:</span>
+                  <span className="text-sm text-gray-600">
+                    {formatDate(subscription.expires_at)}
+                  </span>
+                </div>
+              )}
             </div>
           </motion.div>
 
@@ -368,13 +379,15 @@ export default function DashboardPage() {
                 <User className="w-4 h-4" />
                 Edit Profile
               </button>
-              <button
-                className="w-full flex items-center gap-2 text-sm text-gray-700 hover:text-primary transition-colors py-2"
-                onClick={() => alert("Upgrade plan coming soon!")}
-              >
-                <CreditCard className="w-4 h-4" />
-                Upgrade Plan
-              </button>
+              {!isProPlan && (
+                <button
+                  className="w-full flex items-center gap-2 text-sm text-gray-700 hover:text-primary transition-colors py-2"
+                  onClick={() => router.push("/#pricing")}
+                >
+                  <CreditCard className="w-4 h-4" />
+                  Upgrade Plan
+                </button>
+              )}
             </div>
           </motion.div>
         </div>
@@ -462,26 +475,28 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* CTA Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-8 bg-gradient-primary rounded-2xl shadow-colorful p-8 text-white text-center"
-        >
-          <h2 className="text-2xl font-bold mb-3">Ready to upgrade?</h2>
-          <p className="mb-6 text-white/90">
-            Unlock premium features and get unlimited screenshots with our Pro
-            plan
-          </p>
-          <Button
-            size="lg"
-            className="bg-white text-primary hover:bg-gray-100"
-            onClick={() => alert("Upgrade flow coming soon!")}
+        {!isProPlan && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="mt-8 bg-gradient-primary rounded-2xl shadow-colorful p-8 text-white text-center"
           >
-            <Crown className="w-5 h-5 mr-2" />
-            Upgrade to Pro
-          </Button>
-        </motion.div>
+            <h2 className="text-2xl font-bold mb-3">Ready to upgrade?</h2>
+            <p className="mb-6 text-white/90">
+              Unlock premium features and get unlimited screenshots with our Pro
+              plan
+            </p>
+            <Button
+              size="lg"
+              className="bg-white text-primary hover:bg-gray-100"
+              onClick={() => router.push("/#pricing")}
+            >
+              <Crown className="w-5 h-5 mr-2" />
+              Upgrade to Pro
+            </Button>
+          </motion.div>
+        )}
       </div>
     </div>
   );

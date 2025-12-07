@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { Check, X, Chrome, Crown, Star, Gift, PartyPopper } from "lucide-react";
 import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
 import clsx from "clsx";
+import { createClient } from "@/lib/supabase/client";
 
 type BillingPeriod = "monthly" | "yearly";
 
@@ -96,6 +97,43 @@ export const PricingSection: React.FC = () => {
   const router = useRouter();
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("yearly");
   const [showComingSoonNotice, setShowComingSoonNotice] = useState(false);
+  const [userPlanType, setUserPlanType] = useState<string | null>(null);
+  const [isLoadingSubscription, setIsLoadingSubscription] = useState(true);
+
+  // Check user's subscription status on mount
+  useEffect(() => {
+    const checkSubscription = async () => {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+          setIsLoadingSubscription(false);
+          return;
+        }
+
+        // Get user's active subscription
+        const { data: subscription } = await supabase
+          .from("subscriptions")
+          .select("*")
+          .eq("user_id", user.id)
+          .eq("status", "active")
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .single();
+
+        if (subscription) {
+          setUserPlanType(subscription.plan_type);
+        }
+      } catch (error) {
+        console.error("Error checking subscription:", error);
+      } finally {
+        setIsLoadingSubscription(false);
+      }
+    };
+
+    checkSubscription();
+  }, []);
 
   const getPrice = (plan: PricingPlan) => {
     if (plan.monthlyPrice === 0) return "Free";
@@ -110,7 +148,15 @@ export const PricingSection: React.FC = () => {
     return savings;
   };
 
+  const isProPlan = userPlanType === "monthly" || userPlanType === "yearly";
+
   const handlePlanClick = async (planName: string) => {
+    // If user has pro plan, navigate to editor
+    if (isProPlan && planName === "Pro") {
+      router.push("/editor");
+      return;
+    }
+
     if (planName === "Free") {
       router.push("/auth/login");
     } else if (planName === "Pro") {
@@ -144,6 +190,13 @@ export const PricingSection: React.FC = () => {
       setShowComingSoonNotice(true);
       setTimeout(() => setShowComingSoonNotice(false), 6000);
     }
+  };
+
+  const getButtonText = (plan: PricingPlan) => {
+    if (isProPlan && plan.name === "Pro") {
+      return "Use Features";
+    }
+    return plan.cta;
   };
 
   return (
@@ -421,7 +474,7 @@ export const PricingSection: React.FC = () => {
                 className="w-full mb-6"
                 onClick={() => handlePlanClick(plan.name)}
               >
-                {plan.cta}
+                {getButtonText(plan)}
               </Button>
 
               {/* Features */}
