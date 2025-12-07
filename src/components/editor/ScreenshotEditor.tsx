@@ -8948,6 +8948,7 @@ export default function ScreenshotEditor() {
         {/* Premium Feature Notification - Above Preview */}
         {!hasProPlan && usedPremiumFeatures && (
           <div
+            onClick={() => setShowUpgradePrompt(true)}
             style={{
               position: "absolute",
               bottom: "152px", // Above preview card
@@ -8964,6 +8965,16 @@ export default function ScreenshotEditor() {
               boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
               border: "1px solid #FF8F00",
               zIndex: 1001,
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(255, 160, 0, 0.4)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.3)";
             }}
           >
             <SparkleIcon size={14} />
@@ -8974,7 +8985,10 @@ export default function ScreenshotEditor() {
         {/* Remove Watermark Button - Always visible for free users */}
         {!hasProPlan && imageUrl && (
           <div
-            onClick={() => setShowUpgradePrompt(true)}
+            onClick={() => {
+              setUsedPremiumFeatures(true);
+              setShowUpgradePrompt(true);
+            }}
             style={{
               position: "absolute",
               bottom: usedPremiumFeatures ? "204px" : "152px", // Above premium notification (152 + 42 + 10) or above preview
