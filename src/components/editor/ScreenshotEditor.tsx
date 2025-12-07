@@ -7175,10 +7175,11 @@ export default function ScreenshotEditor() {
                   {[
                     "Premium themes (120+ styles)",
                     "Custom theme creator",
+                    "No watermark on exports",
+                    "All Extension Pro Features",
                     "Drawing \u0026 annotation tools",
                     "Blur \u0026 pixelate tools",
                     "Highest quality exports (4K)",
-                    "No watermark on exports",
                     "Priority support (24h)",
                     "Cloud storage (coming soon)",
                   ].map((feature, index) => (
