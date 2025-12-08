@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { Check, X, Chrome, Crown, Star, Gift, PartyPopper } from "lucide-react";
+import { Check, X, Chrome, Crown, Star, Gift, PartyPopper, Loader2 } from "lucide-react";
 import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
 import clsx from "clsx";
@@ -99,6 +99,7 @@ export const PricingSection: React.FC = () => {
   const [showComingSoonNotice, setShowComingSoonNotice] = useState(false);
   const [userPlanType, setUserPlanType] = useState<string | null>(null);
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(true);
+  const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
 
   // Check user's subscription status on mount
   useEffect(() => {
@@ -171,6 +172,9 @@ export const PricingSection: React.FC = () => {
           return;
         }
 
+        // Show loading spinner
+        setIsProcessingCheckout(true);
+
         // Call checkout API to create Polar checkout session
         const response = await fetch("/api/checkout", {
           method: "POST",
@@ -194,6 +198,7 @@ export const PricingSection: React.FC = () => {
         }
       } catch (error) {
         console.error("Checkout error:", error);
+        setIsProcessingCheckout(false);
         alert("Failed to start checkout. Please try again.");
       }
     } else {
@@ -214,6 +219,35 @@ export const PricingSection: React.FC = () => {
       id="pricing"
       className="py-20 md:py-32 bg-gradient-to-br from-primary/5 to-secondary/5"
     >
+      {/* Loading Modal */}
+      <AnimatePresence>
+        {isProcessingCheckout && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-2xl shadow-2xl p-8 max-w-md mx-4 text-center"
+            >
+              <div className="mb-4 flex justify-center">
+                <Loader2 className="w-16 h-16 text-coral animate-spin" />
+              </div>
+              <h3 className="text-2xl font-bold text-dark mb-2">
+                Processing...
+              </h3>
+              <p className="text-dark-lighter">
+                Please wait while we are processing
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Coming Soon Notice */}
       <AnimatePresence>
         {showComingSoonNotice && (
