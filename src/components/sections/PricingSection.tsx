@@ -161,6 +161,16 @@ export const PricingSection: React.FC = () => {
       router.push("/auth/login");
     } else if (planName === "Pro") {
       try {
+        // Check if user is authenticated
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        // If not authenticated, redirect to signup
+        if (!user) {
+          router.push("/auth/login");
+          return;
+        }
+
         // Call checkout API to create Polar checkout session
         const response = await fetch("/api/checkout", {
           method: "POST",
