@@ -1,10 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
-import { Chrome, Monitor, Shield, Zap } from "lucide-react";
+import { Chrome, Monitor, Shield, Zap, Sparkles } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 const trustBadges = [
   { icon: Shield, label: "7-Day Free Trial" },
@@ -14,6 +16,47 @@ const trustBadges = [
 ];
 
 export const FinalCTASection: React.FC = () => {
+  const router = useRouter();
+  const [userPlanType, setUserPlanType] = useState<string | null>(null);
+  const [isLoadingSubscription, setIsLoadingSubscription] = useState(true);
+
+  // Check user's subscription status on mount
+  useEffect(() => {
+    const checkSubscription = async () => {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+          setIsLoadingSubscription(false);
+          return;
+        }
+
+        // Get user's active subscription
+        const { data: subscription } = await supabase
+          .from("subscriptions")
+          .select("*")
+          .eq("user_id", user.id)
+          .eq("status", "active")
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .single();
+
+        if (subscription) {
+          setUserPlanType(subscription.plan_type);
+        }
+      } catch (error) {
+        console.error("Error checking subscription:", error);
+      } finally {
+        setIsLoadingSubscription(false);
+      }
+    };
+
+    checkSubscription();
+  }, []);
+
+  const isProPlan = userPlanType === "monthly" || userPlanType === "yearly";
+
   return (
     <section className="py-20 md:py-32 bg-gradient-cta text-white overflow-hidden relative">
       {/* Background decoration */}
@@ -75,11 +118,23 @@ export const FinalCTASection: React.FC = () => {
               Add to Chrome - Free
             </Button>
           </a>
-          <a href="#pricing">
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 text-lg px-10 py-5">
-              View All Plans
+          {isProPlan ? (
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-white text-white hover:bg-white/10 text-lg px-10 py-5"
+              onClick={() => router.push("/editor")}
+            >
+              <Sparkles className="w-5 h-5 mr-2" />
+              Use Pro Features
             </Button>
-          </a>
+          ) : (
+            <a href="#pricing">
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 text-lg px-10 py-5">
+                View All Plans
+              </Button>
+            </a>
+          )}
         </motion.div>
 
         <motion.div

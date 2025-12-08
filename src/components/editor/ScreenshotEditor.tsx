@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { hasProSubscription } from "@/lib/subscription";
 
 // Theme gradients
 const THEMES = {
@@ -263,14 +264,15 @@ type ThemeType = keyof typeof THEMES;
 
 // Categorized theme lists for organized display
 const COSMIC_THEME_KEYS: ThemeType[] = [
-  "cosmic1", "cosmic2", "cosmic3", "cosmic4", "cosmic5", "cosmic6", "cosmic7",
+  "cosmic2", "cosmic3", "cosmic4", "cosmic5", "cosmic6", "cosmic7",
   "cosmic8", "cosmic9", "cosmic10", "cosmic11", "cosmic12", "cosmic13", "cosmic14",
   "cosmic15", "cosmic16", "cosmic17", "cosmic18", "cosmic19", "cosmic20", "cosmic21",
 ];
 
 const POPULAR_THEME_KEYS: ThemeType[] = [
-  "midnight", "sunset", "ocean", "forest", "lavender", "golden",
-  "coral", "sky", "slate", "rose", "pearl", "carbon",
+  "pearl", "sunset", "rose", "forest", "lavender", "golden",
+  "coral", "sky", "slate", "ocean", "midnight", "carbon",
+  "cosmic1", "figma",
 ];
 
 const DARK_PREMIUM_THEME_KEYS: ThemeType[] = [
@@ -285,7 +287,7 @@ const BRIGHT_COLORFUL_THEME_KEYS: ThemeType[] = [
   "aurora", "crimson", "emerald", "sapphire", "amethyst", "sunshine",
   "lime", "fuchsia", "bubblegum", "tropical", "peacock", "berry",
   "citrus", "candy", "mango", "unicorn", "prism", "hologram",
-  "linear", "stripe", "figma",
+  "linear", "stripe",
 ];
 
 const NATURE_EARTH_THEME_KEYS: ThemeType[] = [
@@ -447,6 +449,55 @@ function TooltipButton({
       {children}
       {showTooltip && <div style={getTooltipStyle()}>{tooltip}</div>}
     </button>
+  );
+}
+
+// Sparkle Icon Component - Reusable premium indicator
+function SparkleIcon({
+  size = 16,
+  useGradient = true,
+}: {
+  size?: number;
+  useGradient?: boolean;
+}) {
+  const gradientId = `sparkle-gradient-${Math.random().toString(36).substr(2, 9)}`;
+  
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {useGradient && (
+        <defs>
+          <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#FFC107" />
+            <stop offset="50%" stopColor="#FFD700" />
+            <stop offset="100%" stopColor="#FFA500" />
+          </linearGradient>
+        </defs>
+      )}
+      <path
+        d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z"
+        fill={useGradient ? `url(#${gradientId})` : "#EC4899"}
+        stroke={useGradient ? `url(#${gradientId})` : "#EC4899"}
+        strokeWidth="1"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M19 4L19.5 6.5L22 7L19.5 7.5L19 10L18.5 7.5L16 7L18.5 6.5L19 4Z"
+        fill={useGradient ? `url(#${gradientId})` : "#06B6D4"}
+        opacity="0.8"
+      />
+      <path
+        d="M5 14L5.5 16.5L8 17L5.5 17.5L5 20L4.5 17.5L2 17L4.5 16.5L5 14Z"
+        fill={useGradient ? `url(#${gradientId})` : "#06B6D4"}
+        opacity="0.8"
+      />
+    </svg>
   );
 }
 
@@ -877,9 +928,25 @@ function ThemeSelector({
               borderRadius: "6px",
               cursor: "pointer",
               transition: "all 0.2s",
+              position: "relative",
             }}
           >
             Custom
+            {/* Premium Star Badge */}
+            <span
+              style={{
+                position: "absolute",
+                top: "-6px",
+                right: "-6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                animation: "shimmer 2s ease-in-out infinite",
+                filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))",
+              }}
+            >
+              <SparkleIcon size={16} />
+            </span>
           </button>
         </div>
         <button
@@ -910,7 +977,7 @@ function ThemeSelector({
             paddingRight: "4px",
           }}
         >
-          {/* Cosmic Section */}
+          {/* Peace Section (Free Themes) */}
           <div style={{ marginBottom: "16px" }}>
             <div
               style={{
@@ -921,126 +988,7 @@ function ThemeSelector({
                 paddingLeft: "2px",
               }}
             >
-              Cosmic
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(8, 1fr)",
-                gap: "6px",
-              }}
-            >
-              {COSMIC_THEME_KEYS.map((themeKey) => {
-                const isSelected = selectedTheme === themeKey;
-                const isHovered = hoveredTheme === themeKey;
-
-                return (
-                  <div key={themeKey} style={{ position: "relative" }}>
-                    <button
-                      onClick={() => onThemeSelect(themeKey)}
-                      onMouseEnter={() => setHoveredTheme(themeKey)}
-                      onMouseLeave={() => setHoveredTheme(null)}
-                      style={{
-                        width: "100%",
-                        aspectRatio: "1",
-                        padding: "0",
-                        background: THEMES[themeKey],
-                        border: isSelected
-                          ? "2px solid #3B82F6"
-                          : "1.5px solid rgba(255, 255, 255, 0.1)",
-                        borderRadius: "6px",
-                        cursor: "pointer",
-                        transition: "all 0.2s",
-                        position: "relative",
-                        transform: isHovered ? "scale(1.08)" : "scale(1)",
-                        boxShadow: isSelected
-                          ? "0 0 0 2px rgba(59, 130, 246, 0.2)"
-                          : isHovered
-                          ? "0 3px 6px rgba(0, 0, 0, 0.3)"
-                          : "none",
-                      }}
-                    >
-                      {isSelected && (
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: "2px",
-                            right: "2px",
-                            width: "12px",
-                            height: "12px",
-                            background: "#3B82F6",
-                            borderRadius: "50%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <svg
-                            width="8"
-                            height="8"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                            stroke="white"
-                            strokeWidth="2.5"
-                          >
-                            <path d="M3 8l3 3 7-7" />
-                          </svg>
-                        </div>
-                      )}
-                    </button>
-                    {isHovered && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          bottom: "calc(100% + 8px)",
-                          left: "50%",
-                          transform: "translateX(-50%)",
-                          background: colors.background,
-                          color: colors.text,
-                          padding: "4px 8px",
-                          borderRadius: "4px",
-                          fontSize: "11px",
-                          whiteSpace: "nowrap",
-                          pointerEvents: "none",
-                          zIndex: 1001,
-                          border: `1px solid ${colors.border}`,
-                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
-                        }}
-                      >
-                        {themeNames[themeKey]}
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: "100%",
-                            left: "50%",
-                            transform: "translateX(-50%)",
-                            width: 0,
-                            height: 0,
-                            borderLeft: "4px solid transparent",
-                            borderRight: "4px solid transparent",
-                            borderTop: `4px solid ${colors.background}`,
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Popular Section */}
-          <div style={{ marginBottom: "16px" }}>
-            <div
-              style={{
-                color: colors.text,
-                fontSize: "13px",
-                fontWeight: 600,
-                marginBottom: "8px",
-                paddingLeft: "2px",
-              }}
-            >
-              Popular
+              Peace
             </div>
             <div
               style={{
@@ -1148,7 +1096,7 @@ function ThemeSelector({
             </div>
           </div>
 
-          {/* Dark & Premium Section */}
+          {/* Cosmic Section (Premium) */}
           <div style={{ marginBottom: "16px" }}>
             <div
               style={{
@@ -1157,9 +1105,13 @@ function ThemeSelector({
                 fontWeight: 600,
                 marginBottom: "8px",
                 paddingLeft: "2px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
               }}
             >
-              Dark & Premium
+              <span>Cosmic</span>
+              <SparkleIcon size={12} />
             </div>
             <div
               style={{
@@ -1168,7 +1120,7 @@ function ThemeSelector({
                 gap: "6px",
               }}
             >
-              {DARK_PREMIUM_THEME_KEYS.map((themeKey) => {
+              {COSMIC_THEME_KEYS.map((themeKey) => {
                 const isSelected = selectedTheme === themeKey;
                 const isHovered = hoveredTheme === themeKey;
 
@@ -1276,9 +1228,13 @@ function ThemeSelector({
                 fontWeight: 600,
                 marginBottom: "8px",
                 paddingLeft: "2px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
               }}
             >
-              Bright & Colorful
+              <span>Bright & Colorful</span>
+              <SparkleIcon size={12} />
             </div>
             <div
               style={{
@@ -1395,9 +1351,13 @@ function ThemeSelector({
                 fontWeight: 600,
                 marginBottom: "8px",
                 paddingLeft: "2px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
               }}
             >
-              Nature & Earth
+              <span>Nature & Earth</span>
+              <SparkleIcon size={12} />
             </div>
             <div
               style={{
@@ -1514,9 +1474,13 @@ function ThemeSelector({
                 fontWeight: 600,
                 marginBottom: "8px",
                 paddingLeft: "2px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
               }}
             >
-              Luxury & Metallic
+              <span>Luxury & Metallic</span>
+              <SparkleIcon size={12} />
             </div>
             <div
               style={{
@@ -1633,9 +1597,13 @@ function ThemeSelector({
                 fontWeight: 600,
                 marginBottom: "8px",
                 paddingLeft: "2px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
               }}
             >
-              Solid
+              <span>Solid</span>
+              <SparkleIcon size={12} />
             </div>
             <div
               style={{
@@ -1646,6 +1614,129 @@ function ThemeSelector({
               }}
             >
               {SOLID_THEME_KEYS.map((themeKey) => {
+                const isSelected = selectedTheme === themeKey;
+                const isHovered = hoveredTheme === themeKey;
+
+                return (
+                  <div key={themeKey} style={{ position: "relative" }}>
+                    <button
+                      onClick={() => onThemeSelect(themeKey)}
+                      onMouseEnter={() => setHoveredTheme(themeKey)}
+                      onMouseLeave={() => setHoveredTheme(null)}
+                      style={{
+                        width: "100%",
+                        aspectRatio: "1",
+                        padding: "0",
+                        background: THEMES[themeKey],
+                        border: isSelected
+                          ? "2px solid #3B82F6"
+                          : "1.5px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        position: "relative",
+                        transform: isHovered ? "scale(1.08)" : "scale(1)",
+                        boxShadow: isSelected
+                          ? "0 0 0 2px rgba(59, 130, 246, 0.2)"
+                          : isHovered
+                          ? "0 3px 6px rgba(0, 0, 0, 0.3)"
+                          : "none",
+                      }}
+                    >
+                      {isSelected && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "2px",
+                            right: "2px",
+                            width: "12px",
+                            height: "12px",
+                            background: "#3B82F6",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg
+                            width="8"
+                            height="8"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="2.5"
+                          >
+                            <path d="M3 8l3 3 7-7" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    {isHovered && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 8px)",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: colors.background,
+                          color: colors.text,
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          whiteSpace: "nowrap",
+                          pointerEvents: "none",
+                          zIndex: 1001,
+                          border: `1px solid ${colors.border}`,
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                        }}
+                      >
+                        {themeNames[themeKey]}
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "4px solid transparent",
+                            borderRight: "4px solid transparent",
+                            borderTop: `4px solid ${colors.background}`,
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Dark & Premium Section */}
+          <div style={{ marginBottom: "16px" }}>
+            <div
+              style={{
+                color: colors.text,
+                fontSize: "13px",
+                fontWeight: 600,
+                marginBottom: "8px",
+                paddingLeft: "2px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <span>Dark & Premium</span>
+              <SparkleIcon size={12} />
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(8, 1fr)",
+                gap: "6px",
+              }}
+            >
+              {DARK_PREMIUM_THEME_KEYS.map((themeKey) => {
                 const isSelected = selectedTheme === themeKey;
                 const isHovered = hoveredTheme === themeKey;
 
@@ -2568,8 +2659,8 @@ export default function ScreenshotEditor() {
     "dark"
   );
   const [showBackground, setShowBackground] = useState(true);
-  const [editorTheme, setEditorTheme] = useState<"light" | "dark">("dark");
-  const [selectedTheme, setSelectedTheme] = useState<ThemeType>("cosmic16"); // Pink Flame as default
+  const [editorTheme, setEditorTheme] = useState<"light" | "dark">("light");
+  const [selectedTheme, setSelectedTheme] = useState<ThemeType>("cosmic1"); // Cosmic Dream as default
   const [showThemeSelector, setShowThemeSelector] = useState(false);
   const [customColor, setCustomColor] = useState("#ededed");
   const [customColor2, setCustomColor2] = useState("#eb00eb");
@@ -2609,6 +2700,11 @@ export default function ScreenshotEditor() {
 
   // Quality modal state
   const [showQualityModal, setShowQualityModal] = useState(false);
+
+  // Subscription state
+  const [hasProPlan, setHasProPlan] = useState(false);
+  const [usedPremiumFeatures, setUsedPremiumFeatures] = useState(false);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
 
   // History
   const [history, setHistory] = useState<HistoryState[]>([]);
@@ -2729,6 +2825,18 @@ export default function ScreenshotEditor() {
     },
     [handleImageLoad]
   );
+
+  // Check subscription status
+  useEffect(() => {
+    const checkSubscription = async () => {
+      const isPro = await hasProSubscription();
+      setHasProPlan(isPro);
+    };
+
+    if (user) {
+      checkSubscription();
+    }
+  }, [user]);
 
   // Handle paste
   useEffect(() => {
@@ -4496,6 +4604,12 @@ export default function ScreenshotEditor() {
   };
 
   const handleCopy = async () => {
+    // Check if free user has used premium features
+    if (!hasProPlan && usedPremiumFeatures) {
+      setShowUpgradePrompt(true);
+      return;
+    }
+
     // Check if user is logged in
     if (!user) {
       setLoginPromptAction("copy");
@@ -6172,6 +6286,20 @@ export default function ScreenshotEditor() {
           selectedTheme={selectedTheme}
           onThemeSelect={(newTheme) => {
             setSelectedTheme(newTheme);
+            
+            // Check if the theme is from a premium section (all sections EXCEPT Peace/Popular)
+            const isPremiumTheme = !POPULAR_THEME_KEYS.includes(newTheme) && newTheme !== "custom";
+            
+            // For free users, track premium feature usage
+            if (!hasProPlan) {
+              if (isPremiumTheme || newTheme === "custom") {
+                setUsedPremiumFeatures(true);
+              } else if (POPULAR_THEME_KEYS.includes(newTheme)) {
+                // Reset if switching to a free theme (Peace section)
+                setUsedPremiumFeatures(false);
+              }
+            }
+            
             setTimeout(() => {
               saveToHistory({
                 imageUrl,
@@ -6207,6 +6335,10 @@ export default function ScreenshotEditor() {
             setShowColor3(settings.showColor3);
             setShowColor4(settings.showColor4);
             setSelectedTheme("custom" as ThemeType);
+            // Mark premium features as used when custom theme is selected
+            if (!hasProPlan) {
+              setUsedPremiumFeatures(true);
+            }
           }}
         />
       )}
@@ -6636,6 +6768,33 @@ export default function ScreenshotEditor() {
               >
                 Select the quality that best suits your needs
               </p>
+
+              {/* Premium Features Notification */}
+              {!hasProPlan && usedPremiumFeatures && (
+                <div
+                  style={{
+                    marginTop: "12px",
+                    padding: "10px 14px",
+                    background: "rgba(251, 146, 60, 0.1)",
+                    border: "1px solid rgba(251, 146, 60, 0.3)",
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                >
+                  <span style={{ fontSize: "16px" }}>⚠️</span>
+                  <span
+                    style={{
+                      fontSize: "13px",
+                      color: "#FB923C",
+                      fontWeight: 500,
+                    }}
+                  >
+                    You have used premium features in editor
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Quality Options */}
@@ -6644,7 +6803,15 @@ export default function ScreenshotEditor() {
             >
               {/* Standard Quality Option */}
               <button
-                onClick={() => performDownload("standard")}
+                onClick={() => {
+                  // If free user has used premium features, show upgrade prompt
+                  if (!hasProPlan && usedPremiumFeatures) {
+                    setShowQualityModal(false);
+                    setShowUpgradePrompt(true);
+                  } else {
+                    performDownload("standard");
+                  }
+                }}
                 style={{
                   background: colors.buttonBg,
                   border: `2px solid ${colors.border}`,
@@ -6721,7 +6888,14 @@ export default function ScreenshotEditor() {
 
               {/* HD Quality Option */}
               <button
-                onClick={() => performDownload("hd")}
+                onClick={() => {
+                  if (!hasProPlan) {
+                    setShowQualityModal(false);
+                    setShowUpgradePrompt(true);
+                  } else {
+                    performDownload("hd");
+                  }
+                }}
                 style={{
                   background:
                     "linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%)",
@@ -6747,13 +6921,13 @@ export default function ScreenshotEditor() {
                   e.currentTarget.style.boxShadow = "none";
                 }}
               >
-                {/* Recommended Badge */}
+                {/* Pro Only / Recommended Badge */}
                 <div
                   style={{
                     position: "absolute",
                     top: "12px",
                     right: "12px",
-                    background: "#3B82F6",
+                    background: hasProPlan ? "#3B82F6" : "#F59E0B",
                     color: "white",
                     fontSize: "10px",
                     fontWeight: 600,
@@ -6763,7 +6937,7 @@ export default function ScreenshotEditor() {
                     letterSpacing: "0.5px",
                   }}
                 >
-                  Recommended
+                  {hasProPlan ? "Recommended" : "Pro Only"}
                 </div>
 
                 <div
@@ -6817,32 +6991,325 @@ export default function ScreenshotEditor() {
                   Maximum resolution with crystal-clear text. Best for
                   professional use, presentations, and printing.
                 </div>
-                <div
-                  style={{
-                    fontSize: "11px",
-                    color: "#F59E0B",
-                    paddingLeft: "52px",
-                    marginTop: "4px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "4px",
-                  }}
-                >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 16 16"
-                    fill="currentColor"
+                {!hasProPlan ? (
+                  <div
+                    style={{
+                      fontSize: "11px",
+                      color: "#F59E0B",
+                      paddingLeft: "52px",
+                      marginTop: "4px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      fontWeight: 600,
+                    }}
                   >
-                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-                  </svg>
-                  Note: Larger file size due to higher quality
-                </div>
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 16 16"
+                      fill="currentColor"
+                    >
+                      <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 13A6 6 0 1 1 8 2a6 6 0 0 1 0 12zm-.5-6.5v-3a.5.5 0 0 1 1 0v3a.5.5 0 0 1-1 0zM8 11a.75.75 0 1 1 0-1.5A.75.75 0 0 1 8 11z" />
+                    </svg>
+                    Click to upgrade to Pro and unlock Ultra HD downloads
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      fontSize: "11px",
+                      color: "#F59E0B",
+                      paddingLeft: "52px",
+                      marginTop: "4px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "4px",
+                    }}
+                  >
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 16 16"
+                      fill="currentColor"
+                    >
+                      <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                    </svg>
+                    Note: Larger file size due to higher quality
+                  </div>
+                )}
               </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* Upgrade Prompt Modal */}
+      {showUpgradePrompt && (
+        <div
+          onClick={() => setShowUpgradePrompt(false)}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.8)",
+            backdropFilter: "blur(8px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 10000,
+          }}
+        >
+          <div
+            style={{
+              background: colors.toolbar,
+              borderRadius: "16px",
+              maxWidth: "460px",
+              width: "90%",
+              maxHeight: "85vh",
+              boxShadow: "0 25px 60px rgba(0, 0, 0, 0.5)",
+              border: `2px solid ${colors.border}`,
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header - Fixed */}
+            <div
+              style={{
+                padding: "24px 28px",
+                borderBottom: `1px solid ${colors.border}`,
+                textAlign: "center",
+              }}
+            >
+              <img 
+                src="/logo.png" 
+                alt="Logo"
+                style={{
+                  width: "48px",
+                  height: "48px",
+                  margin: "0 auto 16px",
+                  display: "block",
+                }}
+              />
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", marginBottom: "6px" }}>
+                <h2
+                  style={{
+                    margin: 0,
+                    fontSize: "24px",
+                    fontWeight: 600,
+                    color: colors.text,
+                  }}
+                >
+                  Upgrade to Pro
+                </h2>
+                <SparkleIcon size={20} />
+              </div>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "14px",
+                  color: colors.textMuted,
+                  lineHeight: "1.4",
+                }}
+              >
+                Unlock premium features for your screenshots
+              </p>
+            </div>
+
+            {/* Scrollable Content */}
+            <div
+              style={{
+                overflowY: "auto",
+                padding: "24px 28px",
+                flex: 1,
+              }}
+            >
+              {/* Launch Special Badge */}
+              <div
+                style={{
+                  background: "linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(251, 146, 60, 0.1) 100%)",
+                  border: "2px solid rgba(6, 182, 212, 0.3)",
+                  borderRadius: "10px",
+                  padding: "14px 16px",
+                  marginBottom: "20px",
+                  textAlign: "center",
+                }}
+              >
+                <div style={{ fontSize: "20px", marginBottom: "4px" }}>🎉</div>
+                <div style={{ fontSize: "13px", fontWeight: 600, color: colors.text, marginBottom: "2px" }}>
+                  Launch Special: 50% OFF
+                </div>
+                <div style={{ fontSize: "12px", color: colors.textMuted }}>
+                  For First 100 users only!
+                </div>
+              </div>
+
+              {/* Pricing */}
+              <div style={{ textAlign: "center", marginBottom: "24px" }}>
+                <div style={{ marginBottom: "12px" }}>
+                  <span style={{ fontSize: "20px", color: colors.textMuted, textDecoration: "line-through" }}>$3</span>
+                  <span style={{ fontSize: "36px", fontWeight: 700, color: colors.text, marginLeft: "8px" }}>$2</span>
+                  <span style={{ fontSize: "16px", color: colors.textMuted }}>/month</span>
+                </div>
+                <div style={{ fontSize: "13px", color: "#06B6D4", fontWeight: 500 }}>
+                  Or $12/year (save $12) 
+                </div>
+              </div>
+
+              {/* Features */}
+              <div style={{ marginBottom: "20px" }}>
+                <div
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    color: colors.text,
+                    marginBottom: "12px",
+                  }}
+                >
+                  What's included:
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                  {[
+                    "Premium themes (120+ styles)",
+                    "Custom theme creator",
+                    "No watermark on exports",
+                    "All Extension Pro Features",
+                    "Drawing \u0026 annotation tools",
+                    "Blur \u0026 pixelate tools",
+                    "Highest quality exports (4K)",
+                    "Priority support (24h)",
+                    "Cloud storage (coming soon)",
+                  ].map((feature, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                      }}
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#06B6D4"
+                        strokeWidth="3"
+                        style={{ flexShrink: 0 }}
+                      >
+                        <path d="M5 12l5 5L20 7" />
+                      </svg>
+                      <span style={{ fontSize: "14px", color: colors.textSecondary }}>
+                        {feature}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Trust Elements */}
+              <div
+                style={{
+                  borderTop: `1px solid ${colors.border}`,
+                  paddingTop: "16px",
+                  marginTop: "20px",
+                }}
+              >
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {[
+                    // { icon: "✓", text: "7-day free trial" },
+                    { icon: "✓", text: "Cancel anytime, no questions" },
+                    { icon: "✓", text: "Secure payment" },
+                  ].map((item, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        fontSize: "13px",
+                        color: colors.textMuted,
+                      }}
+                    >
+                      <span style={{ color: "#06B6D4", fontWeight: "bold" }}>{item.icon}</span>
+                      <span>{item.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer with buttons - Fixed */}
+            <div
+              style={{
+                padding: "20px 28px",
+                borderTop: `1px solid ${colors.border}`,
+                background: colors.toolbar,
+              }}
+            >
+              <button
+                onClick={() => {
+                  setShowUpgradePrompt(false);
+                  window.location.href = "/#pricing";
+                }}
+                style={{
+                  width: "100%",
+                  padding: "14px 24px",
+                  background: "linear-gradient(135deg, #06B6D4 0%, #0EA5E9 100%)",
+                  border: "none",
+                  borderRadius: "10px",
+                  color: "#FFF",
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  marginBottom: "10px",
+                  boxShadow: "0 4px 14px rgba(6, 182, 212, 0.3)",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                  e.currentTarget.style.boxShadow = "0 6px 20px rgba(6, 182, 212, 0.4)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "0 4px 14px rgba(6, 182, 212, 0.3)";
+                }}
+              >
+                Upgrade to Pro
+              </button>
+              <button
+                onClick={() => setShowUpgradePrompt(false)}
+                style={{
+                  width: "100%",
+                  padding: "12px 24px",
+                  background: "transparent",
+                  border: "none",
+                  borderRadius: "8px",
+                  color: colors.textMuted,
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = colors.buttonBg;
+                  e.currentTarget.style.color = colors.text;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.color = colors.textMuted;
+                }}
+              >
+                Maybe Later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
 
       {/* Watch Demo and Contact Buttons - Below Toolbar on Left */}
       <div
@@ -7164,6 +7631,55 @@ export default function ScreenshotEditor() {
               boxSizing: "border-box",
             }}
           >
+            {/* Watermark - Only show for free plan users */}
+            {!hasProPlan && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                  marginBottom: "16px",
+                }}
+              >
+                <div
+                  style={{
+                    background: "rgba(0, 0, 0, 0.6)",
+                    backdropFilter: "blur(8px)",
+                    padding: "8px 16px",
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
+                  }}
+                >
+                  <img
+                    src="/logo.png"
+                    alt="Logo"
+                    style={{
+                      width: "24px",
+                      height: "24px",
+                      borderRadius: "6px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      color: "rgba(255, 255, 255, 0.95)",
+                      textShadow: "0 1px 3px rgba(0, 0, 0, 0.5)",
+                      fontFamily:
+                        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                    }}
+                  >
+                    iloveSnapshots.online
+                  </span>
+                </div>
+              </div>
+            )}
+
             {/* Shadow layers */}
             <div style={{ position: "relative" }}>
               {[45, 40, 35, 30, 25, 20, 15].map((offset, i) => (
@@ -7415,9 +7931,14 @@ export default function ScreenshotEditor() {
                 textAlign: "center",
                 paddingBottom: "4px",
                 borderBottom: `1px solid ${colors.border}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "4px",
               }}
             >
-              Drawing Toolbox
+              <span>Drawing Toolbox</span>
+              <SparkleIcon size={10} />
             </div>
 
             {/* Row 1: Line, Freehand, Arrow */}
@@ -7427,6 +7948,10 @@ export default function ScreenshotEditor() {
                   setActiveTool("line");
                   setPanModeEnabled(false);
                   showNotification("Click and drag to draw a straight line");
+                  // Mark premium feature usage for free users
+                  if (!hasProPlan) {
+                    setUsedPremiumFeatures(true);
+                  }
                 }}
                 tooltip="Line (L)"
                 tooltipPosition="left"
@@ -7465,6 +7990,9 @@ export default function ScreenshotEditor() {
                   setActiveTool("freehand");
                   setPanModeEnabled(false);
                   showNotification("Click and drag to draw freehand");
+                  if (!hasProPlan) {
+                    setUsedPremiumFeatures(true);
+                  }
                 }}
                 tooltip="Freehand (F)"
                 tooltipPosition="left"
@@ -7504,6 +8032,9 @@ export default function ScreenshotEditor() {
                   setActiveTool("arrow");
                   setPanModeEnabled(false);
                   showNotification("Click and drag to draw an arrow");
+                  if (!hasProPlan) {
+                    setUsedPremiumFeatures(true);
+                  }
                 }}
                 tooltip="Arrow (A)"
                 tooltipPosition="left"
@@ -7546,6 +8077,9 @@ export default function ScreenshotEditor() {
                   setActiveTool("circle");
                   setPanModeEnabled(false);
                   showNotification("Click and drag to draw a circle");
+                  if (!hasProPlan) {
+                    setUsedPremiumFeatures(true);
+                  }
                 }}
                 tooltip="Circle (C)"
                 tooltipPosition="left"
@@ -7585,6 +8119,9 @@ export default function ScreenshotEditor() {
                   setActiveTool("rectangle");
                   setPanModeEnabled(false);
                   showNotification("Click and drag to draw a rectangle");
+                  if (!hasProPlan) {
+                    setUsedPremiumFeatures(true);
+                  }
                 }}
                 tooltip="Rectangle (R)"
                 tooltipPosition="left"
@@ -7624,6 +8161,9 @@ export default function ScreenshotEditor() {
                   setActiveTool("blur");
                   setPanModeEnabled(false);
                   showNotification("Click and drag to blur an area");
+                  if (!hasProPlan) {
+                    setUsedPremiumFeatures(true);
+                  }
                 }}
                 tooltip="Blur (B)"
                 tooltipPosition="left"
@@ -8405,6 +8945,83 @@ export default function ScreenshotEditor() {
           </div>
         )}
 
+        {/* Premium Feature Notification - Above Preview */}
+        {!hasProPlan && usedPremiumFeatures && (
+          <div
+            onClick={() => setShowUpgradePrompt(true)}
+            style={{
+              position: "absolute",
+              bottom: "152px", // Above preview card
+              left: "20px",
+              background: "#FFA000",
+              color: "#000",
+              padding: "10px 14px",
+              borderRadius: "6px",
+              fontSize: "13px",
+              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+              border: "1px solid #FF8F00",
+              zIndex: 1001,
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(255, 160, 0, 0.4)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.3)";
+            }}
+          >
+            <SparkleIcon size={14} />
+            <span>Premium Feature Used</span>
+          </div>
+        )}
+
+        {/* Remove Watermark Button - Always visible for free users */}
+        {!hasProPlan && imageUrl && (
+          <div
+            onClick={() => {
+              setUsedPremiumFeatures(true);
+              setShowUpgradePrompt(true);
+            }}
+            style={{
+              position: "absolute",
+              bottom: usedPremiumFeatures ? "204px" : "152px", // Above premium notification (152 + 42 + 10) or above preview
+              left: "20px",
+              background: "linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)",
+              color: "#FFF",
+              padding: "10px 14px",
+              borderRadius: "6px",
+              fontSize: "13px",
+              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+              border: "1px solid #4F46E5",
+              zIndex: 1001,
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(99, 102, 241, 0.4)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.3)";
+            }}
+          >
+            <SparkleIcon size={14} />
+            <span>Remove Watermark</span>
+          </div>
+        )}
+
         {/* Minimap Preview - Bottom Left (only when zoomed/panned) */}
         {imageUrl && (zoom !== 1 || pan.x !== 0 || pan.y !== 0) && (
           <div
@@ -8532,6 +9149,17 @@ export default function ScreenshotEditor() {
             to {
               opacity: 1;
               transform: translateX(-50%) translateY(0);
+            }
+          }
+
+          @keyframes shimmer {
+            0%, 100% {
+              opacity: 1;
+              transform: scale(1);
+            }
+            50% {
+              opacity: 0.7;
+              transform: scale(1.1);
             }
           }
         `}

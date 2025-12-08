@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { Check, X, Chrome, Crown, Star, Gift, PartyPopper } from "lucide-react";
+import { Check, X, Chrome, Crown, Star, Gift, PartyPopper, Loader2 } from "lucide-react";
 import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
 import clsx from "clsx";
+import { createClient } from "@/lib/supabase/client";
 
 type BillingPeriod = "monthly" | "yearly";
 
@@ -80,10 +81,13 @@ const pricingPlans: PricingPlan[] = [
       { text: "Priority support (24 hours)", included: true },
       { text: "Request new features", included: true },
       { text: "Cloud storage (Coming soon)", included: true },
-      { text: "Export to multiple formats (PDF, JPG) (Coming Soon)", included: true },
+      {
+        text: "Export to multiple formats (PDF, JPG) (Coming Soon)",
+        included: true,
+      },
       { text: "Early access to new tools (Coming Soon)", included: true },
     ],
-    cta: "Start 7-Day Free Trial",
+    cta: "Upgrade to Pro",
     ctaVariant: "primary",
     badge: "Best Value",
   },
@@ -93,6 +97,44 @@ export const PricingSection: React.FC = () => {
   const router = useRouter();
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("yearly");
   const [showComingSoonNotice, setShowComingSoonNotice] = useState(false);
+  const [userPlanType, setUserPlanType] = useState<string | null>(null);
+  const [isLoadingSubscription, setIsLoadingSubscription] = useState(true);
+  const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
+
+  // Check user's subscription status on mount
+  useEffect(() => {
+    const checkSubscription = async () => {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+          setIsLoadingSubscription(false);
+          return;
+        }
+
+        // Get user's active subscription
+        const { data: subscription } = await supabase
+          .from("subscriptions")
+          .select("*")
+          .eq("user_id", user.id)
+          .eq("status", "active")
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .single();
+
+        if (subscription) {
+          setUserPlanType(subscription.plan_type);
+        }
+      } catch (error) {
+        console.error("Error checking subscription:", error);
+      } finally {
+        setIsLoadingSubscription(false);
+      }
+    };
+
+    checkSubscription();
+  }, []);
 
   const getPrice = (plan: PricingPlan) => {
     if (plan.monthlyPrice === 0) return "Free";
@@ -107,17 +149,105 @@ export const PricingSection: React.FC = () => {
     return savings;
   };
 
-  const handlePlanClick = (planName: string) => {
+  const isProPlan = userPlanType === "monthly" || userPlanType === "yearly";
+
+  const handlePlanClick = async (planName: string) => {
+    // If user has pro plan, navigate to editor
+    if (isProPlan && planName === "Pro") {
+      router.push("/editor");
+      return;
+    }
+
     if (planName === "Free") {
       router.push("/auth/login");
+    } else if (planName === "Pro") {
+      try {
+        // Check if user is authenticated
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        // If not authenticated, redirect to signup
+        if (!user) {
+          router.push("/auth/login");
+          return;
+        }
+
+        // Show loading spinner
+        setIsProcessingCheckout(true);
+
+        // Call checkout API to create Polar checkout session
+        const response = await fetch("/api/checkout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            plan: billingPeriod,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to create checkout session");
+        }
+
+        // Redirect to Polar checkout
+        if (data.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+        }
+      } catch (error) {
+        console.error("Checkout error:", error);
+        setIsProcessingCheckout(false);
+        alert("Failed to start checkout. Please try again.");
+      }
     } else {
       setShowComingSoonNotice(true);
       setTimeout(() => setShowComingSoonNotice(false), 6000);
     }
   };
 
+  const getButtonText = (plan: PricingPlan) => {
+    if (isProPlan && plan.name === "Pro") {
+      return "Use Features";
+    }
+    return plan.cta;
+  };
+
   return (
-    <section id="pricing" className="py-20 md:py-32 bg-gradient-to-br from-primary/5 to-secondary/5">
+    <section
+      id="pricing"
+      className="py-20 md:py-32 bg-gradient-to-br from-primary/5 to-secondary/5"
+    >
+      {/* Loading Modal */}
+      <AnimatePresence>
+        {isProcessingCheckout && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-2xl shadow-2xl p-8 max-w-md mx-4 text-center"
+            >
+              <div className="mb-4 flex justify-center">
+                <Loader2 className="w-16 h-16 text-coral animate-spin" />
+              </div>
+              <h3 className="text-2xl font-bold text-dark mb-2">
+                Processing...
+              </h3>
+              <p className="text-dark-lighter">
+                Please wait while we are processing
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Coming Soon Notice */}
       <AnimatePresence>
         {showComingSoonNotice && (
@@ -137,7 +267,12 @@ export const PricingSection: React.FC = () => {
                   <Gift className="w-4 h-4 text-teal" />
                 </p>
                 <p className="text-sm text-dark-lighter mt-1">
-                  We&apos;re putting the finishing touches on our payment system. Until then, enjoy <span className="font-medium text-teal">every feature completely free</span> - no limits! Happy Thanksgiving!
+                  We&apos;re putting the finishing touches on our payment
+                  system. Until then, enjoy{" "}
+                  <span className="font-medium text-teal">
+                    every feature completely free
+                  </span>{" "}
+                  - no limits! Happy Thanksgiving!
                 </p>
               </div>
               <button
@@ -163,7 +298,8 @@ export const PricingSection: React.FC = () => {
             Pick Your Plan
           </h2>
           <p className="text-xl text-dark-lighter max-w-2xl mx-auto">
-            Start free, upgrade when you need more. No hidden fees, cancel anytime.
+            Start free, upgrade when you need more. No hidden fees, cancel
+            anytime.
           </p>
         </motion.div>
 
@@ -184,7 +320,8 @@ export const PricingSection: React.FC = () => {
               <PartyPopper className="w-5 h-5 text-coral" />
             </div>
             <p className="text-dark-lighter text-sm md:text-base">
-              Get <span className="font-bold text-teal">50% OFF</span> Pro plan forever - Lock in your discount now before we reach capacity!
+              Get <span className="font-bold text-teal">50% OFF</span> Pro plan
+              forever - Lock in your discount now before we reach capacity!
             </p>
           </div>
         </motion.div>
@@ -198,14 +335,20 @@ export const PricingSection: React.FC = () => {
           className="flex flex-col items-center justify-center gap-3 mb-16"
         >
           <div className="flex items-center gap-4">
-            <span className={clsx(
-              "text-sm font-medium transition-colors",
-              billingPeriod === "monthly" ? "text-dark" : "text-dark-lighter"
-            )}>
+            <span
+              className={clsx(
+                "text-sm font-medium transition-colors",
+                billingPeriod === "monthly" ? "text-dark" : "text-dark-lighter"
+              )}
+            >
               Monthly
             </span>
             <button
-              onClick={() => setBillingPeriod(billingPeriod === "monthly" ? "yearly" : "monthly")}
+              onClick={() =>
+                setBillingPeriod(
+                  billingPeriod === "monthly" ? "yearly" : "monthly"
+                )
+              }
               className={clsx(
                 "relative w-14 h-7 rounded-full transition-colors duration-300",
                 billingPeriod === "yearly" ? "bg-coral" : "bg-gray-300"
@@ -220,10 +363,12 @@ export const PricingSection: React.FC = () => {
                 )}
               />
             </button>
-            <span className={clsx(
-              "text-sm font-medium transition-colors",
-              billingPeriod === "yearly" ? "text-dark" : "text-dark-lighter"
-            )}>
+            <span
+              className={clsx(
+                "text-sm font-medium transition-colors",
+                billingPeriod === "yearly" ? "text-dark" : "text-dark-lighter"
+              )}
+            >
               Yearly
             </span>
           </div>
@@ -254,13 +399,19 @@ export const PricingSection: React.FC = () => {
               {(plan.popular || plan.limitedOffer) && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
                   {plan.popular && (
-                    <Badge variant="warning" className="text-xs px-4 py-1.5 shadow-lg whitespace-nowrap">
+                    <Badge
+                      variant="warning"
+                      className="text-xs px-4 py-1.5 shadow-lg whitespace-nowrap"
+                    >
                       MOST POPULAR
                     </Badge>
                   )}
                   {plan.limitedOffer && (
-                    <Badge variant="warning" className="text-xs px-3 py-1.5 shadow-lg whitespace-nowrap">
-                      🎉 FIRST 100 USERS
+                    <Badge
+                      variant="warning"
+                      className="text-xs px-3 py-1.5 shadow-lg whitespace-nowrap"
+                    >
+                      🎉 FOR FIRST 100 USERS ONLY!
                     </Badge>
                   )}
                 </div>
@@ -276,56 +427,74 @@ export const PricingSection: React.FC = () => {
 
               {/* Plan Header */}
               <div className="text-center mb-6">
-                <div className={clsx(
-                  "inline-flex items-center justify-center w-12 h-12 rounded-xl mb-4",
-                  plan.popular ? "bg-coral/10 text-coral" : "bg-gray-100 text-gray-600"
-                )}>
+                <div
+                  className={clsx(
+                    "inline-flex items-center justify-center w-12 h-12 rounded-xl mb-4",
+                    plan.popular
+                      ? "bg-coral/10 text-coral"
+                      : "bg-gray-100 text-gray-600"
+                  )}
+                >
                   {plan.icon}
                 </div>
-                <h3 className="text-2xl font-bold text-dark mb-1">{plan.name}</h3>
+                <h3 className="text-2xl font-bold text-dark mb-1">
+                  {plan.name}
+                </h3>
                 <p className="text-sm text-dark-lighter">{plan.description}</p>
               </div>
 
               {/* Price */}
               <div className="text-center mb-6">
-                {plan.limitedOffer && typeof getPrice(plan) === "number" && (
+                {plan.limitedOffer && (
                   <div className="mb-2">
                     <span className="text-2xl text-gray-400 line-through">
-                      ${billingPeriod === "monthly" ? plan.originalMonthlyPrice : plan.originalYearlyTotal && billingPeriod === "yearly" ? Math.round(plan.originalYearlyTotal / 12) : getPrice(plan)}
+                      $
+                      {billingPeriod === "monthly"
+                        ? plan.originalMonthlyPrice
+                        : plan.originalYearlyTotal}
                     </span>
-                    <span className="text-dark-lighter text-sm ml-1">/month</span>
+                    <span className="text-dark-lighter text-sm ml-1">
+                      /{billingPeriod === "monthly" ? "month" : "year"}
+                    </span>
                   </div>
                 )}
                 <div className="flex items-end justify-center gap-1">
                   {typeof getPrice(plan) === "number" ? (
                     <>
-                      <span className="text-5xl font-bold text-dark">${getPrice(plan)}</span>
-                      <span className="text-dark-lighter mb-2">/month</span>
+                      <span className="text-5xl font-bold text-dark">
+                        ${billingPeriod === "yearly" && plan.yearlyTotal > 0 ? plan.yearlyTotal : getPrice(plan)}
+                      </span>
+                      <span className="text-dark-lighter mb-2">
+                        /{billingPeriod === "yearly" && plan.yearlyTotal > 0 ? "year" : "month"}
+                      </span>
                     </>
                   ) : (
-                    <span className="text-5xl font-bold text-dark">{getPrice(plan)}</span>
+                    <span className="text-5xl font-bold text-dark">
+                      {getPrice(plan)}
+                    </span>
                   )}
                 </div>
                 {billingPeriod === "yearly" && plan.yearlyTotal > 0 && (
                   <>
                     {plan.limitedOffer && plan.originalYearlyTotal && (
-                      <p className="text-sm text-gray-400 line-through mt-1">
-                        Was ${plan.originalYearlyTotal}/year
+                      <p className="text-sm text-teal font-medium mt-2">
+                        Save ${plan.originalYearlyTotal - plan.yearlyTotal} compared to regular price
                       </p>
                     )}
-                    <p className={clsx(
-                      "text-sm font-medium mt-2",
-                      plan.limitedOffer ? "text-teal" : "text-teal"
-                    )}>
-                      ${plan.yearlyTotal}/year {plan.limitedOffer ? `(Save $${plan.originalYearlyTotal ? plan.originalYearlyTotal - plan.yearlyTotal : getSavings(plan)})` : `(Save $${getSavings(plan)})`}
-                    </p>
+                    {!plan.limitedOffer && (
+                      <p className="text-sm font-medium text-teal mt-2">
+                        Save ${getSavings(plan)} compared to monthly billing
+                      </p>
+                    )}
                   </>
                 )}
-                {billingPeriod === "monthly" && plan.monthlyPrice > 0 && !plan.limitedOffer && (
-                  <p className="text-xs text-dark-lighter mt-2">
-                    or ${plan.yearlyTotal}/year if billed annually
-                  </p>
-                )}
+                {billingPeriod === "monthly" &&
+                  plan.monthlyPrice > 0 &&
+                  !plan.limitedOffer && (
+                    <p className="text-xs text-dark-lighter mt-2">
+                      or ${plan.yearlyTotal}/year if billed annually
+                    </p>
+                  )}
                 {billingPeriod === "monthly" && plan.limitedOffer && (
                   <p className="text-xs text-teal font-medium mt-2">
                     Only ${plan.yearlyTotal}/year if billed annually
@@ -339,7 +508,7 @@ export const PricingSection: React.FC = () => {
                 className="w-full mb-6"
                 onClick={() => handlePlanClick(plan.name)}
               >
-                {plan.cta}
+                {getButtonText(plan)}
               </Button>
 
               {/* Features */}
@@ -347,18 +516,24 @@ export const PricingSection: React.FC = () => {
                 {plan.features.map((feature, i) => (
                   <div key={i} className="flex items-start gap-3">
                     {feature.included ? (
-                      <Check className={clsx(
-                        "w-5 h-5 flex-shrink-0 mt-0.5",
-                        feature.highlight ? "text-coral" : "text-teal"
-                      )} />
+                      <Check
+                        className={clsx(
+                          "w-5 h-5 flex-shrink-0 mt-0.5",
+                          feature.highlight ? "text-coral" : "text-teal"
+                        )}
+                      />
                     ) : (
                       <X className="w-5 h-5 text-gray-300 flex-shrink-0 mt-0.5" />
                     )}
-                    <span className={clsx(
-                      "text-sm",
-                      feature.included ? "text-dark-lighter" : "text-gray-400",
-                      feature.highlight && "font-medium text-dark"
-                    )}>
+                    <span
+                      className={clsx(
+                        "text-sm",
+                        feature.included
+                          ? "text-dark-lighter"
+                          : "text-gray-400",
+                        feature.highlight && "font-medium text-dark"
+                      )}
+                    >
                       {feature.text}
                     </span>
                   </div>
@@ -405,7 +580,10 @@ export const PricingSection: React.FC = () => {
             Check out our FAQ
           </a>{" "}
           or{" "}
-          <a href="mailto:support@ilovesnapshots.com" className="text-coral hover:underline font-medium">
+          <a
+            href="mailto:support@ilovesnapshots.com"
+            className="text-coral hover:underline font-medium"
+          >
             reach out to us
           </a>
         </motion.p>
