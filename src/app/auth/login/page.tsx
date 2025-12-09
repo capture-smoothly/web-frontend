@@ -42,10 +42,52 @@ function LoginPageContent() {
     }
   }, []);
 
-  // Redirect if already logged in
+  // Check if user is already logged in and send tokens to extension
+  useEffect(() => {
+    const sendExistingSessionToExtension = async () => {
+      if (!supabase || authLoading) return;
+
+      try {
+        // Get current session
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (session) {
+          console.log("✅ User already logged in, sending auth data to Chrome extension...");
+
+          // Send auth data to Chrome extension
+          window.postMessage(
+            {
+              type: "SUPABASE_AUTH_TOKEN",
+              token: session.access_token,
+              refreshToken: session.refresh_token,
+              user: session.user,
+            },
+            "*"
+          );
+
+          console.log("📤 Existing session sent to Chrome extension:", {
+            type: "SUPABASE_AUTH_TOKEN",
+            token: session.access_token.substring(0, 20) + "...",
+            refreshToken: session.refresh_token?.substring(0, 20) + "...",
+            userId: session.user.id,
+            userEmail: session.user.email,
+          });
+        }
+      } catch (error) {
+        console.error("Error sending existing session to extension:", error);
+      }
+    };
+
+    sendExistingSessionToExtension();
+  }, [supabase, authLoading]);
+
+  // Redirect if already logged in (with delay to allow extension to receive tokens)
   useEffect(() => {
     if (!authLoading && user) {
-      router.push(redirectUrl);
+      // Add a small delay to ensure extension receives the tokens before redirect
+      setTimeout(() => {
+        router.push(redirectUrl);
+      }, 500);
     }
   }, [user, authLoading, router, redirectUrl]);
 
@@ -65,7 +107,6 @@ function LoginPageContent() {
         );
 
         // Send auth data to Chrome extension
-        // Rebuiild
         window.postMessage(
           {
             type: "SUPABASE_AUTH_TOKEN",
