@@ -36,17 +36,8 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
         className
       )}
     >
-      <div className="flex gap-1 mb-4">
-        {[...Array(rating)].map((_, i) => (
-          <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-        ))}
-      </div>
-
-      <p className="text-dark-lighter mb-6 leading-relaxed italic">
-        &ldquo;{quote}&rdquo;
-      </p>
-
-      <div className="flex items-center gap-3">
+      {/* Author Info at Top */}
+      <div className="flex items-center gap-3 mb-4">
         <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-white font-semibold">
           {avatar}
         </div>
@@ -55,6 +46,18 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
           <p className="text-sm text-dark-lighter">{role}</p>
         </div>
       </div>
+
+      {/* Rating */}
+      <div className="flex gap-1 mb-4">
+        {[...Array(rating)].map((_, i) => (
+          <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+        ))}
+      </div>
+
+      {/* Review Quote */}
+      <p className="text-dark-lighter leading-relaxed italic">
+        &ldquo;{quote}&rdquo;
+      </p>
     </motion.div>
   );
 };
