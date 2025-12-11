@@ -120,11 +120,26 @@ export const HeroSection: React.FC = () => {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
         <div className="text-center max-w-5xl mx-auto">
+          {/* Trust Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex justify-center mb-6"
+          >
+            <div className="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-coral/10 via-peach/10 to-accent/10 border border-coral/30 rounded-full backdrop-blur-sm shadow-sm">
+              <Sparkles className="w-4 h-4 text-coral" />
+              <span className="text-sm font-semibold text-coral-dark">
+                Trusted by 100+ Users Worldwide
+              </span>
+            </div>
+          </motion.div>
+
           {/* Main Headline */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
             className="text-5xl md:text-6xl lg:text-7xl font-bold text-dark mb-6 leading-tight"
           >
             Screenshots That{" "}

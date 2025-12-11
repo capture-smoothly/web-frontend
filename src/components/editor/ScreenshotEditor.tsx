@@ -7221,7 +7221,7 @@ export default function ScreenshotEditor() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   {[
                     // { icon: "✓", text: "7-day free trial" },
-                    { icon: "✓", text: "Cancel anytime, no questions" },
+                    // { icon: "✓", text: "Cancel anytime, no questions" },
                     { icon: "✓", text: "Secure payment" },
                   ].map((item, index) => (
                     <div
