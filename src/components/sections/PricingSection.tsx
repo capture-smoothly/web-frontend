@@ -552,14 +552,14 @@ export const PricingSection: React.FC = () => {
           className="mt-16 text-center"
         >
           <div className="flex flex-wrap justify-center gap-6 text-sm text-dark-lighter">
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <Check className="w-4 h-4 text-teal" />
               <span>7-day free trial on paid plans</span>
-            </div>
-            <div className="flex items-center gap-2">
+            </div> */}
+            {/* <div className="flex items-center gap-2">
               <Check className="w-4 h-4 text-teal" />
               <span>Cancel anytime, no questions</span>
-            </div>
+            </div> */}
             <div className="flex items-center gap-2">
               <Check className="w-4 h-4 text-teal" />
               <span>Secure payment via Stripe</span>

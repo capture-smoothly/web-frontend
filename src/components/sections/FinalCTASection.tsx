@@ -9,8 +9,8 @@ import { Chrome, Monitor, Shield, Zap, Sparkles } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 const trustBadges = [
-  { icon: Shield, label: "7-Day Free Trial" },
-  { icon: Zap, label: "No Credit Card Needed" },
+  // { icon: Shield, label: "7-Day Free Trial" },
+  // { icon: Zap, label: "No Credit Card Needed" },
   { icon: Chrome, label: "Works Everywhere" },
   { icon: Monitor, label: "Extension + Web Editor" },
 ];

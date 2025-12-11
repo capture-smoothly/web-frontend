@@ -23,7 +23,7 @@ const faqItems = [
   },
   {
     question: "Can I try Pro before paying?",
-    answer: "Absolutely. Pro comes with a 7-day free trial. Full access, no restrictions. Cancel before the trial ends and you won't be charged anything.",
+    answer: "Absolutely. You can try Pro in the current version, you just won't be able to export the final image with pro features used. ",
   },
   {
     question: "How does the text-to-image feature work?",
