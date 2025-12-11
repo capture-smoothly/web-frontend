@@ -32,7 +32,7 @@ const showcaseTabs = [
         </div>
         <div className="relative rounded-xl overflow-hidden shadow-lg">
           <Image
-            src="/demo/Color_Theems.png"
+            src="/demo/Sixth_Image.png"
             alt="Professional Screenshot Capture with Color Themes"
             width={800}
             height={600}
@@ -66,7 +66,7 @@ const showcaseTabs = [
         </div>
         <div className="relative rounded-xl overflow-hidden shadow-lg">
           <Image
-            src="/demo/Convert_Docs.png"
+            src="/demo/Fifth_Image.png"
             alt="Text Capture - Convert Boring Docs to Beautiful Presentable Docs"
             width={800}
             height={600}
@@ -137,7 +137,7 @@ const showcaseTabs = [
         </div>
         <div className="relative rounded-xl overflow-hidden shadow-lg">
           <Image
-            src="/demo/Editor_Image.png"
+            src="/demo/Fourth_Image.png"
             alt="Advanced Editing & Annotation Tools"
             width={800}
             height={600}

@@ -21,7 +21,7 @@ const features = [
     visual: (
       <div className="relative rounded-xl overflow-hidden shadow-lg">
         <Image
-          src="/demo/Convert_Docs.png"
+          src="/demo/Fifth_Image.png"
           alt="Convert Boring Docs to Beautiful Presentable Docs"
           width={800}
           height={600}
@@ -44,7 +44,7 @@ const features = [
     visual: (
       <div className="relative rounded-xl overflow-hidden shadow-lg">
         <Image
-          src="/demo/Text_Select.png"
+          src="/demo/Seventh_Image.png"
           alt="Revolutionary Two-Point Selection"
           width={800}
           height={600}
@@ -67,7 +67,7 @@ const features = [
     visual: (
       <div className="relative rounded-xl overflow-hidden shadow-lg">
         <Image
-          src="/demo/One_Page.png"
+          src="/demo/Third_Image.png"
           alt="Professional Screenshot Capture"
           width={800}
           height={600}
@@ -90,7 +90,7 @@ const features = [
     visual: (
       <div className="relative rounded-xl overflow-hidden shadow-lg">
         <Image
-          src="/demo/Editor_Image.png"
+          src="/demo/Fourth_Image.png"
           alt="Advanced Editing & Annotation"
           width={800}
           height={600}
