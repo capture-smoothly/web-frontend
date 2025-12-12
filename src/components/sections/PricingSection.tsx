@@ -441,14 +441,14 @@ export const PricingSection: React.FC = () => {
                       MOST POPULAR
                     </Badge>
                   )}
-                  {plan.limitedOffer && (
+                  {/* {plan.limitedOffer && (
                     <Badge
                       variant="warning"
                       className="text-xs px-3 py-1.5 shadow-lg whitespace-nowrap"
                     >
                       🎉 FOR FIRST 100 USERS ONLY!
                     </Badge>
-                  )}
+                  )} */}
                 </div>
               )}
 
