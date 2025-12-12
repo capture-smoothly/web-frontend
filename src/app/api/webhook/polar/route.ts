@@ -142,16 +142,28 @@ export const POST = Webhooks({
         console.log("📦 Checkout updated:", {
           checkoutId: checkout.id,
           status: checkout.status,
+          amount: checkout.amount,
+          currency: checkout.currency,
         });
 
-        // Only update if checkout is confirmed
-        if (checkout.status === "confirmed") {
+        // Log all checkout statuses for debugging
+        console.log("🔍 Checkout status details:", checkout.status);
+
+        // Update for confirmed OR succeeded checkouts
+        if (checkout.status === "confirmed" || checkout.status === "succeeded") {
           // Get the subscription to check if it's a lifetime plan
-          const { data: existingSub } = await supabase
+          const { data: existingSub, error: fetchError } = await supabase
             .from("subscriptions")
-            .select("plan_type")
+            .select("*")
             .eq("payment_id", checkout.id)
             .single();
+
+          console.log("🔍 Found subscription:", existingSub, "Error:", fetchError);
+
+          if (!existingSub) {
+            console.log("⚠️ No subscription found for checkout:", checkout.id);
+            return;
+          }
 
           const isLifetime = existingSub?.plan_type === "lifetime";
 
@@ -172,6 +184,8 @@ export const POST = Webhooks({
               `✅ Checkout marked as active${isLifetime ? " (lifetime)" : ""}`
             );
           }
+        } else {
+          console.log(`ℹ️ Checkout status is "${checkout.status}", not activating yet`);
         }
       }
     } catch (error) {
