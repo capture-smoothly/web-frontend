@@ -43,10 +43,12 @@ export async function hasProSubscription(): Promise<boolean> {
 
     const subscription = subscriptions[0];
 
-    // Check if subscription is Pro and still active
-    const isPro = subscription.plan_type === "monthly" || subscription.plan_type === "yearly";
+    // Check if subscription is Pro (monthly, yearly, or lifetime)
+    const isPro = subscription.plan_type === "monthly" ||
+                  subscription.plan_type === "yearly" ||
+                  subscription.plan_type === "lifetime";
 
-    // Check if subscription has expired
+    // Check if subscription has expired (lifetime plans have no expiration)
     if (subscription.expires_at) {
       const expiresAt = new Date(subscription.expires_at);
       const now = new Date();

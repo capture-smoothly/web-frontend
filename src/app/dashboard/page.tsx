@@ -138,8 +138,10 @@ export default function DashboardPage() {
     });
   };
 
-  // Check if user has a pro plan (monthly or yearly)
-  const isProPlan = subscription?.plan_type === "monthly" || subscription?.plan_type === "yearly";
+  // Check if user has a pro plan (monthly, yearly, or lifetime)
+  const isProPlan = subscription?.plan_type === "monthly" ||
+                    subscription?.plan_type === "yearly" ||
+                    subscription?.plan_type === "lifetime";
 
   return (
     <div className="min-h-screen bg-gradient-hero">
@@ -340,7 +342,15 @@ export default function DashboardPage() {
                     : "N/A"}
                 </span>
               </div>
-              {isProPlan && subscription?.expires_at && (
+              {isProPlan && subscription?.plan_type === "lifetime" && (
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Access:</span>
+                  <span className="text-sm font-semibold text-teal">
+                    Lifetime
+                  </span>
+                </div>
+              )}
+              {isProPlan && subscription?.expires_at && subscription?.plan_type !== "lifetime" && (
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Expires:</span>
                   <span className="text-sm text-gray-600">

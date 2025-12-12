@@ -7,9 +7,9 @@ export async function POST(request: NextRequest) {
     const { plan } = await request.json();
 
     // Validate plan type
-    if (!plan || (plan !== "monthly" && plan !== "yearly")) {
+    if (!plan || (plan !== "monthly" && plan !== "yearly" && plan !== "lifetime")) {
       return NextResponse.json(
-        { error: "Invalid plan type. Must be 'monthly' or 'yearly'" },
+        { error: "Invalid plan type. Must be 'monthly', 'yearly', or 'lifetime'" },
         { status: 400 }
       );
     }
@@ -26,9 +26,20 @@ export async function POST(request: NextRequest) {
     }
 
     // Get the appropriate product ID based on plan
-    const productId = plan === "monthly"
-      ? process.env.POLAR_PRODUCT_ID_MONTHLY
-      : process.env.POLAR_PRODUCT_ID_YEARLY;
+    let productId: string | undefined;
+    let amount: number;
+
+    if (plan === "monthly") {
+      productId = process.env.POLAR_PRODUCT_ID_MONTHLY;
+      amount = 2;
+    } else if (plan === "yearly") {
+      productId = process.env.POLAR_PRODUCT_ID_YEARLY;
+      amount = 12;
+    } else {
+      // lifetime
+      productId = process.env.POLAR_PRODUCT_ID_LIFETIME;
+      amount = 18;
+    }
 
     if (!productId) {
       return NextResponse.json(
@@ -64,8 +75,10 @@ export async function POST(request: NextRequest) {
         plan_type: plan,
         status: "pending",
         payment_id: checkout.id,
-        amount: plan === "monthly" ? 2 : 12,
+        amount: amount,
         currency: "USD",
+        // Lifetime plans have no expiration date
+        expires_at: plan === "lifetime" ? null : undefined,
       });
 
     if (insertError) {
