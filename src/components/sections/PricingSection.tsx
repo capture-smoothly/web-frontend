@@ -415,7 +415,7 @@ export const PricingSection: React.FC = () => {
         </motion.div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-6 max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-6 max-w-7xl mx-auto pt-4">
           {pricingPlans.map((plan, index) => (
             <motion.div
               key={plan.name}
