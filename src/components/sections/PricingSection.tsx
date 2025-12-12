@@ -9,7 +9,7 @@ import { Badge } from "../ui/Badge";
 import clsx from "clsx";
 import { createClient } from "@/lib/supabase/client";
 
-type BillingPeriod = "monthly" | "yearly";
+type BillingPeriod = "monthly" | "yearly" | "lifetime";
 
 interface PricingPlan {
   name: string;
@@ -18,6 +18,8 @@ interface PricingPlan {
   monthlyPrice: number;
   yearlyPrice: number;
   yearlyTotal: number;
+  lifetimePrice?: number;
+  originalLifetimePrice?: number;
   originalMonthlyPrice?: number;
   originalYearlyTotal?: number;
   features: { text: string; included: boolean; highlight?: boolean }[];
@@ -26,6 +28,7 @@ interface PricingPlan {
   popular?: boolean;
   badge?: string;
   limitedOffer?: boolean;
+  isLifetime?: boolean;
 }
 
 const pricingPlans: PricingPlan[] = [
@@ -91,6 +94,34 @@ const pricingPlans: PricingPlan[] = [
     ctaVariant: "primary",
     badge: "Best Value",
   },
+  {
+    name: "Lifetime Access",
+    icon: <Gift className="w-6 h-6" />,
+    description: "One-time payment, lifetime access",
+    monthlyPrice: 0,
+    yearlyPrice: 0,
+    yearlyTotal: 0,
+    lifetimePrice: 18,
+    originalLifetimePrice: 25,
+    isLifetime: true,
+    limitedOffer: true,
+    features: [
+      { text: "Everything in Pro, plus:", included: true, highlight: true },
+      { text: "One-time payment - no renewals", included: true },
+      { text: "Lifetime access to current features", included: true },
+      { text: "All current Pro features included", included: true },
+      { text: "Annotations tools", included: true },
+      { text: "Premium themes (120+)", included: true },
+      { text: "Custom theme creation", included: true },
+      { text: "Blur & pixelate tools", included: true },
+      { text: "Priority support", included: true },
+      { text: "Future features not included", included: false },
+      { text: "Early access to new tools", included: false },
+    ],
+    cta: "Get Lifetime Access",
+    ctaVariant: "primary",
+    badge: "Limited Offer",
+  },
 ];
 
 export const PricingSection: React.FC = () => {
@@ -137,6 +168,7 @@ export const PricingSection: React.FC = () => {
   }, []);
 
   const getPrice = (plan: PricingPlan) => {
+    if (plan.isLifetime) return plan.lifetimePrice || 0;
     if (plan.monthlyPrice === 0) return "Free";
     return billingPeriod === "monthly" ? plan.monthlyPrice : plan.yearlyPrice;
   };
@@ -149,23 +181,23 @@ export const PricingSection: React.FC = () => {
     return savings;
   };
 
-  const isProPlan = userPlanType === "monthly" || userPlanType === "yearly";
+  const isProPlan = userPlanType === "monthly" || userPlanType === "yearly" || userPlanType === "lifetime";
 
   const handlePlanClick = async (planName: string) => {
     // If user has pro plan, navigate to editor
-    if (isProPlan && planName === "Pro") {
+    if (isProPlan && (planName === "Pro" || planName === "Lifetime Access")) {
       router.push("/editor");
       return;
     }
 
     if (planName === "Free") {
       router.push("/auth/login");
-    } else if (planName === "Pro") {
+    } else if (planName === "Pro" || planName === "Lifetime Access") {
       try {
         // Check if user is authenticated
         const supabase = createClient();
         const { data: { user } } = await supabase.auth.getUser();
-        
+
         // If not authenticated, redirect to signup
         if (!user) {
           router.push("/auth/login");
@@ -175,6 +207,9 @@ export const PricingSection: React.FC = () => {
         // Show loading spinner
         setIsProcessingCheckout(true);
 
+        // Determine the plan type to send to checkout
+        const planType = planName === "Lifetime Access" ? "lifetime" : billingPeriod;
+
         // Call checkout API to create Polar checkout session
         const response = await fetch("/api/checkout", {
           method: "POST",
@@ -182,7 +217,7 @@ export const PricingSection: React.FC = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            plan: billingPeriod,
+            plan: planType,
           }),
         });
 
@@ -208,7 +243,7 @@ export const PricingSection: React.FC = () => {
   };
 
   const getButtonText = (plan: PricingPlan) => {
-    if (isProPlan && plan.name === "Pro") {
+    if (isProPlan && (plan.name === "Pro" || plan.name === "Lifetime Access")) {
       return "Use Features";
     }
     return plan.cta;
@@ -380,7 +415,7 @@ export const PricingSection: React.FC = () => {
         </motion.div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-6 max-w-7xl mx-auto">
           {pricingPlans.map((plan, index) => (
             <motion.div
               key={plan.name}
@@ -445,7 +480,17 @@ export const PricingSection: React.FC = () => {
 
               {/* Price */}
               <div className="text-center mb-6">
-                {plan.limitedOffer && (
+                {plan.isLifetime && plan.originalLifetimePrice && (
+                  <div className="mb-2">
+                    <span className="text-2xl text-gray-400 line-through">
+                      ${plan.originalLifetimePrice}
+                    </span>
+                    <span className="text-dark-lighter text-sm ml-1">
+                      one-time
+                    </span>
+                  </div>
+                )}
+                {plan.limitedOffer && !plan.isLifetime && (
                   <div className="mb-2">
                     <span className="text-2xl text-gray-400 line-through">
                       $
@@ -462,10 +507,10 @@ export const PricingSection: React.FC = () => {
                   {typeof getPrice(plan) === "number" ? (
                     <>
                       <span className="text-5xl font-bold text-dark">
-                        ${billingPeriod === "yearly" && plan.yearlyTotal > 0 ? plan.yearlyTotal : getPrice(plan)}
+                        ${plan.isLifetime ? plan.lifetimePrice : (billingPeriod === "yearly" && plan.yearlyTotal > 0 ? plan.yearlyTotal : getPrice(plan))}
                       </span>
                       <span className="text-dark-lighter mb-2">
-                        /{billingPeriod === "yearly" && plan.yearlyTotal > 0 ? "year" : "month"}
+                        {plan.isLifetime ? "" : `/${billingPeriod === "yearly" && plan.yearlyTotal > 0 ? "year" : "month"}`}
                       </span>
                     </>
                   ) : (
@@ -474,7 +519,12 @@ export const PricingSection: React.FC = () => {
                     </span>
                   )}
                 </div>
-                {billingPeriod === "yearly" && plan.yearlyTotal > 0 && (
+                {plan.isLifetime && plan.originalLifetimePrice && plan.lifetimePrice && (
+                  <p className="text-sm text-teal font-medium mt-2">
+                    Save ${plan.originalLifetimePrice - plan.lifetimePrice} - One-time payment!
+                  </p>
+                )}
+                {billingPeriod === "yearly" && plan.yearlyTotal > 0 && !plan.isLifetime && (
                   <>
                     {plan.limitedOffer && plan.originalYearlyTotal && (
                       <p className="text-sm text-teal font-medium mt-2">
@@ -490,12 +540,13 @@ export const PricingSection: React.FC = () => {
                 )}
                 {billingPeriod === "monthly" &&
                   plan.monthlyPrice > 0 &&
-                  !plan.limitedOffer && (
+                  !plan.limitedOffer &&
+                  !plan.isLifetime && (
                     <p className="text-xs text-dark-lighter mt-2">
                       or ${plan.yearlyTotal}/year if billed annually
                     </p>
                   )}
-                {billingPeriod === "monthly" && plan.limitedOffer && (
+                {billingPeriod === "monthly" && plan.limitedOffer && !plan.isLifetime && (
                   <p className="text-xs text-teal font-medium mt-2">
                     Only ${plan.yearlyTotal}/year if billed annually
                   </p>

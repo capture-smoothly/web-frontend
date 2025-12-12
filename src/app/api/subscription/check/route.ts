@@ -79,9 +79,10 @@ export async function POST(request: NextRequest) {
     const subscription = subscriptions[0];
     const isPro =
       subscription.plan_type === "monthly" ||
-      subscription.plan_type === "yearly";
+      subscription.plan_type === "yearly" ||
+      subscription.plan_type === "lifetime";
 
-    // Check expiration
+    // Check expiration (lifetime plans have no expiration)
     if (subscription.expires_at) {
       const expiresAt = new Date(subscription.expires_at);
       const now = new Date();

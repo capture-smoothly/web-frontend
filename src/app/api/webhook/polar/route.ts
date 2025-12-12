@@ -22,23 +22,34 @@ export const POST = Webhooks({
 
         // Update the subscription record with the subscription ID
         if (checkoutId) {
+          // First, get the subscription to check if it's a lifetime plan
+          const { data: existingSub } = await supabase
+            .from("subscriptions")
+            .select("plan_type")
+            .eq("payment_id", checkoutId)
+            .single();
+
+          const isLifetime = existingSub?.plan_type === "lifetime";
+
           const { error: updateError } = await supabase
             .from("subscriptions")
             .update({
               payment_id: subscription.id,
               status: "active",
               started_at: new Date().toISOString(),
-              // Set expiration based on plan type
-              expires_at: new Date(
-                Date.now() + 365 * 24 * 60 * 60 * 1000
-              ).toISOString(), // 1 year from now
+              // Set expiration only for non-lifetime plans
+              expires_at: isLifetime
+                ? null
+                : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
             })
             .eq("payment_id", checkoutId);
 
           if (updateError) {
             console.error("❌ Error updating subscription:", updateError);
           } else {
-            console.log("✅ Subscription linked to payment");
+            console.log(
+              `✅ Subscription linked to payment${isLifetime ? " (lifetime)" : ""}`
+            );
           }
         }
       }
@@ -124,7 +135,7 @@ export const POST = Webhooks({
         }
       }
 
-      // Handle checkout completion (for one-time payments or initial checkout)
+      // Handle checkout completion (for one-time payments like lifetime or initial checkout)
       if (payload.type === "checkout.updated") {
         const checkout = payload.data;
 
@@ -135,17 +146,31 @@ export const POST = Webhooks({
 
         // Only update if checkout is confirmed
         if (checkout.status === "confirmed") {
+          // Get the subscription to check if it's a lifetime plan
+          const { data: existingSub } = await supabase
+            .from("subscriptions")
+            .select("plan_type")
+            .eq("payment_id", checkout.id)
+            .single();
+
+          const isLifetime = existingSub?.plan_type === "lifetime";
+
           const { error: updateError } = await supabase
             .from("subscriptions")
             .update({
               status: "active",
+              started_at: new Date().toISOString(),
+              // Lifetime plans don't have expiration
+              expires_at: isLifetime ? null : undefined,
             })
             .eq("payment_id", checkout.id);
 
           if (updateError) {
             console.error("❌ Error updating checkout:", updateError);
           } else {
-            console.log("✅ Checkout marked as active");
+            console.log(
+              `✅ Checkout marked as active${isLifetime ? " (lifetime)" : ""}`
+            );
           }
         }
       }
