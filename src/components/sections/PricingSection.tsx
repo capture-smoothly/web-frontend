@@ -102,7 +102,7 @@ const pricingPlans: PricingPlan[] = [
     yearlyPrice: 0,
     yearlyTotal: 0,
     lifetimePrice: 18,
-    originalLifetimePrice: 25,
+    originalLifetimePrice: 36,
     isLifetime: true,
     limitedOffer: true,
     features: [
