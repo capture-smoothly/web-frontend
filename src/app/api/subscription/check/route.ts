@@ -111,6 +111,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // At this point, user is guaranteed to be non-null
+    if (!user) {
+      return NextResponse.json(
+        {
+          hasProPlan: false,
+          error: "User not found",
+        },
+        { status: 401 }
+      );
+    }
+
     // Check subscription using the same logic as website's hasProSubscription
     const { data: subscriptions, error: subError } = await supabase
       .from("subscriptions")
