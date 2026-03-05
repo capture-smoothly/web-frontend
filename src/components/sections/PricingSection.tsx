@@ -632,7 +632,7 @@ export const PricingSection: React.FC = () => {
           </a>{" "}
           or{" "}
           <a
-            href="mailto:support@ilovesnapshots.com"
+            href="mailto:ilovesnapshots.online@gmail.com"
             className="text-coral hover:underline font-medium"
           >
             reach out to us

@@ -57,10 +57,10 @@ export default function PaymentCancelPage() {
         <p className="text-sm text-dark-lighter mt-6">
           Need help? Contact us at{" "}
           <a
-            href="mailto:support@ilovesnapshots.com"
+            href="mailto:ilovesnapshots.online@gmail.com"
             className="text-coral hover:underline"
           >
-            support@ilovesnapshots.com
+            ilovesnapshots.online@gmail.com
           </a>
         </p>
       </motion.div>
