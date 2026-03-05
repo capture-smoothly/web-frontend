@@ -221,7 +221,7 @@ export default function CookiePolicyPage() {
               <h2 className="text-3xl font-semibold text-dark mb-4">Contact Us</h2>
               <p className="mb-2">If you have questions about our use of cookies:</p>
               <ul className="list-none space-y-2">
-                <li><strong>Email:</strong> support@ilovesnapshots.online</li>
+                <li><strong>Email:</strong> ilovesnapshots.online@gmail.com</li>
                 <li><strong>Website:</strong> https://www.ilovesnapshots.online</li>
               </ul>
             </section>

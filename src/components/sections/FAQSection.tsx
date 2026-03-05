@@ -93,7 +93,7 @@ export const FAQSection: React.FC = () => {
           <p className="text-dark-lighter">
             Still have questions?{" "}
             <a
-              href="mailto:support@ilovesnapshots.com"
+              href="mailto:ilovesnapshots.online@gmail.com"
               className="text-coral hover:underline font-medium"
             >
               Drop us an email

@@ -36,10 +36,10 @@ export default function SupportPage() {
             <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl p-6 mb-8">
               <p className="text-sm text-dark-lighter mb-2">Send us an email at:</p>
               <a
-                href="mailto:support@ilovesnapshots.online"
+                href="mailto:ilovesnapshots.online@gmail.com"
                 className="text-2xl md:text-3xl font-bold text-primary hover:text-secondary transition-colors break-all"
               >
-                support@ilovesnapshots.online
+                ilovesnapshots.online@gmail.com
               </a>
             </div>
 
@@ -120,7 +120,7 @@ export default function SupportPage() {
               <div>
                 <h3 className="text-xl font-semibold text-dark mb-2">Still need help?</h3>
                 <p className="text-dark-lighter">
-                  Email us at <a href="mailto:support@ilovesnapshots.online" className="text-primary hover:text-secondary font-semibold">support@ilovesnapshots.online</a> with details about your issue, including:
+                  Email us at <a href="mailto:ilovesnapshots.online@gmail.com" className="text-primary hover:text-secondary font-semibold">ilovesnapshots.online@gmail.com</a> with details about your issue, including:
                 </p>
                 <ul className="list-disc pl-6 mt-2 space-y-1 text-dark-lighter">
                   <li>Your browser version</li>

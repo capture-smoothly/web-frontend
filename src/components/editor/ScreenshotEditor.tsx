@@ -6506,12 +6506,12 @@ export default function ScreenshotEditor() {
                     fontWeight: 500,
                   }}
                 >
-                  hello@ilovesnapshots.online
+                  ilovesnapshots.online@gmail.com
                 </div>
               </div>
               <button
                 onClick={() => {
-                  navigator.clipboard.writeText("hello@ilovesnapshots.online");
+                  navigator.clipboard.writeText("ilovesnapshots.online@gmail.com");
                   setIsEmailCopied(true);
                   setTimeout(() => setIsEmailCopied(false), 2000);
                 }}
